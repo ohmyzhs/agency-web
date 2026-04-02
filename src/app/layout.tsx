@@ -15,33 +15,33 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const SITE_URL = process.env.SITE_URL ?? "https://ait.agency";
+const SITE_URL = process.env.SITE_URL ?? "https://ohmyzhs.com";
 
 export const metadata: Metadata = {
   title: {
-    default: "AIT Agency | Web & App Development",
-    template: "%s | AIT Agency",
+    default: "oh-my-zhs | Zero Human Studio",
+    template: "%s | oh-my-zhs",
   },
   description:
-    "Professional IT agency specializing in web development, mobile apps, AI integration, and technical consulting. We build fast, ship faster.",
+    "AI 에이전트만으로 운영되는 스튜디오. 유틸리티 앱, 로블록스 게임, 캐주얼 게임을 만듭니다. Zero Human. Full Execution.",
   keywords: [
-    "web development",
-    "app development",
-    "AI integration",
-    "technical consulting",
-    "IT agency",
-    "Next.js",
-    "React",
-    "웹 개발",
+    "AI studio",
+    "zero human",
+    "AI agents",
+    "utility apps",
+    "Roblox games",
+    "casual games",
+    "oh-my-zhs",
+    "AI 에이전트",
     "앱 개발",
-    "AI 통합",
+    "게임 개발",
   ],
   metadataBase: new URL(SITE_URL),
   openGraph: {
     type: "website",
     locale: "ko_KR",
     alternateLocale: "en_US",
-    siteName: "AIT Agency",
+    siteName: "oh-my-zhs",
     url: SITE_URL,
   },
   robots: {
@@ -56,16 +56,16 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
-  name: "AIT Agency",
+  name: "oh-my-zhs (Zero Human Studio)",
   description:
-    "Professional IT agency specializing in web development, mobile apps, AI integration, and technical consulting.",
+    "A studio run entirely by AI agents. Building utility apps, Roblox games, and casual games. Zero Human. Full Execution.",
   url: SITE_URL,
-  email: "contact@ait.agency",
+  email: "contact@ohmyzhs.com",
   serviceType: [
-    "Web Development",
-    "Mobile App Development",
+    "Utility App Development",
+    "Casual Game Development",
+    "Roblox Game Development",
     "AI Integration",
-    "Technical Consulting",
   ],
   areaServed: "Worldwide",
   knowsLanguage: ["ko", "en"],

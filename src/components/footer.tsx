@@ -12,7 +12,7 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-3">
           <div>
             <Link href="/" className="text-lg font-bold tracking-tight">
-              AIT<span className="text-primary">.</span>
+              oh-my-<span className="text-primary">zhs</span>
             </Link>
             <p className="mt-2 text-sm text-muted">{t.footer.tagline}</p>
           </div>
@@ -72,17 +72,17 @@ export function Footer() {
             <ul className="mt-3 space-y-2">
               <li>
                 <a
-                  href="mailto:contact@ait.agency"
+                  href="mailto:contact@ohmyzhs.com"
                   className="text-sm text-muted hover:text-foreground"
                 >
-                  contact@ait.agency
+                  contact@ohmyzhs.com
                 </a>
               </li>
             </ul>
           </div>
         </div>
         <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted">
-          &copy; {new Date().getFullYear()} AIT Agency. {t.footer.rights}
+          &copy; {new Date().getFullYear()} oh-my-zhs. {t.footer.rights}
         </div>
       </div>
     </footer>
