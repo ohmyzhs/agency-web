@@ -1,9 +1,55 @@
 "use client";
 
+import { useState, type FormEvent } from "react";
 import { useLocale } from "@/components/providers";
+
+type FormStatus = "idle" | "submitting" | "success" | "error";
 
 export default function ContactPage() {
   const { t } = useLocale();
+  const [status, setStatus] = useState<FormStatus>("idle");
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus("submitting");
+
+    // Simulate submission (replace with real API endpoint later)
+    setTimeout(() => {
+      setStatus("success");
+    }, 1200);
+  }
+
+  function resetForm() {
+    setStatus("idle");
+  }
+
+  if (status === "success") {
+    return (
+      <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-lg rounded-2xl border border-border bg-card p-12 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+            <svg
+              className="h-8 w-8 text-green-600 dark:text-green-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="mt-6 text-2xl font-bold">{t.contactPage.success.title}</h2>
+          <p className="mt-2 text-muted">{t.contactPage.success.description}</p>
+          <button
+            onClick={resetForm}
+            className="mt-8 rounded-lg border border-border px-6 py-3 font-medium transition-colors hover:bg-card"
+          >
+            {t.contactPage.success.another}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-24">
@@ -38,7 +84,7 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <form className="space-y-6 rounded-2xl border border-border p-8">
+        <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-border p-8">
           <div>
             <label htmlFor="name" className="block text-sm font-medium">
               {t.contactPage.form.name}
@@ -48,7 +94,8 @@ export default function ContactPage() {
               id="name"
               name="name"
               required
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
+              minLength={2}
+              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
               placeholder={t.contactPage.form.namePlaceholder}
             />
           </div>
@@ -61,7 +108,7 @@ export default function ContactPage() {
               id="email"
               name="email"
               required
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
+              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
               placeholder={t.contactPage.form.emailPlaceholder}
             />
           </div>
@@ -72,7 +119,8 @@ export default function ContactPage() {
             <select
               id="project-type"
               name="project-type"
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
+              required
+              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
             >
               <option value="">{t.contactPage.form.selectService}</option>
               <option value="web">{t.contactPage.form.web}</option>
@@ -91,15 +139,17 @@ export default function ContactPage() {
               name="message"
               rows={5}
               required
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
+              minLength={10}
+              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
               placeholder={t.contactPage.form.messagePlaceholder}
             />
           </div>
           <button
             type="submit"
-            className="w-full rounded-lg bg-primary px-6 py-3 font-medium text-white transition-colors hover:bg-primary-dark"
+            disabled={status === "submitting"}
+            className="w-full rounded-lg bg-primary px-6 py-3 font-medium text-white transition-colors hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {t.contactPage.form.submit}
+            {status === "submitting" ? t.contactPage.form.sending : t.contactPage.form.submit}
           </button>
         </form>
       </div>

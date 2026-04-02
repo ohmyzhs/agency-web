@@ -31,6 +31,22 @@ export function Footer() {
               </li>
               <li>
                 <Link
+                  href="/work"
+                  className="text-sm text-muted hover:text-foreground"
+                >
+                  {t.footer.work}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/about"
+                  className="text-sm text-muted hover:text-foreground"
+                >
+                  {t.footer.about}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/contact"
                   className="text-sm text-muted hover:text-foreground"
                 >

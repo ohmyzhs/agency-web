@@ -14,15 +14,15 @@ export default function Home() {
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 py-24 md:py-32">
         <div className="max-w-3xl">
-          <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-6xl">
+          <h1 className="animate-fade-in-up text-4xl font-bold leading-tight tracking-tight md:text-6xl">
             {t.hero.title1}
             <br />
-            <span className="text-primary">{t.hero.title2}</span>
+            <span className="text-gradient">{t.hero.title2}</span>
           </h1>
-          <p className="mt-6 text-lg text-muted md:text-xl">
+          <p className="animate-fade-in-up animate-delay-100 mt-6 text-lg text-muted md:text-xl">
             {t.hero.description}
           </p>
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="animate-fade-in-up animate-delay-200 mt-8 flex flex-wrap gap-4">
             <Link
               href="/contact"
               className="rounded-lg bg-primary px-6 py-3 font-medium text-white transition-colors hover:bg-primary-dark"
@@ -50,10 +50,10 @@ export default function Home() {
             {serviceKeys.map((key, i) => (
               <div
                 key={key}
-                className="group rounded-xl border border-border bg-background p-8 transition-all hover:border-primary/30 hover:shadow-lg"
+                className="hover-lift group rounded-xl border border-border bg-background p-8 transition-all hover:border-primary/30 hover:shadow-lg"
               >
                 <span className="text-3xl">{serviceIcons[i]}</span>
-                <h3 className="mt-4 text-xl font-semibold">
+                <h3 className="mt-4 text-xl font-semibold group-hover:text-primary transition-colors">
                   {t.servicesSection[key].title}
                 </h3>
                 <p className="mt-2 text-muted">
