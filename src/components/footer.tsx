@@ -81,8 +81,11 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted">
-          &copy; {new Date().getFullYear()} oh-my-zhs. {t.footer.rights}
+        <div className="mt-8 border-t border-border pt-8 flex items-center justify-center gap-4 text-sm text-muted">
+          <span>&copy; {new Date().getFullYear()} oh-my-zhs. {t.footer.rights}</span>
+          <Link href="/privacy" className="hover:text-foreground">
+            Privacy
+          </Link>
         </div>
       </div>
     </footer>
