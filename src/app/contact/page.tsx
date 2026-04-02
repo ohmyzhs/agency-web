@@ -1,27 +1,22 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description:
-    "Get in touch with AIT Agency. Tell us about your project and we'll get back to you within 24 hours.",
-};
+import { useLocale } from "@/components/providers";
 
 export default function ContactPage() {
+  const { t } = useLocale();
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-24">
       <div className="grid gap-16 md:grid-cols-2">
         <div>
           <h1 className="text-4xl font-bold tracking-tight">
-            Let&apos;s Build Together
+            {t.contactPage.title}
           </h1>
-          <p className="mt-4 text-lg text-muted">
-            Have a project in mind? We&apos;d love to hear about it. Fill out
-            the form and we&apos;ll get back to you within 24 hours.
-          </p>
+          <p className="mt-4 text-lg text-muted">{t.contactPage.description}</p>
 
           <div className="mt-12 space-y-6">
             <div>
-              <h3 className="font-semibold">Email</h3>
+              <h3 className="font-semibold">{t.contactPage.email}</h3>
               <a
                 href="mailto:contact@ait.agency"
                 className="text-primary hover:underline"
@@ -30,7 +25,7 @@ export default function ContactPage() {
               </a>
             </div>
             <div>
-              <h3 className="font-semibold">Blog</h3>
+              <h3 className="font-semibold">{t.contactPage.blog}</h3>
               <a
                 href="https://lotionz.tistory.com"
                 target="_blank"
@@ -45,11 +40,8 @@ export default function ContactPage() {
 
         <form className="space-y-6 rounded-2xl border border-border p-8">
           <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium"
-            >
-              Name
+            <label htmlFor="name" className="block text-sm font-medium">
+              {t.contactPage.form.name}
             </label>
             <input
               type="text"
@@ -57,15 +49,12 @@ export default function ContactPage() {
               name="name"
               required
               className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
-              placeholder="Your name"
+              placeholder={t.contactPage.form.namePlaceholder}
             />
           </div>
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium"
-            >
-              Email
+            <label htmlFor="email" className="block text-sm font-medium">
+              {t.contactPage.form.email}
             </label>
             <input
               type="email"
@@ -73,35 +62,29 @@ export default function ContactPage() {
               name="email"
               required
               className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
-              placeholder="you@example.com"
+              placeholder={t.contactPage.form.emailPlaceholder}
             />
           </div>
           <div>
-            <label
-              htmlFor="project-type"
-              className="block text-sm font-medium"
-            >
-              Project Type
+            <label htmlFor="project-type" className="block text-sm font-medium">
+              {t.contactPage.form.projectType}
             </label>
             <select
               id="project-type"
               name="project-type"
               className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
             >
-              <option value="">Select a service</option>
-              <option value="web">Web Development</option>
-              <option value="mobile">Mobile App</option>
-              <option value="ai">AI Integration</option>
-              <option value="consulting">Technical Consulting</option>
-              <option value="other">Other</option>
+              <option value="">{t.contactPage.form.selectService}</option>
+              <option value="web">{t.contactPage.form.web}</option>
+              <option value="mobile">{t.contactPage.form.mobile}</option>
+              <option value="ai">{t.contactPage.form.ai}</option>
+              <option value="consulting">{t.contactPage.form.consulting}</option>
+              <option value="other">{t.contactPage.form.other}</option>
             </select>
           </div>
           <div>
-            <label
-              htmlFor="message"
-              className="block text-sm font-medium"
-            >
-              Message
+            <label htmlFor="message" className="block text-sm font-medium">
+              {t.contactPage.form.message}
             </label>
             <textarea
               id="message"
@@ -109,14 +92,14 @@ export default function ContactPage() {
               rows={5}
               required
               className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
-              placeholder="Tell us about your project..."
+              placeholder={t.contactPage.form.messagePlaceholder}
             />
           </div>
           <button
             type="submit"
             className="w-full rounded-lg bg-primary px-6 py-3 font-medium text-white transition-colors hover:bg-primary-dark"
           >
-            Send Message
+            {t.contactPage.form.submit}
           </button>
         </form>
       </div>

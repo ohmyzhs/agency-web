@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useLocale } from "./providers";
 
 export function Footer() {
+  const { t } = useLocale();
+
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-6xl px-6 py-12">
@@ -9,13 +14,11 @@ export function Footer() {
             <Link href="/" className="text-lg font-bold tracking-tight">
               AIT<span className="text-primary">.</span>
             </Link>
-            <p className="mt-2 text-sm text-muted">
-              Professional IT agency. We build fast, ship faster.
-            </p>
+            <p className="mt-2 text-sm text-muted">{t.footer.tagline}</p>
           </div>
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider">
-              Navigation
+              {t.footer.navigation}
             </h3>
             <ul className="mt-3 space-y-2">
               <li>
@@ -23,7 +26,7 @@ export function Footer() {
                   href="/services"
                   className="text-sm text-muted hover:text-foreground"
                 >
-                  Services
+                  {t.footer.services}
                 </Link>
               </li>
               <li>
@@ -31,7 +34,7 @@ export function Footer() {
                   href="/contact"
                   className="text-sm text-muted hover:text-foreground"
                 >
-                  Contact
+                  {t.footer.contact}
                 </Link>
               </li>
               <li>
@@ -41,14 +44,14 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="text-sm text-muted hover:text-foreground"
                 >
-                  Blog
+                  {t.footer.blog}
                 </a>
               </li>
             </ul>
           </div>
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider">
-              Connect
+              {t.footer.connect}
             </h3>
             <ul className="mt-3 space-y-2">
               <li>
@@ -63,7 +66,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted">
-          &copy; {new Date().getFullYear()} AIT Agency. All rights reserved.
+          &copy; {new Date().getFullYear()} AIT Agency. {t.footer.rights}
         </div>
       </div>
     </footer>
