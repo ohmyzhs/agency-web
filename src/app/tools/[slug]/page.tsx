@@ -5,6 +5,7 @@ import ColorContrastChecker from "@/components/tools/ColorContrastChecker";
 import CookingMeasurementConverter from "@/components/tools/CookingMeasurementConverter";
 import CronExplainer from "@/components/tools/CronExplainer";
 import IconFaviconGenerator from "@/components/tools/IconFaviconGenerator";
+import ImageFormatConverter from "@/components/tools/ImageFormatConverter";
 import JsonYamlValidator from "@/components/tools/JsonYamlValidator";
 import KoreanShoeSizeConverter from "@/components/tools/KoreanShoeSizeConverter";
 import KrwCurrencyCalculator from "@/components/tools/KrwCurrencyCalculator";
@@ -44,6 +45,7 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
 
 const widgetMap: Record<string, React.ReactNode> = {
   "icon-favicon-generator": <IconFaviconGenerator />,
+  "image-format-converter": <ImageFormatConverter />,
   "pyeong-converter": <PyeongConverter />,
   "korean-shoe-size-converter": <KoreanShoeSizeConverter />,
   "cooking-measurement-converter": <CookingMeasurementConverter />,
