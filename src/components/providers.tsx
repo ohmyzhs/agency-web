@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import { type Locale, type Dictionary, getDictionary, defaultLocale } from "@/lib/i18n";
@@ -48,48 +49,45 @@ export function useLocale() {
   return { locale, setLocale, t };
 }
 
-function getSystemTheme(): "light" | "dark" {
-  if (typeof window === "undefined") return "light";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+const subscribeNoop = () => () => {};
+const getMountedClient = () => true;
+const getMountedServer = () => false;
+
+function subscribeMedia(callback: () => void) {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  mq.addEventListener("change", callback);
+  return () => mq.removeEventListener("change", callback);
 }
 
+function getSystemThemeClient(): "light" | "dark" {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+const getSystemThemeServer = (): "light" | "dark" => "light";
+
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
-  const [locale, setLocaleState] = useState<Locale>(defaultLocale);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(subscribeNoop, getMountedClient, getMountedServer);
+  const systemTheme = useSyncExternalStore(
+    subscribeMedia,
+    getSystemThemeClient,
+    getSystemThemeServer,
+  );
+
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "system";
+    return (localStorage.getItem("theme") as Theme | null) ?? "system";
+  });
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    if (typeof window === "undefined") return defaultLocale;
+    return (localStorage.getItem("locale") as Locale | null) ?? defaultLocale;
+  });
+
+  const resolvedTheme: "light" | "dark" = theme === "system" ? systemTheme : theme;
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    const savedLocale = localStorage.getItem("locale") as Locale | null;
-    if (savedTheme) setThemeState(savedTheme);
-    if (savedLocale) setLocaleState(savedLocale);
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    const resolved = theme === "system" ? getSystemTheme() : theme;
-    setResolvedTheme(resolved);
-    document.documentElement.classList.toggle("dark", resolved === "dark");
-    document.documentElement.classList.toggle("light", resolved === "light");
-  }, [theme]);
-
-  useEffect(() => {
-    if (!mounted) return;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = () => {
-      if (theme === "system") {
-        const resolved = getSystemTheme();
-        setResolvedTheme(resolved);
-        document.documentElement.classList.toggle("dark", resolved === "dark");
-        document.documentElement.classList.toggle("light", resolved === "light");
-      }
-    };
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, [theme, mounted]);
+    document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
+    document.documentElement.classList.toggle("light", resolvedTheme === "light");
+  }, [resolvedTheme]);
 
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);

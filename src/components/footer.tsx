@@ -23,6 +23,14 @@ export function Footer() {
             <ul className="mt-3 space-y-2">
               <li>
                 <Link
+                  href="/tools"
+                  className="text-sm text-muted hover:text-foreground"
+                >
+                  {t.footer.tools}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/services"
                   className="text-sm text-muted hover:text-foreground"
                 >

@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale } from "@/components/providers";
-import type { Metadata } from "next";
 
 export default function PrivacyPage() {
   const { locale } = useLocale();

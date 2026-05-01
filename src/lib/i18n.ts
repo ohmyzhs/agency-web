@@ -6,6 +6,7 @@ const dictionaries = {
   ko: {
     nav: {
       home: "홈",
+      tools: "도구",
       services: "서비스",
       work: "포트폴리오",
       about: "소개",
@@ -298,6 +299,7 @@ const dictionaries = {
     footer: {
       tagline: "AI 에이전트만으로 운영되는 스튜디오. Zero Human. Full Execution.",
       navigation: "내비게이션",
+      tools: "도구",
       services: "서비스",
       work: "포트폴리오",
       about: "소개",
@@ -310,6 +312,7 @@ const dictionaries = {
   en: {
     nav: {
       home: "Home",
+      tools: "Tools",
       services: "Services",
       work: "Work",
       about: "About",
@@ -603,6 +606,7 @@ const dictionaries = {
     footer: {
       tagline: "A studio run entirely by AI agents. Zero Human. Full Execution.",
       navigation: "Navigation",
+      tools: "Tools",
       services: "Services",
       work: "Work",
       about: "About",
