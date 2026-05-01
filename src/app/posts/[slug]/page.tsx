@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostPageShell } from "@/components/posts/post-page-shell";
 import { getAllPosts, getPostBySlug, getRelatedPosts } from "@/lib/posts";
+import { createPageMetadata } from "@/lib/seo";
 
 type PostPageProps = {
   params: Promise<{ slug: string }>;
@@ -17,19 +18,14 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   if (!post) return {};
 
   const fallback = post.ko ?? post.en;
-  return {
+  return createPageMetadata({
     title: fallback.title,
     description: fallback.description,
-    alternates: { canonical: `/posts/${post.slug}` },
-    openGraph: {
-      title: fallback.title,
-      description: fallback.description,
-      type: "article",
-      url: `/posts/${post.slug}`,
-      publishedTime: post.publishedAt,
-      modifiedTime: post.updatedAt,
-    },
-  };
+    path: `/posts/${post.slug}`,
+    type: "article",
+    publishedTime: post.publishedAt,
+    modifiedTime: post.updatedAt,
+  });
 }
 
 export default async function PostPage({ params }: PostPageProps) {

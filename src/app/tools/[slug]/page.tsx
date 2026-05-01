@@ -17,6 +17,7 @@ import UnitConverter from "@/components/tools/UnitConverter";
 import UtmBuilder from "@/components/tools/UtmBuilder";
 import WebhookPayloadFormatter from "@/components/tools/WebhookPayloadFormatter";
 import { getAllTools, getToolBySlug } from "@/lib/tools";
+import { createPageMetadata } from "@/lib/seo";
 
 type ToolPageProps = {
   params: Promise<{ slug: string }>;
@@ -32,17 +33,12 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
 
   if (!tool) return {};
 
-  return {
+  return createPageMetadata({
     title: tool.seoTitle,
     description: tool.seoDescription,
-    alternates: { canonical: `/tools/${tool.slug}` },
-    openGraph: {
-      title: tool.seoTitle,
-      description: tool.seoDescription,
-      type: "article",
-      url: `/tools/${tool.slug}`,
-    },
-  };
+    path: `/tools/${tool.slug}`,
+    type: "article",
+  });
 }
 
 const widgetMap: Record<string, React.ReactNode> = {

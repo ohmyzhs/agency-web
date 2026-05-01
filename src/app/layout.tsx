@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppProvider } from "@/components/providers";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -17,41 +18,58 @@ const jetBrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const SITE_URL = process.env.SITE_URL ?? "https://ohmyzhs.com";
-
 export const metadata: Metadata = {
   title: {
-    default: "Zero Human Studio — practical tools",
+    default: "Zero Human Studio — tools and posts for practical work",
     template: "%s | Zero Human Studio",
   },
-  description:
-    "Zero Human Studio (ZHS)는 한국 생활 도구와 자동화 유틸리티를 조용히 쌓아가는 AI-built tools studio입니다. 평 변환, KST 시간, 원화 계산, JSON 검증, LLM 비용 계산.",
+  description: DEFAULT_DESCRIPTION,
   keywords: [
     "Zero Human Studio",
     "ZHS",
     "ohmyzhs",
+    "oh-my-zhs",
     "Korean tools",
     "pyeong converter",
     "KST timezone",
     "KRW calculator",
     "JSON validator",
-    "LLM cost calculator",
+    "cron generator",
     "한국 생활 도구",
     "평수 변환",
     "단위 변환",
     "automation utilities",
+    "developer tools",
   ],
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
   metadataBase: new URL(SITE_URL),
   openGraph: {
     type: "website",
     locale: "ko_KR",
     alternateLocale: "en_US",
-    siteName: "Zero Human Studio",
+    siteName: SITE_NAME,
+    title: "Zero Human Studio — practical tools and posts",
+    description: DEFAULT_DESCRIPTION,
     url: SITE_URL,
+  },
+  twitter: {
+    card: "summary",
+    title: "Zero Human Studio — practical tools and posts",
+    description: DEFAULT_DESCRIPTION,
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
   },
   alternates: {
     canonical: SITE_URL,
@@ -61,10 +79,9 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Zero Human Studio",
-  alternateName: ["ZHS", "oh-my-zhs"],
-  description:
-    "AI-built tools studio for Korea-aware utilities, automation helpers, and small tools that quietly work.",
+  name: SITE_NAME,
+  alternateName: ["ZHS", "oh-my-zhs", "ohmyzhs"],
+  description: DEFAULT_DESCRIPTION,
   url: SITE_URL,
   inLanguage: ["ko", "en"],
 };
