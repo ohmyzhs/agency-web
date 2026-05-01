@@ -3,15 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.4",
+    "@types/howler": "^2.2.12",
+    "@vercel/analytics": "^2.0.1",
+    "comlink": "^4.4.2",
+    "es-hangul": "^2.3.8",
+    "framer-motion": "^12.38.0",
+    "howler": "^2.2.4",
     "next": "16.2.2",
+    "phaser": "^3.90.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "wa-sqlite": "1.0.0",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
