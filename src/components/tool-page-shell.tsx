@@ -1,14 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { getRelatedTools, type Tool } from "@/lib/tools";
+import { useLocale } from "@/components/providers";
+import { getRelatedTools, getToolContent, type Tool } from "@/lib/tools";
 
-const categoryLabels: Record<string, string> = {
-  "korea-living": "Korea Living",
-  "time-money": "Time & Money",
-  "developer-automation": "Developer",
-  "business-automation": "Business",
-  "micro-utility": "Utility",
-};
+const localOnlyCategories = new Set(["developer-automation", "micro-utility"]);
 
 type ToolPageShellProps = {
   tool: Tool;
@@ -16,7 +13,12 @@ type ToolPageShellProps = {
 };
 
 export function ToolPageShell({ tool, children }: ToolPageShellProps) {
+  const { locale, t } = useLocale();
+  const content = getToolContent(tool, locale);
   const relatedTools = getRelatedTools(tool);
+  const tierLabel = t.tools.tierLabel.replace("{tier}", String(tool.tier));
+  const categoryLabel = t.categories[tool.category] ?? tool.category;
+  const showPrivacyNote = localOnlyCategories.has(tool.category);
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
@@ -24,45 +26,49 @@ export function ToolPageShell({ tool, children }: ToolPageShellProps) {
         href="/tools"
         className="inline-block text-sm text-muted hover:text-foreground transition-colors"
       >
-        &larr; All tools
+        {t.tools.backToTools}
       </Link>
 
       <article className="mt-6">
         <header>
           <div className="flex items-center gap-2 text-xs text-muted">
-            <span className="rounded-full bg-accent px-2 py-0.5">Tier {tool.tier}</span>
-            <span>{categoryLabels[tool.category] ?? tool.category}</span>
+            <span className="rounded-full bg-accent px-2 py-0.5">{tierLabel}</span>
+            <span>{categoryLabel}</span>
           </div>
           <h1 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-            {tool.title}
+            {content.title}
           </h1>
-          <p className="mt-2 text-lg text-muted">{tool.description}</p>
+          <p className="mt-2 text-lg text-muted">{content.description}</p>
         </header>
 
         <section
           className="mt-8 rounded-xl border border-border bg-card p-6"
-          aria-label={`${tool.title} workspace`}
+          aria-label={`${content.title} ${t.tools.workspaceLabel}`}
         >
           {children ?? (
             <div className="text-center py-8">
               <p className="text-xs font-medium uppercase tracking-wider text-muted">
-                Tool workspace
+                {t.tools.placeholderTitle}
               </p>
               <h2 className="mt-2 text-xl font-semibold">
-                {tool.shortTitle} interactive tool
+                {t.tools.placeholderHeading.replace("{tool}", content.shortTitle)}
               </h2>
-              <p className="mt-1 text-sm text-muted">
-                The calculation model and page context are in place.
-              </p>
+              <p className="mt-1 text-sm text-muted">{t.tools.placeholderBody}</p>
             </div>
           )}
         </section>
 
+        {showPrivacyNote && (
+          <p className="mt-4 text-xs text-fg-3 leading-relaxed">{t.tools.privacyNote}</p>
+        )}
+
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           <div className="rounded-xl border border-border p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-muted">Inputs</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
+              {t.tools.inputs}
+            </p>
             <ul className="mt-3 space-y-2">
-              {tool.inputs.map((input) => (
+              {content.inputs.map((input) => (
                 <li key={input.label} className="text-sm">
                   <strong>{input.label}:</strong>{" "}
                   <span className="text-muted">{input.description}</span>
@@ -71,9 +77,11 @@ export function ToolPageShell({ tool, children }: ToolPageShellProps) {
             </ul>
           </div>
           <div className="rounded-xl border border-border p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-muted">Outputs</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
+              {t.tools.outputs}
+            </p>
             <ul className="mt-3 space-y-2">
-              {tool.outputs.map((output) => (
+              {content.outputs.map((output) => (
                 <li key={output.label} className="text-sm">
                   <strong>{output.label}:</strong>{" "}
                   <span className="text-muted">{output.description}</span>
@@ -84,9 +92,9 @@ export function ToolPageShell({ tool, children }: ToolPageShellProps) {
         </div>
 
         <section className="mt-8">
-          <h2 className="text-xl font-semibold">Examples</h2>
+          <h2 className="text-xl font-semibold">{t.tools.examples}</h2>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {tool.examples.map((example) => (
+            {content.examples.map((example) => (
               <div
                 key={example.label}
                 className="rounded-lg border border-border p-4"
@@ -95,10 +103,10 @@ export function ToolPageShell({ tool, children }: ToolPageShellProps) {
                   {example.label}
                 </p>
                 <p className="mt-2 text-sm">
-                  <strong>Input:</strong> {example.input}
+                  <strong>{t.tools.inputs}:</strong> {example.input}
                 </p>
                 <p className="mt-1 text-sm">
-                  <strong>Output:</strong> {example.output}
+                  <strong>{t.tools.outputs}:</strong> {example.output}
                 </p>
               </div>
             ))}
@@ -106,8 +114,8 @@ export function ToolPageShell({ tool, children }: ToolPageShellProps) {
         </section>
 
         <section className="mt-8">
-          <h2 className="text-xl font-semibold">How to use this result</h2>
-          {tool.explanation.map((paragraph) => (
+          <h2 className="text-xl font-semibold">{t.tools.howToRead}</h2>
+          {content.explanation.map((paragraph) => (
             <p key={paragraph} className="mt-3 text-sm text-muted leading-relaxed">
               {paragraph}
             </p>
@@ -115,9 +123,9 @@ export function ToolPageShell({ tool, children }: ToolPageShellProps) {
         </section>
 
         <section className="mt-8">
-          <h2 className="text-xl font-semibold">Common questions</h2>
+          <h2 className="text-xl font-semibold">{t.tools.faqs}</h2>
           <div className="mt-4 space-y-4">
-            {tool.faqs.map((faq) => (
+            {content.faqs.map((faq) => (
               <div key={faq.question}>
                 <h3 className="font-medium">{faq.question}</h3>
                 <p className="mt-1 text-sm text-muted">{faq.answer}</p>
@@ -129,18 +137,21 @@ export function ToolPageShell({ tool, children }: ToolPageShellProps) {
         {relatedTools.length > 0 && (
           <aside className="mt-8 rounded-xl border border-border p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-muted">
-              Related tools
+              {t.tools.relatedTools}
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {relatedTools.map((related) => (
-                <Link
-                  key={related.slug}
-                  href={`/tools/${related.slug}`}
-                  className="rounded-lg bg-accent px-3 py-1.5 text-sm font-medium transition-colors hover:bg-primary hover:text-white"
-                >
-                  {related.shortTitle}
-                </Link>
-              ))}
+              {relatedTools.map((related) => {
+                const relatedContent = getToolContent(related, locale);
+                return (
+                  <Link
+                    key={related.slug}
+                    href={`/tools/${related.slug}`}
+                    className="rounded-lg bg-accent px-3 py-1.5 text-sm font-medium transition-colors hover:bg-primary hover:text-white"
+                  >
+                    {relatedContent.shortTitle}
+                  </Link>
+                );
+              })}
             </div>
           </aside>
         )}

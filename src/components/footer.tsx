@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "./providers";
+import { BrandLockup } from "./zhs/brand-lockup";
 
 export function Footer() {
   const { t } = useLocale();
@@ -9,79 +10,62 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <Link href="/" className="text-lg font-bold tracking-tight">
-              oh-my-<span className="text-primary">zhs</span>
+            <Link href="/" aria-label="Zero Human Studio home" className="inline-flex items-center">
+              <BrandLockup size="sm" />
             </Link>
-            <p className="mt-2 text-sm text-muted">{t.footer.tagline}</p>
+            <p className="mt-3 text-sm text-muted">{t.footer.tagline}</p>
           </div>
+
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider">
-              {t.footer.navigation}
-            </h3>
-            <ul className="mt-3 space-y-2">
+            <h3 className="zhs-eyebrow">{t.footer.site}</h3>
+            <ul className="mt-3 space-y-2 font-mono text-[13px]">
               <li>
-                <Link
-                  href="/tools"
-                  className="text-sm text-muted hover:text-foreground"
-                >
+                <Link href="/tools" className="text-muted hover:text-foreground">
                   {t.footer.tools}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/services"
-                  className="text-sm text-muted hover:text-foreground"
-                >
-                  {t.footer.services}
+                <Link href="/guides" className="text-muted hover:text-foreground">
+                  {t.footer.guides}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/work"
-                  className="text-sm text-muted hover:text-foreground"
-                >
-                  {t.footer.work}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about"
-                  className="text-sm text-muted hover:text-foreground"
-                >
+                <Link href="/about" className="text-muted hover:text-foreground">
                   {t.footer.about}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/contact"
-                  className="text-sm text-muted hover:text-foreground"
-                >
+                <Link href="/contact" className="text-muted hover:text-foreground">
                   {t.footer.contact}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="zhs-eyebrow">{t.footer.legal}</h3>
+            <ul className="mt-3 space-y-2 font-mono text-[13px]">
+              <li>
+                <Link href="/privacy" className="text-muted hover:text-foreground">
+                  {t.footer.privacy}
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-muted hover:text-foreground">
+                  {t.footer.terms}
+                </Link>
+              </li>
+              <li>
+                <Link href="/disclaimer" className="text-muted hover:text-foreground">
+                  {t.footer.disclaimer}
                 </Link>
               </li>
               <li>
                 <a
-                  href="https://lotionz.tistory.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-muted hover:text-foreground"
-                >
-                  {t.footer.blog}
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider">
-              {t.footer.connect}
-            </h3>
-            <ul className="mt-3 space-y-2">
-              <li>
-                <a
                   href="mailto:contact@ohmyzhs.com"
-                  className="text-sm text-muted hover:text-foreground"
+                  className="text-muted hover:text-foreground"
                 >
                   contact@ohmyzhs.com
                 </a>
@@ -89,11 +73,12 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-border pt-8 flex items-center justify-center gap-4 text-sm text-muted">
-          <span>&copy; {new Date().getFullYear()} oh-my-zhs. {t.footer.rights}</span>
-          <Link href="/privacy" className="hover:text-foreground">
-            Privacy
-          </Link>
+
+        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-muted md:flex-row">
+          <span className="font-mono">
+            &copy; {new Date().getFullYear()} Zero Human Studio. {t.footer.rights}
+          </span>
+          <span className="font-mono text-fg-3">ohmyzhs.com</span>
         </div>
       </div>
     </footer>

@@ -2,88 +2,101 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/providers";
-import { getToolsByTier } from "@/lib/tools";
+import { getAllTools, getToolContent, getToolsByTier, type Tool } from "@/lib/tools";
+import type { Locale } from "@/lib/i18n";
 
-const tierLabels = [
-  { tier: 1 as const, icon: "🇰🇷", label: "Korea-friendly tools", labelKo: "한국 생활 도구" },
-  { tier: 2 as const, icon: "🤖", label: "AI & automation utilities", labelKo: "AI & 자동화 유틸리티" },
-  { tier: 3 as const, icon: "⚡", label: "Micro utilities", labelKo: "마이크로 유틸리티" },
+const tierConfig = [
+  { tier: 1 as const, key: "tier1" as const },
+  { tier: 2 as const, key: "tier2" as const },
+  { tier: 3 as const, key: "tier3" as const },
 ];
+
+function ToolPreviewList({
+  tools,
+  moreLabel,
+  locale,
+}: {
+  tools: Tool[];
+  moreLabel: string;
+  locale: Locale;
+}) {
+  return (
+    <ul className="mt-4 space-y-1.5 font-mono text-[13px]">
+      {tools.slice(0, 4).map((tool) => (
+        <li key={tool.slug} className="text-muted">
+          <Link href={`/tools/${tool.slug}`} className="hover:text-foreground">
+            {getToolContent(tool, locale).shortTitle}
+          </Link>
+        </li>
+      ))}
+      {tools.length > 4 && (
+        <li className="text-fg-3">{moreLabel.replace("{count}", String(tools.length - 4))}</li>
+      )}
+    </ul>
+  );
+}
 
 export default function Home() {
   const { t, locale } = useLocale();
-  const tierOneTools = getToolsByTier(1);
+  const allTools = getAllTools();
+  const home = t.home;
+  const moreLabel = t.tools.moreSuffix;
 
   return (
     <>
-      <section className="mx-auto max-w-6xl px-6 py-24 md:py-32">
+      <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
         <div className="max-w-3xl">
-          <p className="text-xs font-medium uppercase tracking-wider text-muted">
-            {locale === "ko" ? "AI가 만든 실용 도구 스튜디오" : "AI-built practical tools studio"}
-          </p>
-          <h1 className="animate-fade-in-up mt-3 text-4xl font-bold leading-tight tracking-tight md:text-6xl">
-            {locale === "ko" ? (
-              <>실용적인 도구,<br /><span className="text-gradient">즉시 사용 가능.</span></>
-            ) : (
-              <>Practical tools,<br /><span className="text-gradient">ready to use.</span></>
-            )}
+          <p className="zhs-eyebrow">{home.eyebrow}</p>
+          <h1 className="animate-fade-in-up mt-4 font-mono text-4xl font-bold leading-tight tracking-tight md:text-6xl">
+            {home.headline}
           </h1>
-          <p className="animate-fade-in-up animate-delay-100 mt-6 text-lg text-muted md:text-xl">
-            {locale === "ko"
-              ? "한국 생활 변환기, AI 비용 계산기, 개발자 유틸리티까지. 설명과 예시가 포함된 실용적인 웹 도구."
-              : "Korean living converters, AI cost calculators, and developer utilities. Practical web tools with explanations and examples."}
+          <p className="animate-fade-in-up animate-delay-100 mt-6 max-w-2xl text-lg leading-relaxed text-muted">
+            {home.lead}
           </p>
-          <div className="animate-fade-in-up animate-delay-200 mt-8 flex flex-wrap gap-4">
+          <div className="animate-fade-in-up animate-delay-200 mt-8 flex flex-wrap gap-3">
             <Link
               href="/tools"
-              className="rounded-lg bg-primary px-6 py-3 font-medium text-white transition-colors hover:bg-primary-dark"
+              className="rounded-sm border border-foreground bg-foreground px-5 py-2.5 font-mono text-sm text-background transition-colors hover:bg-primary hover:border-primary"
             >
-              {locale === "ko" ? "도구 보기" : "Browse Tools"}
+              {home.ctaPrimary}
             </Link>
             <Link
               href="/about"
-              className="rounded-lg border border-border px-6 py-3 font-medium transition-colors hover:bg-card"
+              className="rounded-sm border border-border px-5 py-2.5 font-mono text-sm text-foreground transition-colors hover:border-foreground"
             >
-              {locale === "ko" ? "스튜디오 소개" : "About Us"}
+              {home.ctaSecondary}
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="border-t border-border bg-card py-24">
+      <section className="border-t border-border bg-card py-20">
         <div className="mx-auto max-w-6xl px-6">
-          <h2 className="text-3xl font-bold tracking-tight">
-            {locale === "ko" ? "만들고 있는 도구들" : "What we build"}
+          <h2 className="font-mono text-2xl font-bold tracking-tight md:text-3xl">
+            {home.catalog.title}
           </h2>
-          <p className="mt-2 text-muted">
-            {locale === "ko"
-              ? `${tierOneTools.length}개의 한국 친화 도구와 실용 유틸리티를 AI 에이전트 팀이 만듭니다.`
-              : `${tierOneTools.length} Korea-friendly tools and practical utilities, built by our AI agent team.`}
+          <p className="mt-2 max-w-2xl text-muted">
+            {home.catalog.subtitleTemplate.replace("{count}", String(allTools.length))}
           </p>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
-            {tierLabels.map(({ tier, icon, label, labelKo }) => {
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {tierConfig.map(({ tier, key }) => {
               const tools = getToolsByTier(tier);
               return (
                 <div
                   key={tier}
-                  className="hover-lift rounded-xl border border-border bg-background p-8 transition-all hover:border-primary/30 hover:shadow-lg"
+                  className="rounded-md border border-border bg-background p-6 transition-colors hover:border-foreground"
                 >
-                  <span className="text-3xl">{icon}</span>
-                  <h3 className="mt-4 text-xl font-semibold">
-                    {locale === "ko" ? labelKo : label}
+                  <p className="zhs-eyebrow">tier {tier}</p>
+                  <h3 className="mt-2 font-mono text-lg font-semibold">
+                    {home.catalog[key]}
                   </h3>
-                  <ul className="mt-3 space-y-1">
-                    {tools.slice(0, 4).map((tool) => (
-                      <li key={tool.slug} className="text-sm text-muted">
-                        {tool.shortTitle}
-                      </li>
-                    ))}
-                    {tools.length > 4 && (
-                      <li className="text-sm text-muted">
-                        +{tools.length - 4} more
-                      </li>
-                    )}
-                  </ul>
+                  <ToolPreviewList tools={tools} moreLabel={moreLabel} locale={locale} />
+                  <Link
+                    href="/tools"
+                    className="mt-5 inline-block font-mono text-[12px] uppercase tracking-wider text-primary hover:text-primary-dark"
+                  >
+                    {t.tools.openTool}
+                  </Link>
                 </div>
               );
             })}
@@ -91,17 +104,35 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-24 text-center">
-        <h2 className="text-3xl font-bold tracking-tight">
-          {t.cta.title}
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <h2 className="font-mono text-2xl font-bold tracking-tight md:text-3xl">
+          {home.trust.title}
         </h2>
-        <p className="mt-4 text-lg text-muted">{t.cta.description}</p>
-        <Link
-          href="/tools"
-          className="mt-8 inline-block rounded-lg bg-primary px-8 py-3 font-medium text-white transition-colors hover:bg-primary-dark"
-        >
-          {locale === "ko" ? "도구 둘러보기" : "Explore Tools"}
-        </Link>
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {home.trust.items.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-md border border-border bg-background p-6"
+            >
+              <h3 className="font-mono text-base font-semibold">{item.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-border bg-card">
+        <div className="mx-auto max-w-6xl px-6 py-16 text-center">
+          <h2 className="font-mono text-2xl font-bold tracking-tight md:text-3xl">
+            {home.finalCta.title}
+          </h2>
+          <Link
+            href="/tools"
+            className="mt-6 inline-block rounded-sm border border-foreground bg-foreground px-6 py-2.5 font-mono text-sm text-background transition-colors hover:bg-primary hover:border-primary"
+          >
+            {home.finalCta.button}
+          </Link>
+        </div>
       </section>
     </>
   );

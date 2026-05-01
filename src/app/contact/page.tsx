@@ -70,17 +70,6 @@ export default function ContactPage() {
                 contact@ohmyzhs.com
               </a>
             </div>
-            <div>
-              <h3 className="font-semibold">{t.contactPage.blog}</h3>
-              <a
-                href="https://lotionz.tistory.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                lotionz.tistory.com
-              </a>
-            </div>
           </div>
         </div>
 
@@ -113,21 +102,21 @@ export default function ContactPage() {
             />
           </div>
           <div>
-            <label htmlFor="project-type" className="block text-sm font-medium">
-              {t.contactPage.form.projectType}
+            <label htmlFor="topic" className="block text-sm font-medium">
+              {t.contactPage.form.topic}
             </label>
             <select
-              id="project-type"
-              name="project-type"
+              id="topic"
+              name="topic"
               required
               className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
             >
-              <option value="">{t.contactPage.form.selectService}</option>
-              <option value="web">{t.contactPage.form.web}</option>
-              <option value="mobile">{t.contactPage.form.mobile}</option>
-              <option value="ai">{t.contactPage.form.ai}</option>
-              <option value="consulting">{t.contactPage.form.consulting}</option>
-              <option value="other">{t.contactPage.form.other}</option>
+              <option value="">{t.contactPage.form.selectTopic}</option>
+              <option value="bug">{t.contactPage.form.topicBug}</option>
+              <option value="tool">{t.contactPage.form.topicTool}</option>
+              <option value="correction">{t.contactPage.form.topicCorrection}</option>
+              <option value="privacy">{t.contactPage.form.topicPrivacy}</option>
+              <option value="other">{t.contactPage.form.topicOther}</option>
             </select>
           </div>
           <div>
