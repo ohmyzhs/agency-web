@@ -11,6 +11,12 @@ Build `/typing` as a real standalone Korean-first typing practice product, not a
 
 The first draft was too generic: it referenced Korean/English sentences, WPM/CPM, localStorage, and IME safety, but it did not explicitly benchmark the core Korean typing-practice experience. The implementation must now be based on Hancom Taja-style structured learning plus modern typing-site mechanics from Monkeytype, keybr, 10FastFingers, Typing.com/Ratatype, and TypeRacer.
 
+## Phase 2 flagship escalation
+
+Phase 1 remains the local-first typing engine: Korean IME-safe practice, keyboard drills, word/sentence/longform modes, speed test, and local records.
+
+Phase 2 escalates `/typing` into the flagship product layer with optional 간편로그인, public leaderboards, daily challenge, ghost race, Weakness Coach, challenge links, and privacy-safe score submission. See `docs/plans/2026-05-01-typing-killer-content-phase-2-plan.md`.
+
 Primary goal:
 - Help a Korean user actually improve typing accuracy and speed over repeated sessions.
 - Make it useful without sign-in.
