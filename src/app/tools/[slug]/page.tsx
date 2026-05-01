@@ -6,12 +6,10 @@ import CookingMeasurementConverter from "@/components/tools/CookingMeasurementCo
 import CronExplainer from "@/components/tools/CronExplainer";
 import IconFaviconGenerator from "@/components/tools/IconFaviconGenerator";
 import ImageFormatConverter from "@/components/tools/ImageFormatConverter";
-import ImageToPdfTool from "@/components/tools/ImageToPdfTool";
 import JsonYamlValidator from "@/components/tools/JsonYamlValidator";
 import NetworkDiagnosticsTool from "@/components/tools/NetworkDiagnosticsTool";
 import OgImageGeneratorTool from "@/components/tools/OgImageGeneratorTool";
-import PdfPageImageTool from "@/components/tools/PdfPageImageTool";
-import PdfWorkspaceTool from "@/components/tools/PdfWorkspaceTool";
+import PdfToolkitTool from "@/components/tools/PdfToolkitTool";
 import QrBarcodeGeneratorTool from "@/components/tools/QrBarcodeGeneratorTool";
 import KoreanShoeSizeConverter from "@/components/tools/KoreanShoeSizeConverter";
 import KrwCurrencyCalculator from "@/components/tools/KrwCurrencyCalculator";
@@ -51,9 +49,7 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
 }
 
 const widgetMap: Record<string, React.ReactNode> = {
-  "pdf-merge-split-reorder": <PdfWorkspaceTool />,
-  "pdf-page-to-image": <PdfPageImageTool />,
-  "image-to-pdf": <ImageToPdfTool />,
+  "pdf-toolkit": <PdfToolkitTool />,
   "og-image-generator": <OgImageGeneratorTool />,
   "qr-barcode-generator": <QrBarcodeGeneratorTool />,
   "webhook-request-simulator": <WebhookRequestSimulatorTool />,

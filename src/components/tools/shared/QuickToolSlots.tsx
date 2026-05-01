@@ -15,9 +15,7 @@ type QuickToolSlotsProps = {
 };
 
 const CROSS_PICKS: string[] = [
-  "pdf-merge-split-reorder",
-  "pdf-page-to-image",
-  "image-to-pdf",
+  "pdf-toolkit",
   "og-image-generator",
   "qr-barcode-generator",
   "webhook-request-simulator",
