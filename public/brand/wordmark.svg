@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 56" width="360" height="56" fill="none">
+  <g stroke="#0e0e0f" stroke-width="2.5" stroke-linecap="square" fill="none" transform="translate(8 12)">
+    <path d="M0 0 H16 L0 16 H16"></path>
+    <path d="M16 16 V32 M16 24 H32 M32 16 V32"></path>
+  </g>
+  <text x="56" y="36" font-family="ui-monospace, &#39;JetBrains Mono&#39;, monospace" font-size="18" font-weight="700" fill="#0e0e0f" letter-spacing="-0.01em">zero human studio</text>
+</svg>

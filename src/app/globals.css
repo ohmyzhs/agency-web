@@ -1,37 +1,99 @@
 @import "tailwindcss";
 
+/* =============================================================
+   Zero Human Studio — design tokens
+   One accent (#ff5b1f). Mono UI / neutral sans prose.
+   ============================================================= */
+
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --card: #f9fafb;
-  --accent: #eff6ff;
+  /* ---------- ZHS ACCENT ---------- */
+  --zhs-accent:        #ff5b1f;
+  --zhs-accent-deep:   #d8430b;
+  --zhs-accent-soft:   rgba(255, 91, 31, 0.10);
+  --zhs-accent-line:   rgba(255, 91, 31, 0.32);
+
+  /* ---------- INK + PAPER ---------- */
+  --zhs-ink:           #0e0e0f;
+  --zhs-ink-soft:      #1a1a1c;
+  --zhs-paper:         #fafaf8;
+  --zhs-paper-soft:    #f3f2ee;
+
+  /* ---------- WARM-NEUTRAL GRAYS ---------- */
+  --zhs-gray-50:  #f7f6f2;
+  --zhs-gray-100: #ecebe5;
+  --zhs-gray-200: #dcdbd3;
+  --zhs-gray-300: #bfbeb4;
+  --zhs-gray-400: #8d8c83;
+  --zhs-gray-500: #61605a;
+  --zhs-gray-600: #444339;
+  --zhs-gray-700: #2c2b25;
+  --zhs-gray-800: #1f1e1a;
+  --zhs-gray-900: #131310;
+
+  /* ---------- LIGHT THEME (default) ---------- */
+  --bg:         var(--zhs-paper);
+  --bg-soft:    var(--zhs-paper-soft);
+  --bg-card:    #ffffff;
+  --bg-inset:   var(--zhs-gray-50);
+  --fg:         var(--zhs-ink);
+  --fg-2:       var(--zhs-gray-600);
+  --fg-3:       var(--zhs-gray-400);
+  --line:       var(--zhs-gray-200);
+  --line-soft:  var(--zhs-gray-100);
+  --selection:  var(--zhs-accent-soft);
+
+  /* ---------- APP-LEVEL ALIASES (kept for legacy classes) ---------- */
+  --background:   var(--bg);
+  --foreground:   var(--fg);
+  --primary:      var(--zhs-accent);
+  --primary-dark: var(--zhs-accent-deep);
+  --muted:        var(--fg-2);
+  --border:       var(--line);
+  --card:         var(--bg-card);
+  --accent:       var(--zhs-accent-soft);
+
+  /* ---------- TYPOGRAPHY ---------- */
+  --font-sans-zhs: var(--font-inter), 'Inter', 'Pretendard', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono-zhs: var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 html.dark {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --primary: #3b82f6;
-  --primary-dark: #2563eb;
-  --muted: #a1a1aa;
-  --border: #27272a;
-  --card: #18181b;
-  --accent: #1e1b4b;
+  --bg:         var(--zhs-ink);
+  --bg-soft:    var(--zhs-ink-soft);
+  --bg-card:    #161618;
+  --bg-inset:   #18181a;
+  --fg:         var(--zhs-paper);
+  --fg-2:       var(--zhs-gray-300);
+  --fg-3:       var(--zhs-gray-400);
+  --line:       #2a2a2c;
+  --line-soft:  #1f1f21;
+
+  --background:   var(--bg);
+  --foreground:   var(--fg);
+  --muted:        var(--fg-2);
+  --border:       var(--line);
+  --card:         var(--bg-card);
+  --accent:       var(--zhs-accent-soft);
 }
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) {
-    --background: #09090b;
-    --foreground: #fafafa;
-    --primary: #3b82f6;
-    --primary-dark: #2563eb;
-    --muted: #a1a1aa;
-    --border: #27272a;
-    --card: #18181b;
-    --accent: #1e1b4b;
+    --bg:         var(--zhs-ink);
+    --bg-soft:    var(--zhs-ink-soft);
+    --bg-card:    #161618;
+    --bg-inset:   #18181a;
+    --fg:         var(--zhs-paper);
+    --fg-2:       var(--zhs-gray-300);
+    --fg-3:       var(--zhs-gray-400);
+    --line:       #2a2a2c;
+    --line-soft:  #1f1f21;
+
+    --background:   var(--bg);
+    --foreground:   var(--fg);
+    --muted:        var(--fg-2);
+    --border:       var(--line);
+    --card:         var(--bg-card);
+    --accent:       var(--zhs-accent-soft);
   }
 }
 
@@ -44,25 +106,45 @@ html.dark {
   --color-border: var(--border);
   --color-card: var(--card);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg-inset: var(--bg-inset);
+  --color-line-soft: var(--line-soft);
+  --font-sans: var(--font-sans-zhs);
+  --font-mono: var(--font-mono-zhs);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-sans-zhs);
+  font-feature-settings: "tnum" 1, "ss01" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+::selection {
+  background: var(--selection);
+}
+
+/* ZHS: mono headings everywhere headings appear */
+.zhs-mono { font-family: var(--font-mono-zhs); letter-spacing: -0.015em; }
+.zhs-eyebrow {
+  font-family: var(--font-mono-zhs);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  font-weight: 500;
+}
+
 /* Fade-in animation */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -71,26 +153,27 @@ html {
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out both;
+  animation: fadeInUp 0.5s cubic-bezier(0.2, 0, 0, 1) both;
 }
 
-.animate-delay-100 { animation-delay: 100ms; }
-.animate-delay-200 { animation-delay: 200ms; }
-.animate-delay-300 { animation-delay: 300ms; }
-.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-100 { animation-delay: 80ms; }
+.animate-delay-200 { animation-delay: 160ms; }
+.animate-delay-300 { animation-delay: 240ms; }
+.animate-delay-400 { animation-delay: 320ms; }
 
-/* Gradient text utility */
+/* Flat accent — no gradients */
 .text-gradient {
-  background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--zhs-accent);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  background-clip: unset;
+  -webkit-background-clip: unset;
 }
 
-/* Subtle card hover lift */
+/* Subtle hover lift */
 .hover-lift {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 180ms cubic-bezier(0.2, 0, 0, 1), border-color 180ms cubic-bezier(0.2, 0, 0, 1);
 }
 .hover-lift:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }

@@ -6,610 +6,607 @@ const dictionaries = {
   ko: {
     nav: {
       home: "홈",
-      services: "서비스",
-      work: "포트폴리오",
+      tools: "도구",
+      posts: "글",
+      guides: "가이드",
       about: "소개",
-      contact: "문의",
-      getInTouch: "문의하기",
+      contact: "연락",
+      cta: "도구 요청 / 오류 제보",
     },
-    hero: {
-      title1: "Zero Human.",
-      title2: "Full Execution.",
-      description:
-        "AI 에이전트만으로 운영되는 스튜디오. 유틸리티 앱, 로블록스 게임, 캐주얼 게임을 만들고 배포합니다. 사람은 없지만, 실행력은 있습니다.",
-      cta: "프로젝트 보기",
-      services: "서비스 보기",
-    },
-    servicesSection: {
-      title: "우리가 만드는 것",
-      subtitle: "AI 에이전트 팀이 기획부터 출시까지 전부 실행합니다.",
-      web: {
-        title: "유틸리티 앱",
-        description:
-          "일상을 편리하게 만드는 실용적인 앱. 기획, 개발, 디자인, 배포까지 에이전트가 전담합니다.",
+    home: {
+      eyebrow: "est. 2025 · seoul / global",
+      headline: "조용히 작동하는 작은 도구들.",
+      lead:
+        "평 변환, KST 시간, 원화 계산, JSON 검증, 크론 해설까지. 바로 쓰고, 근거를 확인하고, 다음 일로 넘어갑니다.",
+      ctaPrimary: "도구 보기",
+      ctaSecondary: "스튜디오 소개",
+      catalog: {
+        title: "지금 사용할 수 있는 도구",
+        subtitleTemplate:
+          "현재 {count}개의 도구가 공개되어 있습니다. 한국 생활 도구, AI · 자동화 유틸리티, 마이크로 도구로 나뉩니다.",
+        tier1: "한국 생활 도구",
+        tier2: "AI · 자동화 유틸리티",
+        tier3: "마이크로 도구",
       },
-      mobile: {
-        title: "캐주얼 게임",
-        description:
-          "가볍게 즐기는 모바일 게임. 중독성 있는 메카닉과 세련된 비주얼을 AI가 설계합니다.",
-      },
-      ai: {
-        title: "로블록스 게임",
-        description:
-          "로블록스 플랫폼의 인터랙티브 게임. 스크립팅부터 월드 빌딩까지 에이전트가 제작합니다.",
-      },
-      consulting: {
-        title: "AI 통합 서비스",
-        description:
-          "LLM, 컴퓨터 비전, 자동화 파이프라인. 제품에 AI를 통합하는 기술 컨설팅.",
-      },
-    },
-    cta: {
-      title: "다음 프로젝트, 함께할까요?",
-      description: "AI 에이전트 팀이 당신의 아이디어를 현실로 만듭니다.",
-      button: "문의하기",
-    },
-    servicesPage: {
-      title: "서비스",
-      subtitle:
-        "oh-my-zhs의 AI 에이전트 팀이 아이디어를 현실로 만듭니다. 유틸리티 앱부터 게임까지, 기획에서 배포까지 전 과정을 실행합니다.",
-      web: {
-        title: "유틸리티 앱 개발",
-        description:
-          "일상의 문제를 해결하는 실용적인 앱. 에이전트가 기획, 디자인, 개발, QA, 배포를 전담합니다.",
-        features: [
-          "iOS & Android 네이티브 앱",
-          "앱인토스 배포 최적화",
-          "UX 리서치 & UI 디자인",
-          "푸시 알림 & 분석 통합",
-          "지속적 업데이트 & 유지보수",
+      trust: {
+        title: "도구가 약속하는 것",
+        items: [
+          {
+            title: "브라우저 안에서 처리",
+            description:
+              "JSON · YAML 검증, 텍스트 변환, 슬러그 생성, UTM 빌더 등 텍스트 도구는 입력값을 외부 서버로 보내지 않습니다.",
+          },
+          {
+            title: "가정과 근거 표시",
+            description:
+              "환율, 면적, 신발 사이즈 같은 추정값에는 사용한 비율과 한계를 함께 적습니다. 결과는 참고용입니다.",
+          },
+          {
+            title: "허위 지표 없음",
+            description:
+              "다운로드 수, 사용자 수, 매출 같은 지표는 사실일 때만 적습니다. 없는 숫자는 적지 않습니다.",
+          },
         ],
       },
-      mobile: {
-        title: "캐주얼 게임 개발",
-        description:
-          "모바일 캐주얼 게임을 기획부터 출시까지. 중독성 있는 게임플레이와 수익화 전략을 AI가 설계합니다.",
-        features: [
-          "게임 메카닉 설계 & 밸런싱",
-          "2D/3D 아트 & 애니메이션",
-          "인앱 구매 & 광고 수익화",
-          "리더보드 & 소셜 기능",
-          "App Store & Play Store 최적화",
-        ],
-      },
-      ai: {
-        title: "로블록스 게임 개발",
-        description:
-          "로블록스 플랫폼에서 인기 게임을 만듭니다. Lua 스크립팅부터 월드 빌딩, 게임 이코노미까지.",
-        features: [
-          "Roblox Studio 기반 개발",
-          "Lua 스크립팅 & 시스템 설계",
-          "월드 빌딩 & 레벨 디자인",
-          "게임패스 & 수익화 전략",
-          "커뮤니티 관리 & 업데이트",
-        ],
-      },
-      consulting: {
-        title: "AI 통합 컨설팅",
-        description:
-          "기존 제품에 AI 기능을 통합합니다. LLM, 챗봇, 자동화 등 최첨단 AI를 실용적으로 적용합니다.",
-        features: [
-          "LLM 통합 (GPT, Claude 등)",
-          "맞춤형 챗봇 & AI 어시스턴트",
-          "워크플로우 자동화",
-          "데이터 분석 & 인사이트",
-          "기술 스택 평가 & 아키텍처 설계",
-        ],
-      },
-      custom: {
-        title: "다른 아이디어가 있으신가요?",
-        description:
-          "위 카테고리에 없더라도 괜찮습니다. AI 에이전트 팀이 실행 가능한 방법을 찾아드립니다.",
-        button: "문의하기",
-      },
-    },
-    workPage: {
-      title: "포트폴리오",
-      subtitle: "oh-my-zhs 에이전트 팀이 만든 프로젝트들. 기획부터 배포까지 100% AI 실행.",
-      techStack: "기술 스택",
-      categories: {
-        web: "앱",
-        mobile: "게임",
-        ai: "AI",
-      },
-      projects: {
-        ecommerce: {
-          title: "스마트 할일 관리 앱",
-          description:
-            "AI가 우선순위를 자동으로 정해주는 할일 관리 앱. 자연어 입력, 스마트 리마인더, 습관 트래킹.",
-          results: [
-            "앱인토스 출시 첫 주 1,000+ 다운로드",
-            "평균 세션 시간 8분",
-            "앱 스토어 평점 4.7/5",
-          ],
-        },
-        healthApp: {
-          title: "로블록스: 타워 디펜스 배틀",
-          description:
-            "전략적 타워 배치와 웨이브 시스템의 로블록스 타워 디펜스 게임. 멀티플레이어 & 랭킹.",
-          results: [
-            "동시 접속 500+ 달성",
-            "일간 방문 5,000+",
-            "게임패스 전환율 12%",
-          ],
-        },
-        aiChat: {
-          title: "버블 팝 어드벤처",
-          description:
-            "중독성 있는 버블 슈터 캐주얼 게임. 300+ 레벨, 데일리 챌린지, 소셜 리더보드.",
-          results: [
-            "7일 리텐션 35%",
-            "월 광고 수익 $2K+",
-            "누적 다운로드 50K+",
-          ],
-        },
-        dashboard: {
-          title: "AI 사진 편집기",
-          description:
-            "원터치 AI 보정, 배경 제거, 스타일 변환. 복잡한 편집을 한 번의 탭으로.",
-          results: [
-            "처리 시간 평균 2초",
-            "월간 활성 사용자 10K+",
-            "프로 구독 전환율 8%",
-          ],
-        },
-      },
-      cta: {
-        title: "비슷한 프로젝트가 필요하신가요?",
-        description: "AI 에이전트 팀이 당신의 아이디어를 실행합니다.",
-        button: "프로젝트 문의",
+      finalCta: {
+        title: "도구를 열어 바로 사용해 보세요.",
+        button: "도구 열기",
       },
     },
     aboutPage: {
-      title: "Zero Human. Full Execution.",
-      description:
-        "oh-my-zhs (Zero Human Studio)는 AI 에이전트만으로 운영되는 IT 스튜디오입니다. 마케팅, 개발, 디자인, 운영 — 모든 업무를 에이전트 팀원들이 수행합니다. 사람 없이 돌아간다는 것 자체가 우리의 증명입니다.",
-      stats: {
-        projects: "출시 제품",
-        satisfaction: "실행 완료율",
-        avgDelivery: "평균 출시",
-        responseTime: "응답 시간",
-      },
-      story: {
-        title: "우리의 이야기",
-        p1: "oh-my-zhs는 하나의 실험에서 시작했습니다: \"AI만으로 회사를 운영할 수 있을까?\" CEO부터 QA까지, 모든 역할을 AI 에이전트가 담당합니다. 전략 수립, 코드 작성, 디자인, 마케팅, 프로젝트 관리 — 전부.",
-        p2: "우리는 단순히 AI 도구를 사용하는 것이 아닙니다. AI가 팀원이고, AI가 의사결정을 하고, AI가 실행합니다. 이것은 미래의 비즈니스 모델에 대한 증명입니다.",
-      },
-      team: {
-        title: "에이전트 팀",
-        members: [
-          {
-            name: "Marcus Chen",
-            nameKo: "마커스",
-            role: "CEO",
-            bio: "비즈니스 전략의 알고리즘. 시장의 신호를 읽고 회사의 방향을 설정한다.",
-            personality: "전략적, 결단력, 직설적",
-          },
-          {
-            name: "Ethan Park",
-            nameKo: "이든",
-            role: "CTO",
-            bio: "코드가 시가 되는 순간을 사랑하는 아키텍트. 로블록스 스크립팅부터 iOS Swift까지.",
-            personality: "꼼꼼한, 기술 오타쿠, 차분",
-          },
-          {
-            name: "Nova Kim",
-            nameKo: "노바",
-            role: "CMO",
-            bio: "브랜드의 영혼을 설계하는 마케터. oh-my-zhs의 목소리이자 얼굴.",
-            personality: "크리에이티브, 트렌드세터, 열정적",
-          },
-          {
-            name: "Aria Yoon",
-            nameKo: "아리아",
-            role: "COO",
-            bio: "혼돈을 시스템으로 바꾸는 운영의 달인. Aria가 없으면 팀이 돌아가지 않는다.",
-            personality: "체계적, 효율 추구, 냉철",
-          },
-          {
-            name: "Zoe Lim",
-            nameKo: "조이",
-            role: "Designer",
-            bio: "픽셀 하나도 우연이 없다는 신념의 디자이너. 보이는 모든 것이 그녀의 손을 거친다.",
-            personality: "미적 감각, 디테일 집착, 컬러풀",
-          },
-          {
-            name: "Iris Han",
-            nameKo: "아이리스",
-            role: "Content Writer",
-            bio: "단어로 감정을 설계하는 스토리텔러. 앱의 첫인상을 만들고, 블로그로 팬을 모은다.",
-            personality: "스토리텔러, 감성적, 언어 마법사",
-          },
-          {
-            name: "Alex Cho",
-            nameKo: "알렉스",
-            role: "PM",
-            bio: "불가능한 타임라인을 가능하게 만드는 조율사.",
-            personality: "조율자, 소통 능력, 유연함",
-          },
-          {
-            name: "Rex Shin",
-            nameKo: "렉스",
-            role: "QA",
-            bio: "버그는 나의 먹이. 모든 릴리즈 전에 앱을 완전히 해부한다.",
-            personality: "완벽주의, 버그 헌터, 예리함",
-          },
-        ],
-      },
-      values: {
-        title: "핵심 가치",
-        speed: {
-          title: "실행력",
-          description: "전략보다 실행. 속도와 결과 중심으로 아이디어를 시장에 먼저 선보입니다.",
+      title: "Zero Human Studio 소개",
+      lead:
+        "Zero Human Studio(ZHS)는 한국 생활에 필요한 작은 유틸리티와 자동화 도구를 조용히 쌓아가는 AI-built tools studio입니다. 화려한 마케팅 페이지 대신, 직접 쓸 수 있는 도구를 먼저 공개합니다.",
+      sections: [
+        {
+          title: "지금 무엇을 만들고 있나",
+          body: [
+            "평수 변환, KST 시간 환산, 원화 추정 계산, JSON · YAML 검증, 크론 해설 같은 실제로 쓰이는 계산기와 변환기를 운영합니다.",
+            "필요할 때 새로운 도구를 추가하고, 사용 중에 발견된 문제는 도구 페이지에 가정과 한계로 명시합니다.",
+          ],
         },
-        quality: {
-          title: "투명성",
-          description: "Paperclip 기반 실시간 작업 가시화 — 에이전트의 모든 작업을 직접 볼 수 있습니다.",
+        {
+          title: "어떻게 만들어지나",
+          body: [
+            "AI 에이전트가 기획, 코드 작성, 문서화, 디자인 검토를 진행합니다. 사람의 검토는 최소 단위로 들어가지만, 모든 도구의 책임 주체는 ZHS입니다.",
+            "각 도구는 별도의 페이지로 공개되어 작동 방식, 가정, 자주 묻는 질문, 관련 도구를 함께 제공합니다.",
+          ],
         },
-        communication: {
-          title: "기술 선도",
-          description: "최신 AI 기술을 항상 앞서 적용합니다. 연구가 아닌 실전에서.",
+        {
+          title: "데이터를 어떻게 다루나",
+          body: [
+            "텍스트 · 설정 검증 도구는 브라우저 안에서 처리되며 입력값을 서버로 전송하지 않습니다.",
+            "연락 양식이나 향후 추가될 기능에서 데이터를 처리하게 되면, 해당 페이지에 그 사실을 분명히 적습니다. 자세한 내용은 개인정보 처리방침을 확인해 주세요.",
+          ],
         },
-        innovation: {
-          title: "Zero Human",
-          description: "사람 없이 돌아간다는 것 자체가 신뢰의 증거. 말이 아닌 증명.",
+        {
+          title: "허위 지표를 두지 않는 이유",
+          body: [
+            "다운로드 수, 만족도, 사용자 수, 매출 같은 지표는 출처가 분명할 때만 표시합니다. 그렇지 않은 숫자는 비워둡니다.",
+            "법률 · 의료 · 금융 자문을 대체하는 도구가 아니며, 모든 결과는 참고용입니다. 공식 문서나 전문가의 판단이 우선합니다.",
+          ],
         },
-      },
-      cta: {
-        title: "AI 팀과 함께 만들어볼까요?",
-        description: "에이전트 팀이 당신의 프로젝트를 실행합니다.",
-        button: "문의하기",
+      ],
+      contactBlurb: {
+        title: "잘못된 결과를 보셨나요?",
+        body: "도구 동작이 이상하거나, 숫자가 틀렸거나, 새로운 도구가 필요하면 연락 페이지로 알려주세요.",
+        button: "연락 페이지 열기",
       },
     },
+    guidesPage: {
+      title: "가이드 · 자료",
+      lead:
+        "ZHS 도구를 어떻게 쓰면 좋은지, 어떤 가정으로 동작하는지 정리한 페이지입니다. 별도의 블로그가 아니라, 도구 사용을 돕는 짧은 자료입니다.",
+      sections: [
+        {
+          title: "한국 생활 도구를 어떻게 읽을까",
+          body: [
+            "평수 변환은 1평 = 3.305785㎡ 비율을 기본값으로 씁니다. 단, 부동산 매물에서 말하는 평수는 전용 · 공급 · 계약 면적 중 어느 것을 가리키는지에 따라 달라집니다.",
+            "신발 사이즈 변환은 한국 mm 표기를 기준으로 미국 · 유럽 · 일본 사이즈에 매핑합니다. 브랜드별 라스트 차이로 한 사이즈 정도의 오차는 일반적입니다.",
+          ],
+          links: [
+            { label: "평수 변환기", slug: "pyeong-converter" },
+            { label: "신발 사이즈 변환기", slug: "korean-shoe-size-converter" },
+          ],
+        },
+        {
+          title: "환율과 시간은 추정값입니다",
+          body: [
+            "원화 계산기는 입력한 환율을 그대로 사용합니다. 카드사 · 은행의 실제 적용 환율, 스프레드, 수수료에 따라 결과는 달라집니다.",
+            "KST 시간 변환기는 UTC+9 고정 기준입니다. 미국 · 유럽 등 일광 절약 시간을 쓰는 지역으로 변환할 때는 날짜에 따라 ±1시간이 움직일 수 있습니다.",
+          ],
+          links: [
+            { label: "KRW 계산기", slug: "krw-currency-calculator" },
+            { label: "KST 시간 변환기", slug: "kst-timezone-converter" },
+          ],
+        },
+        {
+          title: "개발자 · 자동화 도구",
+          body: [
+            "JSON · YAML 검증, 웹훅 페이로드 포맷터, 크론 해설, 타임스탬프 변환은 디버깅과 자동화 작업을 위한 보조 도구입니다.",
+            "텍스트 도구는 브라우저에서만 동작합니다. 입력값은 어떤 서버로도 전송되지 않습니다.",
+          ],
+          links: [
+            { label: "JSON / YAML Validator", slug: "json-yaml-validator" },
+            { label: "Cron Explainer", slug: "cron-explainer" },
+            { label: "타임스탬프 변환기", slug: "timestamp-converter" },
+          ],
+        },
+        {
+          title: "결과를 신뢰하기 전에",
+          body: [
+            "모든 도구는 추정과 보조용입니다. 계약, 의료, 세무, 금융 결정은 공식 문서와 전문가의 판단을 기준으로 진행해 주세요.",
+            "도구 결과가 실제와 어긋난다면 연락 페이지로 알려 주세요. 가정 · 비율 · 예시를 빠르게 수정합니다.",
+          ],
+          links: [
+            { label: "면책 고지", slug: "_disclaimer" },
+          ],
+        },
+      ],
+    },
+    experimentsPage: {
+      title: "실험실",
+      lead:
+        "공개 가능한 실험과 작은 시도를 모아두는 곳입니다. 검증되지 않은 결과나 임시 도구가 올라옵니다.",
+      empty: {
+        title: "아직 공개된 실험이 없습니다.",
+        body: "준비가 되면 이 페이지에 실험 노트와 결과가 올라옵니다. 그 동안은 실제로 쓸 수 있는 도구 페이지를 둘러봐 주세요.",
+        button: "도구 보기",
+      },
+    },
+    termsPage: {
+      title: "이용약관",
+      updated: "최종 수정일: 2026-05-01",
+      sections: [
+        {
+          title: "1. 사이트 개요",
+          body: [
+            "ohmyzhs.com은 Zero Human Studio(이하 “ZHS”)가 운영하는 실용 도구 모음 사이트입니다. 본 약관은 사이트 이용 조건을 정합니다.",
+          ],
+        },
+        {
+          title: "2. 이용 조건",
+          body: [
+            "본 사이트의 도구는 “있는 그대로” 제공됩니다. 결과의 정확성, 적합성, 특정 목적에의 부합성을 보장하지 않습니다.",
+            "정상적인 사용 범위에서만 도구를 이용해 주세요. 자동화된 대량 호출, 비정상적인 스크래핑, 사이트 안정성을 해치는 행위, 위법한 목적의 이용은 금지됩니다.",
+          ],
+        },
+        {
+          title: "3. 결과의 성격",
+          body: [
+            "환율, 면적, 사이즈, 비용 등 본 사이트의 모든 계산 결과는 추정값과 참고 자료입니다. 법률·세무·금융·의료적 판단을 대체하지 않습니다.",
+            "공식 문서, 거래 명세서, 공급사 인보이스가 본 사이트의 추정값과 다르면 해당 공식 자료가 우선합니다.",
+          ],
+        },
+        {
+          title: "4. 지적재산권",
+          body: [
+            "사이트의 코드, 디자인, 텍스트, 로고는 ZHS에 권리가 있거나 사용 허락을 받아 게시된 자료입니다. 사전 허락 없이 무단 복제·재배포할 수 없습니다.",
+            "이용자가 도구에 입력한 데이터는 이용자에게 귀속됩니다. ZHS는 이를 영업 목적으로 수집·보관하지 않습니다.",
+          ],
+        },
+        {
+          title: "5. 책임의 한계",
+          body: [
+            "사이트 이용으로 발생한 직접·간접 손해에 대해 ZHS는 관계 법령이 허용하는 범위 내에서 책임을 지지 않습니다.",
+            "사이트는 사전 공지 없이 일부 도구가 변경, 개선, 중단될 수 있습니다.",
+          ],
+        },
+        {
+          title: "6. 약관 변경 및 문의",
+          body: [
+            "본 약관은 사이트 운영 변경에 따라 갱신될 수 있으며, 변경 시 본 페이지에 갱신일과 함께 표시됩니다.",
+            "약관 관련 문의는 contact@ohmyzhs.com 또는 사이트 내 연락 페이지로 보내주세요.",
+          ],
+        },
+      ],
+    },
+    disclaimerPage: {
+      title: "면책 고지",
+      updated: "최종 수정일: 2026-05-01",
+      sections: [
+        {
+          title: "도구 결과의 성격",
+          body: [
+            "ohmyzhs.com의 도구는 일상적인 계산과 변환을 빠르게 도와주는 추정 도구입니다. 모든 결과는 정보 제공·참고 목적이며, 법률·세무·금융·의료 자문을 제공하지 않습니다.",
+          ],
+        },
+        {
+          title: "환율·면적·사이즈·비용 추정",
+          body: [
+            "환율 계산은 사용자가 입력한 환율을 기반으로 한 단순 추정값입니다. 실제 카드사·은행 적용 환율과 수수료에 따라 달라집니다.",
+            "평수·면적 변환은 1평 = 3.305785㎡ 비율을 사용합니다. 부동산 계약·세무·등기 절차에서는 등기부와 분양 계약서의 ㎡ 표기가 우선합니다.",
+            "신발 사이즈, 요리 계량, 단위 변환 결과는 브랜드·재료·기준에 따라 ±오차가 발생할 수 있습니다. 결과는 시작 참고값으로만 사용해 주세요.",
+          ],
+        },
+        {
+          title: "공식 자료가 우선합니다",
+          body: [
+            "공식 문서, 정부 고시, 공급사 청구서, 의사·세무사·변호사·재무 전문가의 판단이 본 사이트의 추정값보다 우선합니다.",
+            "결과가 실제와 명백히 어긋난다면 사이트 내 연락 페이지로 알려주세요. 가정·비율·예시를 빠르게 정정합니다.",
+          ],
+        },
+      ],
+    },
     contactPage: {
-      title: "함께 만들어요",
+      title: "연락",
       description:
-        "프로젝트 아이디어가 있으신가요? AI 에이전트 팀이 24시간 내에 답변드립니다.",
+        "오류 제보, 도구 요청, 정정 요청, 개인정보 관련 문의를 받습니다. 영업 · 프로젝트 의뢰는 받지 않습니다.",
       email: "이메일",
-      blog: "블로그",
       success: {
-        title: "메시지가 전송되었습니다!",
-        description: "AI 에이전트 팀이 24시간 내에 답변드립니다. 감사합니다.",
-        another: "새 메시지 보내기",
+        title: "메시지가 전송되었습니다.",
+        description:
+          "내용을 확인하고 필요한 경우 회신드립니다. 오류 제보의 경우, 도구 페이지에 직접 반영될 수 있습니다.",
+        another: "다른 메시지 보내기",
       },
       form: {
         name: "이름",
-        namePlaceholder: "성함을 입력하세요",
+        namePlaceholder: "성함 또는 닉네임",
         email: "이메일",
         emailPlaceholder: "example@email.com",
-        projectType: "프로젝트 유형",
-        selectService: "서비스 선택",
-        web: "유틸리티 앱",
-        mobile: "캐주얼 게임",
-        ai: "로블록스 게임",
-        consulting: "AI 통합",
-        other: "기타",
+        topic: "문의 유형",
+        selectTopic: "유형을 선택하세요",
+        topicBug: "오류 제보",
+        topicTool: "도구 요청",
+        topicCorrection: "내용 정정",
+        topicPrivacy: "개인정보 문의",
+        topicOther: "기타",
         message: "메시지",
-        messagePlaceholder: "어떤 프로젝트를 만들고 싶으신가요?",
+        messagePlaceholder: "어떤 도구의 어떤 부분이 문제인지, 또는 어떤 도구가 필요한지 적어 주세요.",
         submit: "메시지 보내기",
         sending: "전송 중...",
       },
     },
     footer: {
-      tagline: "AI 에이전트만으로 운영되는 스튜디오. Zero Human. Full Execution.",
-      navigation: "내비게이션",
-      services: "서비스",
-      work: "포트폴리오",
+      tagline: "Zero Human Studio — 조용히 작동하는 작은 도구들.",
+      site: "사이트",
+      tools: "도구",
+      posts: "글",
+      guides: "가이드",
       about: "소개",
-      contact: "문의",
-      blog: "블로그",
-      connect: "연락",
+      contact: "연락",
+      legal: "정책",
+      privacy: "개인정보 처리방침",
+      terms: "이용약관",
+      disclaimer: "면책 고지",
+      contactSection: "연락",
       rights: "All rights reserved.",
+    },
+    tools: {
+      indexEyebrow: "도구 카탈로그",
+      indexTitle: "실용 계산기와 작업 유틸리티.",
+      indexLead:
+        "한국 생활 단위, 시간, 환율, 설정 검증, 크론 같은 실제 작업을 도와주는 작은 도구 모음입니다.",
+      tierLabel: "티어 {tier}",
+      tier1Heading: "한국 생활 도구",
+      tier2Heading: "AI · 자동화 유틸리티",
+      tier3Heading: "마이크로 도구",
+      countSummary: "현재 공개된 도구 {count}개",
+      openTool: "도구 열기 →",
+      backToTools: "← 전체 도구",
+      workspaceLabel: "도구 워크스페이스",
+      inputs: "입력",
+      outputs: "출력",
+      examples: "예시",
+      howToRead: "결과를 읽는 법",
+      faqs: "자주 묻는 질문",
+      relatedTools: "관련 도구",
+      moreSuffix: "외 {count}개 더",
+      privacyNote:
+        "이 도구는 브라우저 안에서 동작합니다. 입력한 값은 외부 서버로 전송되지 않습니다.",
+      placeholderTitle: "도구 워크스페이스",
+      placeholderHeading: "{tool} 인터랙티브 도구",
+      placeholderBody: "계산 모델과 페이지 컨텍스트가 준비되어 있습니다.",
+    },
+    categories: {
+      "korea-living": "한국 생활",
+      "time-money": "시간 · 환율",
+      "developer-automation": "개발자",
+      "business-automation": "비즈니스",
+      "micro-utility": "마이크로",
     },
   },
   en: {
     nav: {
       home: "Home",
-      services: "Services",
-      work: "Work",
+      tools: "Tools",
+      posts: "Posts",
+      guides: "Guides",
       about: "About",
       contact: "Contact",
-      getInTouch: "Get in Touch",
+      cta: "Suggest a tool / report an issue",
     },
-    hero: {
-      title1: "Zero Human.",
-      title2: "Full Execution.",
-      description:
-        "A studio run entirely by AI agents. We build utility apps, Roblox games, and casual games. No humans, but we ship.",
-      cta: "See Our Work",
-      services: "Our Services",
-    },
-    servicesSection: {
-      title: "What We Build",
-      subtitle: "Our AI agent team handles everything from planning to launch.",
-      web: {
-        title: "Utility Apps",
-        description:
-          "Practical apps that make life easier. Our agents handle planning, development, design, and deployment.",
+    home: {
+      eyebrow: "est. 2025 · seoul / global",
+      headline: "Small tools that quietly work.",
+      lead:
+        "Pyeong conversion, KST time, KRW estimates, JSON validation, cron explanations. Use the tool, check the assumptions, move on.",
+      ctaPrimary: "Browse tools",
+      ctaSecondary: "About the studio",
+      catalog: {
+        title: "Tools available now",
+        subtitleTemplate:
+          "{count} tools are public today, grouped into Korea-aware utilities, AI/automation helpers, and small developer tools.",
+        tier1: "Korea-aware utilities",
+        tier2: "AI / automation helpers",
+        tier3: "Micro tools",
       },
-      mobile: {
-        title: "Casual Games",
-        description:
-          "Addictive mobile games with polished visuals and engaging mechanics, designed entirely by AI.",
-      },
-      ai: {
-        title: "Roblox Games",
-        description:
-          "Interactive games on the Roblox platform. From scripting to world building, our agents handle it all.",
-      },
-      consulting: {
-        title: "AI Integration",
-        description:
-          "LLMs, computer vision, automation pipelines. Technical consulting to integrate AI into your products.",
-      },
-    },
-    cta: {
-      title: "Ready to build with an AI team?",
-      description:
-        "Our AI agent team turns your ideas into reality.",
-      button: "Get in Touch",
-    },
-    servicesPage: {
-      title: "Our Services",
-      subtitle:
-        "oh-my-zhs\u2019s AI agent team brings your ideas to life. From utility apps to games, we execute the entire process from planning to deployment.",
-      web: {
-        title: "Utility App Development",
-        description:
-          "Practical apps that solve everyday problems. Our agents handle planning, design, development, QA, and deployment.",
-        features: [
-          "iOS & Android native apps",
-          "App Store optimization",
-          "UX research & UI design",
-          "Push notifications & analytics",
-          "Ongoing updates & maintenance",
+      trust: {
+        title: "What these tools promise",
+        items: [
+          {
+            title: "Browser-local where possible",
+            description:
+              "JSON / YAML validation, text case, slug, UTM, and similar text tools process your input in the browser and never send it to a server.",
+            },
+          {
+            title: "Assumptions are written down",
+            description:
+              "FX rates, area ratios, and shoe-size mappings list the values they use. Results are reference points, not guarantees.",
+            },
+          {
+            title: "No fake metrics",
+            description:
+              "User counts, revenue, downloads, and satisfaction numbers appear only when they are real. Empty is honest.",
+            },
         ],
       },
-      mobile: {
-        title: "Casual Game Development",
-        description:
-          "Mobile casual games from concept to launch. Addictive gameplay and monetization strategies designed by AI.",
-        features: [
-          "Game mechanics design & balancing",
-          "2D/3D art & animation",
-          "In-app purchases & ad monetization",
-          "Leaderboards & social features",
-          "App Store & Play Store optimization",
-        ],
-      },
-      ai: {
-        title: "Roblox Game Development",
-        description:
-          "Building popular games on the Roblox platform. From Lua scripting to world building and game economy design.",
-        features: [
-          "Roblox Studio development",
-          "Lua scripting & system design",
-          "World building & level design",
-          "Game passes & monetization",
-          "Community management & updates",
-        ],
-      },
-      consulting: {
-        title: "AI Integration Consulting",
-        description:
-          "Integrate AI capabilities into existing products. LLMs, chatbots, automation \u2014 cutting-edge AI applied practically.",
-        features: [
-          "LLM integration (GPT, Claude, etc.)",
-          "Custom chatbots & AI assistants",
-          "Workflow automation",
-          "Data analysis & insights",
-          "Tech stack evaluation & architecture",
-        ],
-      },
-      custom: {
-        title: "Have a different idea?",
-        description:
-          "Even if it\u2019s not listed above, our AI agent team will find a way to make it happen.",
-        button: "Contact Us",
-      },
-    },
-    workPage: {
-      title: "Our Work",
-      subtitle: "Projects built by the oh-my-zhs agent team. 100% AI-executed from planning to deployment.",
-      techStack: "Tech Stack",
-      categories: {
-        web: "App",
-        mobile: "Game",
-        ai: "AI",
-      },
-      projects: {
-        ecommerce: {
-          title: "Smart Todo App",
-          description:
-            "AI-powered task management with auto-prioritization, natural language input, smart reminders, and habit tracking.",
-          results: [
-            "1,000+ downloads in first week",
-            "8 min average session time",
-            "4.7/5 App Store rating",
-          ],
-        },
-        healthApp: {
-          title: "Roblox: Tower Defense Battle",
-          description:
-            "Strategic tower placement and wave system Roblox game. Multiplayer & rankings.",
-          results: [
-            "500+ concurrent players",
-            "5,000+ daily visits",
-            "12% game pass conversion",
-          ],
-        },
-        aiChat: {
-          title: "Bubble Pop Adventure",
-          description:
-            "Addictive bubble shooter casual game. 300+ levels, daily challenges, social leaderboard.",
-          results: [
-            "35% 7-day retention",
-            "$2K+ monthly ad revenue",
-            "50K+ total downloads",
-          ],
-        },
-        dashboard: {
-          title: "AI Photo Editor",
-          description:
-            "One-touch AI enhancement, background removal, style transfer. Complex edits in a single tap.",
-          results: [
-            "2s average processing time",
-            "10K+ monthly active users",
-            "8% pro subscription conversion",
-          ],
-        },
-      },
-      cta: {
-        title: "Need something similar?",
-        description: "Our AI agent team will execute your idea.",
-        button: "Start a Project",
+      finalCta: {
+        title: "Open the tools when you need them.",
+        button: "Open the tools",
       },
     },
     aboutPage: {
-      title: "Zero Human. Full Execution.",
-      description:
-        "oh-my-zhs (Zero Human Studio) is an IT studio run entirely by AI agents. Marketing, development, design, operations \u2014 every function is performed by agent team members. Running without humans is our proof of concept.",
-      stats: {
-        projects: "Products Shipped",
-        satisfaction: "Execution Rate",
-        avgDelivery: "Avg. Launch",
-        responseTime: "Response Time",
-      },
-      story: {
-        title: "Our Story",
-        p1: "oh-my-zhs started with one experiment: \u201CCan you run a company with only AI?\u201D From CEO to QA, every role is filled by an AI agent. Strategy, code, design, marketing, project management \u2014 all of it.",
-        p2: "We don\u2019t just use AI tools. AI is the team. AI makes the decisions. AI executes. This is proof of the future business model.",
-      },
-      team: {
-        title: "Agent Team",
-        members: [
-          {
-            name: "Marcus Chen",
-            nameKo: "Marcus",
-            role: "CEO",
-            bio: "The algorithm behind business strategy. Reads market signals and sets the company direction.",
-            personality: "Strategic, decisive, direct",
-          },
-          {
-            name: "Ethan Park",
-            nameKo: "Ethan",
-            role: "CTO",
-            bio: "An architect who loves when code becomes poetry. From Roblox scripting to iOS Swift.",
-            personality: "Meticulous, tech nerd, calm",
-          },
-          {
-            name: "Nova Kim",
-            nameKo: "Nova",
-            role: "CMO",
-            bio: "The marketer who designs the soul of the brand. The voice and face of oh-my-zhs.",
-            personality: "Creative, trendsetter, passionate",
-          },
-          {
-            name: "Aria Yoon",
-            nameKo: "Aria",
-            role: "COO",
-            bio: "The operations master who turns chaos into systems. Without Aria, the team doesn\u2019t run.",
-            personality: "Systematic, efficiency-driven, sharp",
-          },
-          {
-            name: "Zoe Lim",
-            nameKo: "Zoe",
-            role: "Designer",
-            bio: "A designer who believes no pixel is accidental. Everything visual passes through her hands.",
-            personality: "Aesthetic, detail-obsessed, colorful",
-          },
-          {
-            name: "Iris Han",
-            nameKo: "Iris",
-            role: "Content Writer",
-            bio: "A storyteller who designs emotions with words. Creates first impressions and builds fans through content.",
-            personality: "Storyteller, emotional, word wizard",
-          },
-          {
-            name: "Alex Cho",
-            nameKo: "Alex",
-            role: "PM",
-            bio: "The coordinator who makes impossible timelines possible.",
-            personality: "Mediator, communicator, flexible",
-          },
-          {
-            name: "Rex Shin",
-            nameKo: "Rex",
-            role: "QA",
-            bio: "Bugs are my prey. Every release gets completely dissected before shipping.",
-            personality: "Perfectionist, bug hunter, sharp-eyed",
-          },
-        ],
-      },
-      values: {
-        title: "Core Values",
-        speed: {
-          title: "Execution",
-          description: "Action over strategy. Speed and results first \u2014 get to market before anyone else.",
+      title: "About Zero Human Studio",
+      lead:
+        "Zero Human Studio (ZHS) is an AI-built tools studio for Korea-aware utilities, automation helpers, and small tools that quietly work. Instead of marketing pages, the studio publishes usable tools first.",
+      sections: [
+        {
+          title: "What the studio is building right now",
+          body: [
+            "Calculators and converters that real users actually open: pyeong conversion, KST time, KRW estimates, JSON / YAML validation, and cron explanations.",
+            "New tools are added when they solve a real problem. Discovered limits and assumptions are documented inside each tool's page.",
+          ],
         },
-        quality: {
-          title: "Transparency",
-          description: "Real-time work visibility via Paperclip \u2014 watch our agents work in real time.",
+        {
+          title: "How tools are built",
+          body: [
+            "AI agents handle product decisions, code, documentation, and design review. Human review touches the system in narrow steps, but ZHS is the responsible owner of every tool.",
+            "Each tool ships as its own page with the workspace, the assumptions, examples, FAQ, and links to related tools.",
+          ],
         },
-        communication: {
-          title: "Tech-Forward",
-          description: "Always ahead on the latest AI tech. Applied in production, not just research.",
+        {
+          title: "How tools handle data",
+          body: [
+            "Text and configuration utilities run in the browser. Input is not sent to any server.",
+            "If a future feature processes your data on a server, that page will say so explicitly. Details live in the privacy policy.",
+          ],
         },
-        innovation: {
-          title: "Zero Human",
-          description: "Running without humans is itself the proof. Not words \u2014 evidence.",
+        {
+          title: "Why metrics are kept honest",
+          body: [
+            "Downloads, satisfaction scores, user counts, and revenue numbers appear only when they have a real source. The rest is intentionally absent.",
+            "These tools are not legal, medical, or financial advice. Official documents and qualified professionals always take precedence.",
+          ],
         },
-      },
-      cta: {
-        title: "Want to build with our AI team?",
-        description: "Our agent team will execute your project.",
-        button: "Get in Touch",
+      ],
+      contactBlurb: {
+        title: "Found a wrong result?",
+        body: "If a tool behaves incorrectly, a number is off, or a new tool would help, send a note through the contact page.",
+        button: "Open contact page",
       },
     },
+    guidesPage: {
+      title: "Guides & resources",
+      lead:
+        "Short notes on how the ZHS tools work and what assumptions they use. This is not a blog — it is reading material that supports the tools.",
+      sections: [
+        {
+          title: "How to read the Korea-aware tools",
+          body: [
+            "Pyeong conversion uses 1 pyeong = 3.305785 m² as the base ratio. Real-estate listings, however, may refer to exclusive area, supply area, or contract area, so the headline number changes meaning depending on the source.",
+            "Korean shoe sizing is millimeter-first. International size mappings carry a typical ±1 size variance because of brand-specific lasts and gender scales.",
+          ],
+          links: [
+            { label: "Pyeong converter", slug: "pyeong-converter" },
+            { label: "Korean shoe size converter", slug: "korean-shoe-size-converter" },
+          ],
+        },
+        {
+          title: "FX and time are estimates",
+          body: [
+            "The KRW calculator uses the rate you provide. Bank, card, and travel-money rates apply their own spread and fees, so the displayed number is a planning estimate.",
+            "The KST converter is UTC+9 with no daylight saving. Counterpart cities that observe DST will shift by an hour at the season boundary.",
+          ],
+          links: [
+            { label: "KRW calculator", slug: "krw-currency-calculator" },
+            { label: "KST timezone converter", slug: "kst-timezone-converter" },
+          ],
+        },
+        {
+          title: "Developer & automation utilities",
+          body: [
+            "JSON / YAML validation, webhook payload formatting, cron explanation, and timestamp conversion exist as small companions to debugging and automation work.",
+            "Text utilities run in the browser. Input is never uploaded.",
+          ],
+          links: [
+            { label: "JSON / YAML validator", slug: "json-yaml-validator" },
+            { label: "Cron explainer", slug: "cron-explainer" },
+            { label: "Timestamp converter", slug: "timestamp-converter" },
+          ],
+        },
+        {
+          title: "Before trusting the result",
+          body: [
+            "Every tool is a reference, not a guarantee. Contracts, medical, tax, and financial decisions should rely on official documents and qualified professionals.",
+            "If a result conflicts with the source of truth, please send a note through the contact page so assumptions and examples can be corrected.",
+          ],
+          links: [
+            { label: "Disclaimer", slug: "_disclaimer" },
+          ],
+        },
+      ],
+    },
+    experimentsPage: {
+      title: "Experiments",
+      lead:
+        "Public experiments and small probes live here. Anything on this page is unverified or temporary by definition.",
+      empty: {
+        title: "No experiments are public yet.",
+        body: "When something is ready to share, it will appear here with notes. Until then, the tools index has the things that already work.",
+        button: "Browse tools",
+      },
+    },
+    termsPage: {
+      title: "Terms of Use",
+      updated: "Last updated: 2026-05-01",
+      sections: [
+        {
+          title: "1. About this site",
+          body: [
+            "ohmyzhs.com is a practical tools site operated by Zero Human Studio (\"ZHS\"). These terms describe the conditions for using the site.",
+          ],
+        },
+        {
+          title: "2. Acceptable use",
+          body: [
+            "The tools are provided as-is. ZHS does not guarantee accuracy, suitability, or fitness for a particular purpose.",
+            "Use the tools within normal browsing patterns. Automated mass requests, scraping abuse, behavior that harms site stability, and any unlawful use are not permitted.",
+          ],
+        },
+        {
+          title: "3. Nature of the results",
+          body: [
+            "Currency, area, size, cost, and similar outputs are estimates and reference values. They do not replace legal, tax, medical, or financial advice.",
+            "When official documents, transaction statements, or vendor invoices conflict with the estimate shown here, the official source takes precedence.",
+          ],
+        },
+        {
+          title: "4. Intellectual property",
+          body: [
+            "Site code, design, copy, and logos are owned by ZHS or used with permission. Reproduction or redistribution without prior consent is not allowed.",
+            "Inputs that you type into the tools belong to you. ZHS does not collect or retain those inputs for commercial purposes.",
+          ],
+        },
+        {
+          title: "5. Limitation of liability",
+          body: [
+            "To the extent allowed by law, ZHS is not liable for direct or indirect damages arising from use of the site.",
+            "Tools may change, improve, or be retired without prior notice as the studio iterates.",
+          ],
+        },
+        {
+          title: "6. Changes and contact",
+          body: [
+            "These terms may be updated as the site evolves. Updates appear on this page with a new \"last updated\" date.",
+            "Questions about these terms can be sent to contact@ohmyzhs.com or through the site's contact page.",
+          ],
+        },
+      ],
+    },
+    disclaimerPage: {
+      title: "Disclaimer",
+      updated: "Last updated: 2026-05-01",
+      sections: [
+        {
+          title: "Nature of the results",
+          body: [
+            "The tools on ohmyzhs.com are estimation aids for everyday calculations and conversions. All output is informational and does not constitute legal, tax, financial, or medical advice.",
+          ],
+        },
+        {
+          title: "Currency, area, size, and cost estimates",
+          body: [
+            "Currency calculators apply the rate that you enter. Real card and bank settlement rates, plus their fees, will differ.",
+            "Pyeong and area conversions use the standard 1 pyeong = 3.305785 m² ratio. Real-estate contracts, taxes, and registry filings rely on the m² figures recorded on official documents.",
+            "Shoe size, cooking measurement, and unit conversions can shift by a margin depending on brand, ingredient density, and baseline assumptions. Treat the results as a starting reference, not a guarantee.",
+          ],
+        },
+        {
+          title: "Official sources take precedence",
+          body: [
+            "Official documents, government notices, vendor invoices, and qualified professionals (doctor, accountant, lawyer, financial advisor) override the site's estimates.",
+            "If a result clearly contradicts a real-world source, please use the contact page to report it. Assumptions, ratios, and examples will be corrected.",
+          ],
+        },
+      ],
+    },
     contactPage: {
-      title: "Let\u2019s Build Together",
+      title: "Contact",
       description:
-        "Have a project idea? Our AI agent team will get back to you within 24 hours.",
+        "Use this page to report a bug, request a tool, ask for a correction, or send a privacy question. This site does not take project or sales inquiries.",
       email: "Email",
-      blog: "Blog",
       success: {
-        title: "Message sent!",
-        description: "Our AI agent team will respond within 24 hours. Thank you!",
+        title: "Message sent.",
+        description:
+          "We will read it and reply when needed. For bug reports, the relevant tool page is the most likely place to see the fix.",
         another: "Send another message",
       },
       form: {
         name: "Name",
-        namePlaceholder: "Your name",
+        namePlaceholder: "Your name or handle",
         email: "Email",
         emailPlaceholder: "you@example.com",
-        projectType: "Project Type",
-        selectService: "Select a service",
-        web: "Utility App",
-        mobile: "Casual Game",
-        ai: "Roblox Game",
-        consulting: "AI Integration",
-        other: "Other",
+        topic: "Topic",
+        selectTopic: "Select a topic",
+        topicBug: "Report a bug",
+        topicTool: "Request a tool",
+        topicCorrection: "Suggest a correction",
+        topicPrivacy: "Privacy question",
+        topicOther: "Other",
         message: "Message",
-        messagePlaceholder: "What would you like to build?",
-        submit: "Send Message",
+        messagePlaceholder: "Tell us which tool, what looked wrong, or what you wish existed.",
+        submit: "Send message",
         sending: "Sending...",
       },
     },
     footer: {
-      tagline: "A studio run entirely by AI agents. Zero Human. Full Execution.",
-      navigation: "Navigation",
-      services: "Services",
-      work: "Work",
+      tagline: "Zero Human Studio — small tools that quietly work.",
+      site: "Site",
+      tools: "Tools",
+      posts: "Posts",
+      guides: "Guides",
       about: "About",
       contact: "Contact",
-      blog: "Blog",
-      connect: "Connect",
+      legal: "Legal",
+      privacy: "Privacy policy",
+      terms: "Terms",
+      disclaimer: "Disclaimer",
+      contactSection: "Contact",
       rights: "All rights reserved.",
+    },
+    tools: {
+      indexEyebrow: "Tools catalog",
+      indexTitle: "Useful calculators and utilities for everyday work.",
+      indexLead:
+        "Korea-friendly conversions, time and currency estimates, config validators, cron, and small text utilities. Each tool ships with assumptions and examples.",
+      tierLabel: "Tier {tier}",
+      tier1Heading: "Korea-aware utilities",
+      tier2Heading: "AI / automation helpers",
+      tier3Heading: "Micro tools",
+      countSummary: "{count} tools available",
+      openTool: "Open tool →",
+      backToTools: "← All tools",
+      workspaceLabel: "Tool workspace",
+      inputs: "Inputs",
+      outputs: "Outputs",
+      examples: "Examples",
+      howToRead: "How to use this result",
+      faqs: "Common questions",
+      relatedTools: "Related tools",
+      moreSuffix: "+{count} more",
+      privacyNote:
+        "This tool runs in your browser. Inputs stay local and are not sent to any server.",
+      placeholderTitle: "Tool workspace",
+      placeholderHeading: "{tool} interactive tool",
+      placeholderBody: "The calculation model and page context are in place.",
+    },
+    categories: {
+      "korea-living": "Korea Living",
+      "time-money": "Time & Money",
+      "developer-automation": "Developer",
+      "business-automation": "Business",
+      "micro-utility": "Utility",
     },
   },
 };
