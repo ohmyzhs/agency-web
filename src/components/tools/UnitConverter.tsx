@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLocale } from "@/components/providers";
+import SegmentedTabs from "@/components/tools/shared/SegmentedTabs";
 import {
   celsiusToFahrenheit,
   convertLength,
@@ -27,6 +29,7 @@ const unitOptions = {
 const selectClass = "mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none";
 
 export default function UnitConverter() {
+  const { locale } = useLocale();
   const [kind, setKind] = useState<UnitKind>("length");
   const [value, setValue] = useState("10");
   const [from, setFrom] = useState("mi");
@@ -58,26 +61,32 @@ export default function UnitConverter() {
     return null;
   }, [from, kind, to, value]);
 
+  const labels = locale === "ko"
+    ? { length: "길이", weight: "무게", volume: "부피", temperature: "온도", area: "면적", value: "값", from: "기준 단위", to: "변환 단위", invalid: "유효한 숫자를 입력하세요." }
+    : { length: "Length", weight: "Weight", volume: "Volume", temperature: "Temperature", area: "Area", value: "Value", from: "From", to: "To", invalid: "Enter a valid number." };
+
   return (
     <div className="space-y-4">
-      <label className="block">
-        <span className="text-sm font-medium">Conversion type</span>
-        <select value={kind} onChange={(e) => changeKind(e.target.value as UnitKind)} className={selectClass}>
-          <option value="length">Length</option>
-          <option value="weight">Weight</option>
-          <option value="volume">Volume</option>
-          <option value="temperature">Temperature</option>
-          <option value="area">Area</option>
-        </select>
-      </label>
+      <SegmentedTabs<UnitKind>
+        ariaLabel={locale === "ko" ? "변환 종류" : "Conversion type"}
+        value={kind}
+        onChange={changeKind}
+        options={[
+          { value: "length", label: labels.length },
+          { value: "weight", label: labels.weight },
+          { value: "volume", label: labels.volume },
+          { value: "temperature", label: labels.temperature },
+          { value: "area", label: labels.area },
+        ]}
+      />
 
       <div className="grid grid-cols-3 gap-3">
         <label className="block">
-          <span className="text-sm font-medium">Value</span>
+          <span className="text-sm font-medium">{labels.value}</span>
           <input inputMode="decimal" value={value} onChange={(e) => setValue(e.target.value)} className={selectClass} />
         </label>
         <label className="block">
-          <span className="text-sm font-medium">From</span>
+          <span className="text-sm font-medium">{labels.from}</span>
           <select value={from} onChange={(e) => setFrom(e.target.value)} className={selectClass}>
             {unitOptions[kind].map((unit) => (
               <option key={unit} value={unit}>{unit}</option>
@@ -85,7 +94,7 @@ export default function UnitConverter() {
           </select>
         </label>
         <label className="block">
-          <span className="text-sm font-medium">To</span>
+          <span className="text-sm font-medium">{labels.to}</span>
           <select value={to} onChange={(e) => setTo(e.target.value)} className={selectClass}>
             {unitOptions[kind].map((unit) => (
               <option key={unit} value={unit}>{unit}</option>
@@ -96,7 +105,7 @@ export default function UnitConverter() {
 
       <output className="block rounded-lg bg-accent p-4">
         {result === null ? (
-          <span className="text-sm text-muted">Enter a valid number.</span>
+          <span className="text-sm text-muted">{labels.invalid}</span>
         ) : (
           <strong className="block text-xl">{result.toLocaleString()} {to}</strong>
         )}
