@@ -301,6 +301,8 @@ const dictionaries = {
     categories: {
       "korea-living": "한국 생활",
       "time-money": "시간 · 환율",
+      "file-media": "파일 · 이미지",
+      "network-diagnostics": "네트워크",
       "developer-automation": "개발자",
       "business-automation": "비즈니스",
       "micro-utility": "마이크로",
@@ -604,6 +606,8 @@ const dictionaries = {
     categories: {
       "korea-living": "Korea Living",
       "time-money": "Time & Money",
+      "file-media": "Files & Images",
+      "network-diagnostics": "Network",
       "developer-automation": "Developer",
       "business-automation": "Business",
       "micro-utility": "Utility",

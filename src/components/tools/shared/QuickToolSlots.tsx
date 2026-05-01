@@ -15,6 +15,7 @@ type QuickToolSlotsProps = {
 };
 
 const CROSS_PICKS: string[] = [
+  "icon-favicon-generator",
   "kst-timezone-converter",
   "krw-currency-calculator",
   "json-yaml-validator",

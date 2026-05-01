@@ -5,6 +5,8 @@ export type ToolTier = 1 | 2 | 3;
 export type ToolCategory =
   | "korea-living"
   | "time-money"
+  | "file-media"
+  | "network-diagnostics"
   | "developer-automation"
   | "business-automation"
   | "micro-utility";
@@ -44,6 +46,70 @@ export type Tool = LocalizedToolContent & {
 };
 
 export const tools: Tool[] = [
+  {
+    slug: "icon-favicon-generator",
+    title: "Icon Converter & Favicon Generator",
+    shortTitle: "Icon Generator",
+    description: "Generate favicon, Apple touch icon, and PWA icon PNG sets from one source image in the browser.",
+    category: "file-media",
+    tier: 1,
+    seoTitle: "Icon Converter & Favicon Generator | PNG, SVG to Favicon Set",
+    seoDescription: "Create favicon, Apple touch icon, PWA icon sizes, manifest JSON, and HTML tags from a PNG, JPG, SVG, or WebP image locally in your browser.",
+    inputs: [
+      { label: "Source image", description: "Upload a PNG, JPG, SVG, or WebP image up to 10MB." },
+      { label: "Icon options", description: "Choose transparent or colored background, padding, corner radius, and file prefix." },
+    ],
+    outputs: [
+      { label: "PNG icon set", description: "Downloads 16, 32, 48, 180, 192, and 512 pixel icons as individual files or one ZIP." },
+      { label: "Manifest snippets", description: "Generates manifest.json icon entries and HTML link tags for site headers." },
+    ],
+    examples: [
+      { label: "Website favicon", input: "Square logo PNG", output: "16×16, 32×32, 48×48 favicon PNG files" },
+      { label: "iOS home icon", input: "Brand mark with solid background", output: "180×180 apple-touch-icon PNG" },
+      { label: "PWA icon set", input: "App logo SVG", output: "192×192 and 512×512 manifest icons" },
+    ],
+    explanation: [
+      "A modern site usually needs more than one icon. Browsers, iOS home-screen shortcuts, Android/PWA installs, and search previews all use different preferred sizes.",
+      "This tool rasterizes one source image into practical favicon and app-icon PNG sizes, then creates a manifest.json starter and HTML link tags. The first version focuses on PNG output because it is broadly supported and predictable.",
+      "Files are processed locally in the browser. Avoid uploading private unreleased brand assets to tools that send files to a server; this page is designed to avoid that workflow.",
+    ],
+    faqs: [
+      { question: "Does it create a real .ico file?", answer: "The MVP creates PNG favicon sizes and HTML tags. Most modern browsers accept PNG favicons. ICO export can be added later if legacy compatibility becomes important." },
+      { question: "What source image works best?", answer: "Use a square 512×512 or larger PNG/SVG with enough padding. Very thin text or tiny details can disappear at 16×16." },
+      { question: "Are files uploaded?", answer: "No. Generation happens in the browser using Canvas and ZIP packaging." },
+    ],
+    relatedToolSlugs: ["color-contrast-checker", "slug-generator", "utm-builder"],
+    ko: {
+      title: "아이콘 컨버터 / 파비콘 생성기",
+      shortTitle: "아이콘 생성기",
+      description: "이미지 하나로 favicon, Apple touch icon, PWA 아이콘 PNG 세트와 manifest 예시를 브라우저에서 생성합니다.",
+      seoTitle: "아이콘 컨버터 / 파비콘 생성기 | PNG·SVG로 favicon 세트 만들기",
+      seoDescription: "PNG, JPG, SVG, WebP 이미지를 favicon, Apple touch icon, PWA 아이콘 크기로 변환하고 manifest.json 및 HTML 태그를 생성합니다.",
+      inputs: [
+        { label: "원본 이미지", description: "10MB 이하의 PNG, JPG, SVG, WebP 이미지를 업로드합니다." },
+        { label: "아이콘 옵션", description: "투명/색상 배경, 패딩, 둥근 모서리, 파일 이름 접두어를 조절합니다." },
+      ],
+      outputs: [
+        { label: "PNG 아이콘 세트", description: "16, 32, 48, 180, 192, 512px 아이콘을 개별 파일 또는 ZIP으로 내려받습니다." },
+        { label: "manifest 예시", description: "사이트 헤더에 넣을 HTML link 태그와 manifest.json 아이콘 항목을 생성합니다." },
+      ],
+      examples: [
+        { label: "웹사이트 파비콘", input: "정사각형 로고 PNG", output: "16×16, 32×32, 48×48 favicon PNG" },
+        { label: "iOS 홈 화면 아이콘", input: "배경이 있는 브랜드 마크", output: "180×180 apple-touch-icon PNG" },
+        { label: "PWA 아이콘", input: "앱 로고 SVG", output: "192×192, 512×512 manifest 아이콘" },
+      ],
+      explanation: [
+        "현대 웹사이트는 아이콘 하나만으로 충분하지 않습니다. 브라우저 탭, iOS 홈 화면, Android/PWA 설치, 검색 미리보기에서 선호하는 크기가 다릅니다.",
+        "이 도구는 원본 이미지를 실무에서 자주 쓰는 favicon/app icon PNG 크기로 변환하고, manifest.json 시작 예시와 HTML link 태그를 함께 만듭니다. 첫 버전은 호환성이 좋은 PNG 출력에 집중합니다.",
+        "파일은 브라우저 안에서 처리됩니다. 공개 전 브랜드 자산을 서버 업로드형 도구에 넣는 것이 걱정될 때 안전한 로컬 처리 흐름으로 사용할 수 있습니다.",
+      ],
+      faqs: [
+        { question: "진짜 .ico 파일도 생성하나요?", answer: "MVP는 PNG favicon 크기와 HTML 태그를 생성합니다. 최신 브라우저는 PNG favicon을 잘 지원합니다. 레거시 호환이 필요하면 이후 .ico 내보내기를 추가할 수 있습니다." },
+        { question: "어떤 원본 이미지가 가장 좋나요?", answer: "512×512 이상의 정사각형 PNG/SVG가 좋습니다. 너무 얇은 글자나 세밀한 요소는 16×16에서 사라질 수 있습니다." },
+        { question: "파일이 서버로 업로드되나요?", answer: "아닙니다. Canvas 변환과 ZIP 생성은 브라우저 안에서 처리됩니다." },
+      ],
+    },
+  },
   {
     slug: "pyeong-converter",
     title: "Pyeong Converter",
