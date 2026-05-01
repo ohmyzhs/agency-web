@@ -3,53 +3,79 @@
 import { useState } from "react";
 import { useLocale } from "@/components/providers";
 
-type IpResult = { ip: string; source: string } | { error: string } | null;
-type HttpResult = { url: string; status: number; statusText: string; elapsedMs: number; headers: Record<string, string> } | { error: string } | null;
+type IpResult = { ip: string; source?: string } | { error: string } | null;
 
 export default function NetworkDiagnosticsTool() {
   const { locale } = useLocale();
   const [ipResult, setIpResult] = useState<IpResult>(null);
-  const [httpUrl, setHttpUrl] = useState("https://oh-my-zhs.com");
-  const [httpResult, setHttpResult] = useState<HttpResult>(null);
-  const [loading, setLoading] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const t = locale === "ko" ? {
-    myip: "내 공인 IP 확인", checkIp: "IP 확인", http: "HTTP 상태/헤더 체크", checkHttp: "HTTP 확인", limitations: "브라우저에서는 ICMP ping, traceroute, OS 수준 nslookup을 직접 실행할 수 없습니다. 이 도구는 가능한 범위인 공인 IP 확인과 서버 API를 통한 HTTP HEAD 체크만 제공합니다.",
-  } : {
-    myip: "Public IP", checkIp: "Check IP", http: "HTTP status/header check", checkHttp: "Check HTTP", limitations: "Browsers cannot directly run ICMP ping, traceroute, or OS-level nslookup. This tool provides the feasible subset: public IP and server-side HTTP HEAD checks.",
-  };
+  const t =
+    locale === "ko"
+      ? {
+          title: "내 IP 확인",
+          description: "현재 접속 환경의 공인 IP 주소를 확인합니다.",
+          check: "내 IP 확인",
+          loading: "확인 중...",
+          label: "공인 IP",
+          source: "확인 소스",
+          failed: "IP 확인에 실패했습니다.",
+        }
+      : {
+          title: "Check My IP",
+          description: "Check the public IP address for your current connection.",
+          check: "Check my IP",
+          loading: "Checking...",
+          label: "Public IP",
+          source: "Source",
+          failed: "Failed to check IP.",
+        };
 
   async function checkIp() {
-    setLoading("ip");
+    setIsLoading(true);
+    setIpResult(null);
     try {
       const response = await fetch("/api/network/myip", { cache: "no-store" });
-      setIpResult(await response.json());
+      const data = await response.json();
+      setIpResult(response.ok ? data : { error: data.error || t.failed });
     } catch (error) {
-      setIpResult({ error: error instanceof Error ? error.message : "IP check failed" });
-    } finally { setLoading(null); }
-  }
-
-  async function checkHttp() {
-    setLoading("http");
-    try {
-      const response = await fetch("/api/network/http-check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: httpUrl }) });
-      setHttpResult(await response.json());
-    } catch (error) {
-      setHttpResult({ error: error instanceof Error ? error.message : "HTTP check failed" });
-    } finally { setLoading(null); }
+      setIpResult({ error: error instanceof Error ? error.message : t.failed });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
     <div className="space-y-5">
-      <p className="rounded-lg bg-accent p-4 text-sm text-muted">{t.limitations}</p>
-      <section className="rounded-xl border border-border p-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><h3 className="text-sm font-semibold">{t.myip}</h3><button type="button" onClick={() => void checkIp()} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90">{loading === "ip" ? "..." : t.checkIp}</button></div>
-        {ipResult && <pre className="mt-3 overflow-auto rounded-lg bg-accent p-3 text-xs">{JSON.stringify(ipResult, null, 2)}</pre>}
-      </section>
-      <section className="space-y-3 rounded-xl border border-border p-4">
-        <h3 className="text-sm font-semibold">{t.http}</h3>
-        <div className="grid gap-2 md:grid-cols-[1fr_auto]"><input value={httpUrl} onChange={(event) => setHttpUrl(event.target.value)} className="rounded-lg border border-border bg-background px-3 py-2 text-sm" /><button type="button" onClick={() => void checkHttp()} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90">{loading === "http" ? "..." : t.checkHttp}</button></div>
-        {httpResult && <pre className="max-h-[420px] overflow-auto rounded-lg bg-accent p-3 text-xs">{JSON.stringify(httpResult, null, 2)}</pre>}
+      <section className="rounded-xl border border-border p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="text-base font-semibold">{t.title}</h3>
+            <p className="mt-1 text-sm text-muted">{t.description}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => void checkIp()}
+            disabled={isLoading}
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLoading ? t.loading : t.check}
+          </button>
+        </div>
+
+        {ipResult && "error" in ipResult && (
+          <output className="mt-4 block rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+            {ipResult.error}
+          </output>
+        )}
+
+        {ipResult && "ip" in ipResult && (
+          <output className="mt-4 block rounded-lg bg-accent p-4">
+            <span className="block text-xs font-medium uppercase tracking-wider text-muted">{t.label}</span>
+            <span className="mt-1 block break-all font-mono text-2xl font-semibold">{ipResult.ip}</span>
+            {ipResult.source && <span className="mt-2 block break-all text-xs text-muted">{t.source}: {ipResult.source}</span>}
+          </output>
+        )}
       </section>
     </div>
   );
