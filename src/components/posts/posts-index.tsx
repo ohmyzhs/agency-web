@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useLocale } from "@/components/providers";
 import SegmentedTabs from "@/components/tools/shared/SegmentedTabs";
 import { PostCard } from "@/components/posts/post-card";
-import type { Post, PostKind } from "@/lib/post-types";
+import { getPostContent, type Post, type PostKind } from "@/lib/post-types";
 
 type Filter = "all" | PostKind;
 
@@ -47,22 +47,43 @@ export function PostsIndex({ posts }: { posts: Post[] }) {
       <h1 className="mt-4 text-4xl font-bold tracking-tight">{title}</h1>
       <p className="mt-4 max-w-3xl text-lg text-muted">{lead}</p>
 
-      <div className="mt-10">
-        <SegmentedTabs<Filter>
-          ariaLabel={locale === "ko" ? "글 종류 필터" : "Post kind filter"}
-          value={filter}
-          onChange={setFilter}
-          options={options}
-          size="sm"
-        />
-      </div>
+      <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
+        <div>
+          <SegmentedTabs<Filter>
+            ariaLabel={locale === "ko" ? "글 종류 필터" : "Post kind filter"}
+            value={filter}
+            onChange={setFilter}
+            options={options}
+            size="sm"
+          />
 
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
-        {visiblePosts.length > 0 ? (
-          visiblePosts.map((post) => <PostCard key={post.slug} post={post} />)
-        ) : (
-          <p className="text-muted">{empty}</p>
-        )}
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            {visiblePosts.length > 0 ? (
+              visiblePosts.map((post) => <PostCard key={post.slug} post={post} />)
+            ) : (
+              <p className="text-muted">{empty}</p>
+            )}
+          </div>
+        </div>
+
+        <aside className="rounded-xl border border-border bg-card p-4 lg:sticky lg:top-24">
+          <p className="zhs-eyebrow">{locale === "ko" ? "빠른 이동" : "Quick nav"}</p>
+          <div className="mt-4 space-y-2">
+            {posts.slice(0, 6).map((post) => {
+              const postContent = getPostContent(post, locale);
+              return (
+                <a
+                  key={post.slug}
+                  href={`/posts/${post.slug}`}
+                  className="block rounded-lg border border-border bg-background p-3 text-sm leading-snug transition-colors hover:border-foreground hover:text-primary"
+                >
+                  <span className="line-clamp-2 font-semibold">{postContent.title}</span>
+                  <span className="mt-1 block font-mono text-[11px] text-muted">{post.publishedAt}</span>
+                </a>
+              );
+            })}
+          </div>
+        </aside>
       </div>
     </div>
   );
