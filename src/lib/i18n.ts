@@ -16,7 +16,7 @@ const dictionaries = {
       eyebrow: "est. 2025 · seoul / global",
       headline: "조용히 작동하는 작은 도구들.",
       lead:
-        "평 변환, KST 시간, 원화 계산, JSON 검증, LLM 비용 계산까지. 바로 쓰고, 근거를 확인하고, 다음 일로 넘어갑니다.",
+        "평 변환, KST 시간, 원화 계산, JSON 검증, 크론 해설까지. 바로 쓰고, 근거를 확인하고, 다음 일로 넘어갑니다.",
       ctaPrimary: "도구 보기",
       ctaSecondary: "스튜디오 소개",
       catalog: {
@@ -60,7 +60,7 @@ const dictionaries = {
         {
           title: "지금 무엇을 만들고 있나",
           body: [
-            "평수 변환, KST 시간 환산, 원화 추정 계산, JSON · YAML 검증, LLM 비용 계산 같은 실제로 쓰이는 계산기와 변환기를 운영합니다.",
+            "평수 변환, KST 시간 환산, 원화 추정 계산, JSON · YAML 검증, 크론 해설 같은 실제로 쓰이는 계산기와 변환기를 운영합니다.",
             "필요할 때 새로운 도구를 추가하고, 사용 중에 발견된 문제는 도구 페이지에 가정과 한계로 명시합니다.",
           ],
         },
@@ -128,7 +128,7 @@ const dictionaries = {
           links: [
             { label: "JSON / YAML Validator", slug: "json-yaml-validator" },
             { label: "Cron Explainer", slug: "cron-explainer" },
-            { label: "LLM 비용 계산기", slug: "llm-cost-calculator" },
+            { label: "타임스탬프 변환기", slug: "timestamp-converter" },
           ],
         },
         {
@@ -173,7 +173,7 @@ const dictionaries = {
         {
           title: "3. 결과의 성격",
           body: [
-            "환율, 면적, 사이즈, 비용, ROI 등 본 사이트의 모든 계산 결과는 추정값과 참고 자료입니다. 법률·세무·금융·의료적 판단을 대체하지 않습니다.",
+            "환율, 면적, 사이즈, 비용 등 본 사이트의 모든 계산 결과는 추정값과 참고 자료입니다. 법률·세무·금융·의료적 판단을 대체하지 않습니다.",
             "공식 문서, 거래 명세서, 공급사 인보이스가 본 사이트의 추정값과 다르면 해당 공식 자료가 우선합니다.",
           ],
         },
@@ -216,7 +216,6 @@ const dictionaries = {
             "환율 계산은 사용자가 입력한 환율을 기반으로 한 단순 추정값입니다. 실제 카드사·은행 적용 환율과 수수료에 따라 달라집니다.",
             "평수·면적 변환은 1평 = 3.305785㎡ 비율을 사용합니다. 부동산 계약·세무·등기 절차에서는 등기부와 분양 계약서의 ㎡ 표기가 우선합니다.",
             "신발 사이즈, 요리 계량, 단위 변환 결과는 브랜드·재료·기준에 따라 ±오차가 발생할 수 있습니다. 결과는 시작 참고값으로만 사용해 주세요.",
-            "LLM 비용·자동화 ROI 같은 비즈니스 추정값은 입력한 가정에 전적으로 의존합니다. 공급사 가격, 운영 비용, 유지보수 비용에 따라 실제 지출은 달라집니다.",
           ],
         },
         {
@@ -275,7 +274,7 @@ const dictionaries = {
       indexEyebrow: "도구 카탈로그",
       indexTitle: "실용 계산기와 작업 유틸리티.",
       indexLead:
-        "한국 생활 단위, 시간, 환율, 설정 검증, 크론, 자동화 ROI 같은 실제 작업을 도와주는 작은 도구 모음입니다.",
+        "한국 생활 단위, 시간, 환율, 설정 검증, 크론 같은 실제 작업을 도와주는 작은 도구 모음입니다.",
       tierLabel: "티어 {tier}",
       tier1Heading: "한국 생활 도구",
       tier2Heading: "AI · 자동화 유틸리티",
@@ -318,7 +317,7 @@ const dictionaries = {
       eyebrow: "est. 2025 · seoul / global",
       headline: "Small tools that quietly work.",
       lead:
-        "Pyeong conversion, KST time, KRW estimates, JSON validation, LLM cost planning. Use the tool, check the assumptions, move on.",
+        "Pyeong conversion, KST time, KRW estimates, JSON validation, cron explanations. Use the tool, check the assumptions, move on.",
       ctaPrimary: "Browse tools",
       ctaSecondary: "About the studio",
       catalog: {
@@ -362,7 +361,7 @@ const dictionaries = {
         {
           title: "What the studio is building right now",
           body: [
-            "Calculators and converters that real users actually open: pyeong conversion, KST time, KRW estimates, JSON / YAML validation, LLM cost planning, automation ROI math.",
+            "Calculators and converters that real users actually open: pyeong conversion, KST time, KRW estimates, JSON / YAML validation, and cron explanations.",
             "New tools are added when they solve a real problem. Discovered limits and assumptions are documented inside each tool's page.",
           ],
         },
@@ -430,7 +429,7 @@ const dictionaries = {
           links: [
             { label: "JSON / YAML validator", slug: "json-yaml-validator" },
             { label: "Cron explainer", slug: "cron-explainer" },
-            { label: "LLM cost calculator", slug: "llm-cost-calculator" },
+            { label: "Timestamp converter", slug: "timestamp-converter" },
           ],
         },
         {
@@ -475,7 +474,7 @@ const dictionaries = {
         {
           title: "3. Nature of the results",
           body: [
-            "Currency, area, size, cost, ROI, and similar outputs are estimates and reference values. They do not replace legal, tax, medical, or financial advice.",
+            "Currency, area, size, cost, and similar outputs are estimates and reference values. They do not replace legal, tax, medical, or financial advice.",
             "When official documents, transaction statements, or vendor invoices conflict with the estimate shown here, the official source takes precedence.",
           ],
         },
@@ -518,7 +517,6 @@ const dictionaries = {
             "Currency calculators apply the rate that you enter. Real card and bank settlement rates, plus their fees, will differ.",
             "Pyeong and area conversions use the standard 1 pyeong = 3.305785 m² ratio. Real-estate contracts, taxes, and registry filings rely on the m² figures recorded on official documents.",
             "Shoe size, cooking measurement, and unit conversions can shift by a margin depending on brand, ingredient density, and baseline assumptions. Treat the results as a starting reference, not a guarantee.",
-            "LLM cost and automation ROI estimates depend entirely on the assumptions you provide. Vendor pricing, operating cost, and maintenance overhead can move actual spending up or down.",
           ],
         },
         {
@@ -577,7 +575,7 @@ const dictionaries = {
       indexEyebrow: "Tools catalog",
       indexTitle: "Useful calculators and utilities for everyday work.",
       indexLead:
-        "Korea-friendly conversions, time and currency estimates, config validators, cron, automation ROI math, and small text utilities. Each tool ships with assumptions and examples.",
+        "Korea-friendly conversions, time and currency estimates, config validators, cron, and small text utilities. Each tool ships with assumptions and examples.",
       tierLabel: "Tier {tier}",
       tier1Heading: "Korea-aware utilities",
       tier2Heading: "AI / automation helpers",

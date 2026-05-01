@@ -3,13 +3,11 @@ import { notFound } from "next/navigation";
 import { ToolPageShell } from "@/components/tool-page-shell";
 import ColorContrastChecker from "@/components/tools/ColorContrastChecker";
 import CookingMeasurementConverter from "@/components/tools/CookingMeasurementConverter";
-import AutomationRoiCalculator from "@/components/tools/AutomationRoiCalculator";
 import CronExplainer from "@/components/tools/CronExplainer";
 import JsonYamlValidator from "@/components/tools/JsonYamlValidator";
 import KoreanShoeSizeConverter from "@/components/tools/KoreanShoeSizeConverter";
 import KrwCurrencyCalculator from "@/components/tools/KrwCurrencyCalculator";
 import KstTimezoneConverter from "@/components/tools/KstTimezoneConverter";
-import LlmCostCalculator from "@/components/tools/LlmCostCalculator";
 import MarkdownTableGenerator from "@/components/tools/MarkdownTableGenerator";
 import PyeongConverter from "@/components/tools/PyeongConverter";
 import SlugGenerator from "@/components/tools/SlugGenerator";
@@ -54,8 +52,6 @@ const widgetMap: Record<string, React.ReactNode> = {
   "kst-timezone-converter": <KstTimezoneConverter />,
   "krw-currency-calculator": <KrwCurrencyCalculator />,
   "unit-converter": <UnitConverter />,
-  "llm-cost-calculator": <LlmCostCalculator />,
-  "automation-roi-calculator": <AutomationRoiCalculator />,
   "json-yaml-validator": <JsonYamlValidator />,
   "webhook-payload-formatter": <WebhookPayloadFormatter />,
   "cron-explainer": <CronExplainer />,
