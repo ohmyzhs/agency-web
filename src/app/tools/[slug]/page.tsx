@@ -6,7 +6,13 @@ import CookingMeasurementConverter from "@/components/tools/CookingMeasurementCo
 import CronExplainer from "@/components/tools/CronExplainer";
 import IconFaviconGenerator from "@/components/tools/IconFaviconGenerator";
 import ImageFormatConverter from "@/components/tools/ImageFormatConverter";
+import ImageToPdfTool from "@/components/tools/ImageToPdfTool";
 import JsonYamlValidator from "@/components/tools/JsonYamlValidator";
+import NetworkDiagnosticsTool from "@/components/tools/NetworkDiagnosticsTool";
+import OgImageGeneratorTool from "@/components/tools/OgImageGeneratorTool";
+import PdfPageImageTool from "@/components/tools/PdfPageImageTool";
+import PdfWorkspaceTool from "@/components/tools/PdfWorkspaceTool";
+import QrBarcodeGeneratorTool from "@/components/tools/QrBarcodeGeneratorTool";
 import KoreanShoeSizeConverter from "@/components/tools/KoreanShoeSizeConverter";
 import KrwCurrencyCalculator from "@/components/tools/KrwCurrencyCalculator";
 import KstTimezoneConverter from "@/components/tools/KstTimezoneConverter";
@@ -18,6 +24,7 @@ import TimestampConverter from "@/components/tools/TimestampConverter";
 import UnitConverter from "@/components/tools/UnitConverter";
 import UtmBuilder from "@/components/tools/UtmBuilder";
 import WebhookPayloadFormatter from "@/components/tools/WebhookPayloadFormatter";
+import WebhookRequestSimulatorTool from "@/components/tools/WebhookRequestSimulatorTool";
 import { getAllTools, getToolBySlug } from "@/lib/tools";
 import { createPageMetadata } from "@/lib/seo";
 
@@ -44,6 +51,13 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
 }
 
 const widgetMap: Record<string, React.ReactNode> = {
+  "pdf-merge-split-reorder": <PdfWorkspaceTool />,
+  "pdf-page-to-image": <PdfPageImageTool />,
+  "image-to-pdf": <ImageToPdfTool />,
+  "og-image-generator": <OgImageGeneratorTool />,
+  "qr-barcode-generator": <QrBarcodeGeneratorTool />,
+  "webhook-request-simulator": <WebhookRequestSimulatorTool />,
+  "network-diagnostics": <NetworkDiagnosticsTool />,
   "icon-favicon-generator": <IconFaviconGenerator />,
   "image-format-converter": <ImageFormatConverter />,
   "pyeong-converter": <PyeongConverter />,

@@ -15,6 +15,13 @@ type QuickToolSlotsProps = {
 };
 
 const CROSS_PICKS: string[] = [
+  "pdf-merge-split-reorder",
+  "pdf-page-to-image",
+  "image-to-pdf",
+  "og-image-generator",
+  "qr-barcode-generator",
+  "webhook-request-simulator",
+  "network-diagnostics",
   "icon-favicon-generator",
   "image-format-converter",
   "kst-timezone-converter",
