@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/components/providers";
+import { Analytics } from "@/components/analytics";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
@@ -114,6 +115,7 @@ export default function RootLayout({
           <Header />
           <main id="main-content" className="flex-1">{children}</main>
           <Footer />
+          <Analytics />
         </AppProvider>
       </body>
     </html>
