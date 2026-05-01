@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/providers";
+import QuickToolSlots from "@/components/tools/shared/QuickToolSlots";
 import { getRelatedTools, getToolContent, type Tool } from "@/lib/tools";
 
 const localOnlyCategories = new Set(["developer-automation", "micro-utility"]);
@@ -28,6 +29,8 @@ export function ToolPageShell({ tool, children }: ToolPageShellProps) {
       >
         {t.tools.backToTools}
       </Link>
+
+      <QuickToolSlots currentSlug={tool.slug} currentCategory={tool.category} />
 
       <article className="mt-6">
         <header>
