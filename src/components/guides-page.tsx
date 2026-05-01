@@ -3,11 +3,10 @@
 import Link from "next/link";
 import { useLocale } from "@/components/providers";
 import { PostCard } from "@/components/posts/post-card";
-import { getPostsByKind } from "@/lib/posts";
+import type { Post } from "@/lib/post-types";
 
-export function GuidesPage() {
+export function GuidesPage({ guidePosts }: { guidePosts: Post[] }) {
   const { t, locale } = useLocale();
-  const guidePosts = getPostsByKind("guide");
 
   const guidePostsHeading = locale === "ko" ? "가이드 글" : "Guide posts";
   const seeAllPostsLabel = locale === "ko" ? "전체 글 보기 →" : "See all posts →";

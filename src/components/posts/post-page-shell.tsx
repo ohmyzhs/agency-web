@@ -2,53 +2,35 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/providers";
-import { getPostContent, getRelatedPosts, type Post, type PostBlock } from "@/lib/posts";
+import { getPostContent, type Post, type PostBlock } from "@/lib/post-types";
 import { getToolBySlug, getToolContent } from "@/lib/tools";
 
 function renderBlock(block: PostBlock, index: number) {
   switch (block.type) {
     case "h2":
-      return (
-        <h2 key={index} className="mt-10 text-2xl font-bold tracking-tight">
-          {block.text}
-        </h2>
-      );
+      return <h2 key={index} className="mt-10 text-2xl font-bold tracking-tight">{block.text}</h2>;
     case "h3":
-      return (
-        <h3 key={index} className="mt-6 text-lg font-semibold tracking-tight">
-          {block.text}
-        </h3>
-      );
+      return <h3 key={index} className="mt-6 text-lg font-semibold tracking-tight">{block.text}</h3>;
     case "p":
-      return (
-        <p key={index} className="mt-4 text-[15px] leading-relaxed text-muted">
-          {block.text}
-        </p>
-      );
+      return <p key={index} className="mt-4 text-[15px] leading-relaxed text-muted">{block.text}</p>;
     case "ul":
       return (
         <ul key={index} className="mt-4 space-y-2 pl-5 text-[15px] leading-relaxed text-muted">
-          {block.items.map((item, idx) => (
-            <li key={idx} className="list-disc">{item}</li>
-          ))}
+          {block.items.map((item, idx) => <li key={idx} className="list-disc">{item}</li>)}
         </ul>
       );
     case "callout":
       return (
-        <aside
-          key={index}
-          className="mt-6 rounded-lg border border-border bg-accent px-4 py-3 text-sm leading-relaxed text-foreground"
-        >
+        <aside key={index} className="mt-6 rounded-lg border border-border bg-accent px-4 py-3 text-sm leading-relaxed text-foreground">
           {block.text}
         </aside>
       );
   }
 }
 
-export function PostPageShell({ post }: { post: Post }) {
+export function PostPageShell({ post, relatedPosts }: { post: Post; relatedPosts: Post[] }) {
   const { locale, t } = useLocale();
   const content = getPostContent(post, locale);
-  const related = getRelatedPosts(post);
   const minutesLabel = locale === "ko" ? `약 ${post.readingMinutes}분` : `${post.readingMinutes} min read`;
   const updatedLabel = post.updatedAt
     ? (locale === "ko" ? `수정 ${post.updatedAt}` : `Updated ${post.updatedAt}`)
@@ -64,10 +46,7 @@ export function PostPageShell({ post }: { post: Post }) {
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <Link
-        href="/posts"
-        className="inline-block text-sm text-muted hover:text-foreground transition-colors"
-      >
+      <Link href="/posts" className="inline-block text-sm text-muted hover:text-foreground transition-colors">
         {backLabel}
       </Link>
 
@@ -77,20 +56,13 @@ export function PostPageShell({ post }: { post: Post }) {
             <span className="font-mono">{post.publishedAt}</span>
             <span className="font-mono text-fg-3">·</span>
             <span className="font-mono">{minutesLabel}</span>
-            {updatedLabel && (
-              <>
-                <span className="font-mono text-fg-3">·</span>
-                <span className="font-mono">{updatedLabel}</span>
-              </>
-            )}
+            {updatedLabel && <><span className="font-mono text-fg-3">·</span><span className="font-mono">{updatedLabel}</span></>}
           </div>
           <h1 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">{content.title}</h1>
           <p className="mt-3 text-lg text-muted">{content.description}</p>
         </header>
 
-        <div className="prose-reset mt-2">
-          {content.body.map((block, idx) => renderBlock(block, idx))}
-        </div>
+        <div className="prose-reset mt-2">{content.body.map((block, idx) => renderBlock(block, idx))}</div>
 
         {post.sourceLinks && post.sourceLinks.length > 0 && (
           <section className="mt-10 rounded-lg border border-border p-5">
@@ -98,12 +70,7 @@ export function PostPageShell({ post }: { post: Post }) {
             <ul className="mt-2 space-y-1 text-sm">
               {post.sourceLinks.map((link) => (
                 <li key={link.url}>
-                  <a
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted hover:text-foreground"
-                  >
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-foreground">
                     {link.label} ↗
                   </a>
                 </li>
@@ -119,11 +86,7 @@ export function PostPageShell({ post }: { post: Post }) {
               {relatedTools.map((tool) => {
                 const toolContent = getToolContent(tool, locale);
                 return (
-                  <Link
-                    key={tool.slug}
-                    href={`/tools/${tool.slug}`}
-                    className="rounded-full border border-border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-foreground hover:text-foreground"
-                  >
+                  <Link key={tool.slug} href={`/tools/${tool.slug}`} className="rounded-full border border-border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-foreground hover:text-foreground">
                     {toolContent.shortTitle}
                   </Link>
                 );
@@ -132,19 +95,13 @@ export function PostPageShell({ post }: { post: Post }) {
           </section>
         )}
 
-        {related.length > 0 && (
+        {relatedPosts.length > 0 && (
           <section className="mt-10 border-t border-border pt-8">
             <p className="zhs-eyebrow">{relatedPostsLabel}</p>
             <ul className="mt-3 space-y-2 font-mono text-[13px]">
-              {related.map((rel) => {
+              {relatedPosts.map((rel) => {
                 const relContent = getPostContent(rel, locale);
-                return (
-                  <li key={rel.slug}>
-                    <Link href={`/posts/${rel.slug}`} className="text-muted hover:text-foreground">
-                      {relContent.title}
-                    </Link>
-                  </li>
-                );
+                return <li key={rel.slug}><Link href={`/posts/${rel.slug}`} className="text-muted hover:text-foreground">{relContent.title}</Link></li>;
               })}
             </ul>
           </section>

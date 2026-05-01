@@ -4,18 +4,17 @@ import { useMemo, useState } from "react";
 import { useLocale } from "@/components/providers";
 import SegmentedTabs from "@/components/tools/shared/SegmentedTabs";
 import { PostCard } from "@/components/posts/post-card";
-import { getAllPosts, type PostKind } from "@/lib/posts";
+import type { Post, PostKind } from "@/lib/post-types";
 
 type Filter = "all" | PostKind;
 
-export function PostsIndex() {
+export function PostsIndex({ posts }: { posts: Post[] }) {
   const { locale } = useLocale();
   const [filter, setFilter] = useState<Filter>("all");
 
-  const allPosts = useMemo(() => getAllPosts(), []);
   const visiblePosts = useMemo(
-    () => (filter === "all" ? allPosts : allPosts.filter((post) => post.kind === filter)),
-    [allPosts, filter],
+    () => (filter === "all" ? posts : posts.filter((post) => post.kind === filter)),
+    [posts, filter],
   );
 
   const eyebrow = locale === "ko" ? "// 글" : "// posts";
@@ -29,8 +28,7 @@ export function PostsIndex() {
     ? { all: "전체", guide: "가이드", news: "IT 소식", daily: "일상", tool: "도구 노트", experiment: "실험", site: "사이트 노트" }
     : { all: "All", guide: "Guide", news: "IT news", daily: "Daily", tool: "Tool note", experiment: "Experiment", site: "Site note" };
 
-  // Only show filters that have posts.
-  const availableKinds = new Set(allPosts.map((post) => post.kind));
+  const availableKinds = new Set(posts.map((post) => post.kind));
   const options: { value: Filter; label: string }[] = [
     { value: "all", label: filterLabels.all },
     ...(availableKinds.has("guide") ? [{ value: "guide" as const, label: filterLabels.guide }] : []),

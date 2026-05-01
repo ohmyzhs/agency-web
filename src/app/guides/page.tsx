@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GuidesPage } from "@/components/guides-page";
+import { getPostsByKind } from "@/lib/posts";
 
 export const metadata: Metadata = {
   title: "Guides & Resources",
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function Guides() {
-  return <GuidesPage />;
+  return <GuidesPage guidePosts={getPostsByKind("guide")} />;
 }

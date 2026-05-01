@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/providers";
-import { getPostContent, type Post } from "@/lib/posts";
+import { getPostContent, type Post } from "@/lib/post-types";
 
 const kindLabelKo: Record<Post["kind"], string> = {
   guide: "가이드",

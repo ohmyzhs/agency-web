@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostPageShell } from "@/components/posts/post-page-shell";
-import { getAllPosts, getPostBySlug } from "@/lib/posts";
+import { getAllPosts, getPostBySlug, getRelatedPosts } from "@/lib/posts";
 
 type PostPageProps = {
   params: Promise<{ slug: string }>;
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   const post = getPostBySlug(slug);
   if (!post) return {};
 
-  const fallback = post.en;
+  const fallback = post.ko ?? post.en;
   return {
     title: fallback.title,
     description: fallback.description,
@@ -37,5 +37,5 @@ export default async function PostPage({ params }: PostPageProps) {
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  return <PostPageShell post={post} />;
+  return <PostPageShell post={post} relatedPosts={getRelatedPosts(post)} />;
 }

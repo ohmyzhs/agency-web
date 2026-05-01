@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PostsIndex } from "@/components/posts/posts-index";
+import { getAllPosts } from "@/lib/posts";
 
 export const metadata: Metadata = {
   title: "Posts",
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function PostsPage() {
-  return <PostsIndex />;
+  return <PostsIndex posts={getAllPosts()} />;
 }
