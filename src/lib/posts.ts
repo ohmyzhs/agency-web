@@ -1,5 +1,5 @@
-import fs from "node:fs";
-import path from "node:path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import type { Post, PostBlock, PostCategory, PostKind, SourceLink } from "./post-types";
 export type { LocalizedPostContent, Post, PostBlock, PostCategory, PostKind, SourceLink } from "./post-types";
 export { getPostContent } from "./post-types";
@@ -98,6 +98,15 @@ function stripInlineMarkdown(text: string): string {
     .trim();
 }
 
+function buildDescription(markdown: string, fallbackTitle: string): string {
+  const paragraph = markdown
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line && !line.startsWith("#") && !line.startsWith("-") && !line.startsWith(">"));
+  const description = stripInlineMarkdown(paragraph ?? fallbackTitle);
+  return description.length > 160 ? `${description.slice(0, 157)}...` : description;
+}
+
 function parseMarkdownBody(markdown: string): PostBlock[] {
   const lines = markdown.split(/\r?\n/);
   const blocks: PostBlock[] = [];
@@ -162,8 +171,8 @@ function parsePost(filePath: string): Post | null {
   if (asString(frontmatter.status, "draft") !== "published") return null;
 
   const title = asString(frontmatter.title);
-  const description = asString(frontmatter.description);
   const slug = asString(frontmatter.slug, path.basename(filePath, ".md"));
+  const description = asString(frontmatter.description, buildDescription(markdown, title));
   if (!title || !description || !slug) return null;
 
   const publishedAt = asString(frontmatter.publishedAt, asString(frontmatter.created));
