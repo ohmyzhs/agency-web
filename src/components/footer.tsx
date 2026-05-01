@@ -22,6 +22,11 @@ export function Footer() {
             <h3 className="zhs-eyebrow">{t.footer.site}</h3>
             <ul className="mt-3 space-y-2 font-mono text-[13px]">
               <li>
+                <Link href="/posts" className="text-muted hover:text-foreground">
+                  {t.footer.posts}
+                </Link>
+              </li>
+              <li>
                 <Link href="/tools" className="text-muted hover:text-foreground">
                   {t.footer.tools}
                 </Link>

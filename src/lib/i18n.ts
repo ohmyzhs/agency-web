@@ -7,6 +7,7 @@ const dictionaries = {
     nav: {
       home: "홈",
       tools: "도구",
+      posts: "글",
       guides: "가이드",
       about: "소개",
       contact: "연락",
@@ -260,6 +261,7 @@ const dictionaries = {
       tagline: "Zero Human Studio — 조용히 작동하는 작은 도구들.",
       site: "사이트",
       tools: "도구",
+      posts: "글",
       guides: "가이드",
       about: "소개",
       contact: "연락",
@@ -308,6 +310,7 @@ const dictionaries = {
     nav: {
       home: "Home",
       tools: "Tools",
+      posts: "Posts",
       guides: "Guides",
       about: "About",
       contact: "Contact",
@@ -561,6 +564,7 @@ const dictionaries = {
       tagline: "Zero Human Studio — small tools that quietly work.",
       site: "Site",
       tools: "Tools",
+      posts: "Posts",
       guides: "Guides",
       about: "About",
       contact: "Contact",

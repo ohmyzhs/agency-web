@@ -2,9 +2,15 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/providers";
+import { PostCard } from "@/components/posts/post-card";
+import { getPostsByKind } from "@/lib/posts";
 
 export function GuidesPage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const guidePosts = getPostsByKind("guide");
+
+  const guidePostsHeading = locale === "ko" ? "가이드 글" : "Guide posts";
+  const seeAllPostsLabel = locale === "ko" ? "전체 글 보기 →" : "See all posts →";
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-24">
@@ -13,6 +19,22 @@ export function GuidesPage() {
       </p>
       <h1 className="mt-4 text-4xl font-bold tracking-tight">{t.guidesPage.title}</h1>
       <p className="mt-4 max-w-3xl text-lg text-muted">{t.guidesPage.lead}</p>
+
+      {guidePosts.length > 0 && (
+        <section className="mt-14">
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="text-2xl font-bold tracking-tight">{guidePostsHeading}</h2>
+            <Link href="/posts" className="font-mono text-[12px] uppercase tracking-wider text-primary hover:text-primary-dark">
+              {seeAllPostsLabel}
+            </Link>
+          </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {guidePosts.map((post) => (
+              <PostCard key={post.slug} post={post} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="mt-14 space-y-8">
         {t.guidesPage.sections.map((section) => (
