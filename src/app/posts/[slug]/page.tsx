@@ -33,5 +33,5 @@ export default async function PostPage({ params }: PostPageProps) {
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  return <PostPageShell post={post} relatedPosts={getRelatedPosts(post)} />;
+  return <PostPageShell post={post} relatedPosts={getRelatedPosts(post)} allPosts={getAllPosts()} />;
 }
