@@ -13,6 +13,7 @@ export function Header() {
 
   const navLinks = [
     { href: "/", label: t.nav.home },
+    { href: "/typing", label: t.nav.typing },
     { href: "/posts", label: t.nav.posts },
     { href: "/tools", label: t.nav.tools },
     { href: "/about", label: t.nav.about },

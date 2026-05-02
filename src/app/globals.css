@@ -140,6 +140,37 @@ html {
   font-weight: 500;
 }
 
+/* =============================================================
+   Typing practice — design tokens (typing-redesign-plan.md §I)
+   ============================================================= */
+:root {
+  /* Motion */
+  --motion-fast: 140ms cubic-bezier(0.2, 0, 0, 1);
+  --motion-base: 220ms cubic-bezier(0.2, 0, 0, 1);
+  --motion-slow: 420ms cubic-bezier(0.2, 0, 0, 1);
+
+  /* Key shadows */
+  --shadow-key-rest:  0 1px 0 rgba(0,0,0,0.06);
+  --shadow-key-press: 0 4px 16px rgba(255,91,31,0.25);
+
+  /* Glow */
+  --glow-accent: 0 0 80px rgba(255,91,31,0.18);
+
+  /* Game canvas */
+  --canvas-dark:                  #0c0c0e;
+  --game-meteor:                  #c2c2c2;
+  --game-meteor-special-red:      #ff4040;
+  --game-meteor-special-purple:   #a855f7;
+  --game-meteor-special-gold:     #facc15;
+
+  /* Typing stage map */
+  --typing-stage-bg:   var(--bg-inset);
+  --typing-correct:    #22c55e;
+  --typing-incorrect:  #ef4444;
+  --typing-pending:    #f59e0b;
+  --typing-cursor:     var(--zhs-accent);
+}
+
 /* Fade-in animation */
 @keyframes fadeInUp {
   from {
