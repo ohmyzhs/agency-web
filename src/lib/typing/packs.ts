@@ -4,11 +4,11 @@ import type { TypingLanguage } from "./types";
 
 export type ZoneLessonId =
   | "home"
-  | "middle"
-  | "left-top"
   | "right-top"
-  | "left-bottom"
+  | "left-top"
   | "right-bottom"
+  | "left-bottom"
+  | "middle"
   | "number"
   | "all";
 
@@ -22,78 +22,86 @@ export type ZoneLesson = {
   drill: string;
 };
 
+const repeatDrill = (source: string, repeat = 6) =>
+  Array.from({ length: repeat }, (_, index) =>
+    index % 2 === 0 ? source : Array.from(source).reverse().join(""),
+  ).join("");
+
+const homeDrill = "ㅁㄴㅇㄹㅓㅏㅣ;:";
+const rightTopDrill = "ㅕㅑㅐㅒㅔㅖ";
+const leftTopDrill = "ㅂㅃㅈㅉㄷㄸㄱㄲ";
+const rightBottomDrill = "ㅡ,<.>/?";
+const leftBottomDrill = "ㅋㅌㅊㅍ";
+const middleDrill = "ㅅㅆㅎㅠㅛㅗㅜ";
+const numberDrill = "1!2@3#4$5%6^7&8*9(0)-_=+";
+
 export const zoneLessons: ZoneLesson[] = [
   {
     id: "home",
     step: 1,
     titleKo: "기본자리",
-    subtitleKo: "ㅁㄴㅇㄹ · ㅓㅏㅣ",
+    subtitleKo: homeDrill,
     titleEn: "Home row",
-    drill:
-      "ㅁ ㄴ ㅇ ㄹ ㅓ ㅏ ㅣ ㅁㄴ ㅇㄹ ㅓㅏ ㅣㅁ ㄴㅇ ㄹㅓ ㅏㅣ ㅁㅇ ㄴㄹ ㅓㅣ ㅏㄴ ㅇㄹ ㅓㅁ",
+    drill: repeatDrill(homeDrill),
   },
   {
-    id: "middle",
+    id: "right-top",
     step: 2,
-    titleKo: "가운데자리",
-    subtitleKo: "ㅎ · ㅗ",
-    titleEn: "Middle",
-    drill:
-      "ㅎ ㅗ ㅎㅗ ㅗㅎ ㅎㅎ ㅗㅗ ㅎㅗㅎ ㅗㅎㅗ ㅎㅗ ㅗㅎ",
+    titleKo: "오른손윗자리",
+    subtitleKo: rightTopDrill,
+    titleEn: "Right top",
+    drill: repeatDrill(rightTopDrill),
   },
   {
     id: "left-top",
     step: 3,
-    titleKo: "왼손 윗자리",
-    subtitleKo: "ㅂㅈㄷㄱㅅ",
+    titleKo: "왼손윗자리",
+    subtitleKo: leftTopDrill,
     titleEn: "Left top",
-    drill:
-      "ㅂ ㅈ ㄷ ㄱ ㅅ ㅂㅈ ㄷㄱ ㅅㅂ ㅈㄷ ㄱㅅ ㅂㄷ ㅈㄱ ㄷㅅ ㅂㄱ ㅈㅅ ㄷㅂ ㄱㅈ ㅅㄷ",
+    drill: repeatDrill(leftTopDrill),
   },
   {
-    id: "right-top",
+    id: "right-bottom",
     step: 4,
-    titleKo: "오른손 윗자리",
-    subtitleKo: "ㅛㅕㅑㅐㅔ",
-    titleEn: "Right top",
-    drill:
-      "ㅛ ㅕ ㅑ ㅐ ㅔ ㅛㅕ ㅑㅐ ㅔㅛ ㅕㅑ ㅐㅔ ㅛㅑ ㅕㅐ ㅑㅔ ㅛㅐ ㅕㅔ ㅑㅛ ㅐㅕ ㅔㅑ",
+    titleKo: "오른손아랫자리",
+    subtitleKo: rightBottomDrill,
+    titleEn: "Right bottom",
+    drill: repeatDrill(rightBottomDrill),
   },
   {
     id: "left-bottom",
     step: 5,
-    titleKo: "왼손 아랫자리",
-    subtitleKo: "ㅋㅌㅊㅍㅠ",
+    titleKo: "왼손아랫자리",
+    subtitleKo: leftBottomDrill,
     titleEn: "Left bottom",
-    drill:
-      "ㅋ ㅌ ㅊ ㅍ ㅠ ㅋㅌ ㅊㅍ ㅠㅋ ㅌㅊ ㅍㅠ ㅋㅊ ㅌㅍ ㅊㅠ ㅋㅍ ㅌㅠ ㅊㅋ ㅍㅌ ㅠㅊ",
+    drill: repeatDrill(leftBottomDrill),
   },
   {
-    id: "right-bottom",
+    id: "middle",
     step: 6,
-    titleKo: "오른손 아랫자리",
-    subtitleKo: "ㅜ · ㅡ",
-    titleEn: "Right bottom",
-    drill:
-      "ㅜ ㅡ ㅜㅡ ㅡㅜ ㅜㅜ ㅡㅡ ㅜㅡㅜ ㅡㅜㅡ ㅜㅡ ㅡㅜ",
+    titleKo: "가운뎃자리",
+    subtitleKo: middleDrill,
+    titleEn: "Middle",
+    drill: repeatDrill(middleDrill),
   },
   {
     id: "number",
     step: 7,
-    titleKo: "숫자열",
-    subtitleKo: "1 2 3 · 7 8 9 0",
+    titleKo: "숫자자리",
+    subtitleKo: numberDrill,
     titleEn: "Number row",
-    drill:
-      "1 2 3 4 5 6 7 8 9 0 12 34 56 78 90 13 24 57 80 19 28 37 46 50",
+    drill: repeatDrill(numberDrill, 4),
   },
   {
     id: "all",
     step: 8,
-    titleKo: "종합 연습",
-    subtitleKo: "전 자모 통합",
+    titleKo: "전체자리",
+    subtitleKo: "1~7단계 전체",
     titleEn: "All keys",
-    drill:
-      "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ ㅂㅈㄷㄱㅅㅁㄴㅇㄹㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡ",
+    drill: repeatDrill(
+      `${homeDrill}${rightTopDrill}${leftTopDrill}${rightBottomDrill}${leftBottomDrill}${middleDrill}${numberDrill}`,
+      3,
+    ),
   },
 ];
 

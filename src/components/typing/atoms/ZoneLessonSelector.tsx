@@ -26,12 +26,17 @@ export function ZoneLessonSelector({ value, onSelect, onInteractionStart }: Prop
                 onClick={() => onSelect(lesson.id)}
                 aria-current={active ? 'step' : undefined}
                 className={[
-                  'flex w-full flex-col items-center gap-0.5 rounded-lg border px-2 py-2 text-center transition-colors',
+                  'relative flex w-full flex-col items-center gap-0.5 rounded-lg border px-2 py-2 text-center transition-colors',
                   active
-                    ? 'border-primary bg-primary/10 text-foreground shadow-sm'
+                    ? 'border-primary bg-primary/15 text-foreground shadow-md ring-2 ring-primary/40 ring-offset-2 ring-offset-background'
                     : 'border-border bg-background text-muted hover:border-primary/50 hover:text-foreground',
                 ].join(' ')}
               >
+                {active && (
+                  <span className="absolute right-1.5 top-1.5 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-bold leading-none text-primary-foreground">
+                    선택
+                  </span>
+                )}
                 <span
                   className={[
                     'text-[10px] font-semibold uppercase tracking-[0.16em]',

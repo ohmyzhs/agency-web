@@ -12,7 +12,7 @@ import {
   pickRandom,
   LONGFORM_CATEGORIES,
 } from '@/lib/typing/packs-staged';
-import { buildWordStream, englishPassages, englishSentences, zoneLessons } from '@/lib/typing/packs';
+import { buildWordStream, englishPassages, englishSentences, koreanPassages, zoneLessons } from '@/lib/typing/packs';
 import type { TypingMode, StageLevel, LongformCategory } from '@/lib/typing/types';
 import type { ZoneLessonId } from '@/lib/typing/packs';
 
@@ -61,6 +61,12 @@ export function useStageContent(opts: Options) {
       if (mode === 'word') return Array.from({ length: 12 }, () => buildWordStream('en', 25));
       if (mode === 'sentence') return seededShuffle(englishSentences, key);
       if (mode === 'speed-test') return Array.from({ length: 12 }, () => buildWordStream('en', 80));
+      if (mode === 'longform') {
+        const requested = category as LongformCategory | undefined;
+        const cat = requested && LONGFORM_CATEGORIES.includes(requested) ? requested : undefined;
+        const passages = cat ? getPassagesForCategory(cat, 'en').map(p => p.text) : englishPassages;
+        return seededShuffle(passages.length ? passages : englishPassages, key);
+      }
       return seededShuffle(englishPassages, key);
     }
 
@@ -68,9 +74,16 @@ export function useStageContent(opts: Options) {
     if (mode === 'sentence') return seededShuffle(getSentencesForStage(stage), key);
     if (mode === 'speed-test') return Array.from({ length: 12 }, (_, idx) => buildWordStreamFromStage(stage, 80 + (idx % 3) * 10));
 
-    const cat = category ?? pickRandom(LONGFORM_CATEGORIES);
-    const passages = getPassagesForCategory(cat).map(p => p.text);
-    return seededShuffle(passages, key);
+    if (mode === 'longform') {
+      const requested = category as LongformCategory | undefined;
+      const cat = requested && LONGFORM_CATEGORIES.includes(requested)
+        ? requested
+        : pickRandom(LONGFORM_CATEGORIES);
+      const passages = getPassagesForCategory(cat, language).map(p => p.text);
+      return seededShuffle(passages, key);
+    }
+
+    return seededShuffle(koreanPassages, key);
   }, [key, opts]);
 
   const next = useCallback((): string => {

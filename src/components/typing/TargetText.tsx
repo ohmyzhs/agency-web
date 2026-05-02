@@ -36,18 +36,16 @@ function ZoneTargetText({ target, typed }: { target: string; typed: string }) {
   const rightChars = chars.slice(cursorIndex + 1, rightEnd);
 
   const renderPreview = (ch: string, key: string, faded: boolean) => {
-    const isSpace = ch === " ";
     return (
       <span
         key={key}
         aria-hidden="true"
         className={[
           "inline-flex h-12 min-w-[2.25rem] items-center justify-center rounded-md border border-border/70 bg-background px-2 font-mono text-xl",
-          isSpace ? "tracking-[0.4em] text-muted/60" : "",
           faded ? "opacity-40" : "opacity-70",
         ].join(" ")}
       >
-        {isSpace ? "·" : ch}
+        {ch}
       </span>
     );
   };
@@ -58,7 +56,9 @@ function ZoneTargetText({ target, typed }: { target: string; typed: string }) {
       aria-label="자리연습 입력 안내"
     >
       <div className="flex items-center justify-between gap-3 border-b border-border/70 px-4 py-2.5 text-xs text-muted">
-        <span className="font-medium uppercase tracking-wider">자리연습</span>
+        <span className="inline-flex items-center rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-primary-foreground shadow-sm">
+          자리연습
+        </span>
         <span className="tabular-nums">{cursorIndex} / {total}</span>
       </div>
       <div className="h-1 bg-border/70" aria-hidden="true">

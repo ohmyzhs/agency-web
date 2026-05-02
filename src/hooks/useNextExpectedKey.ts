@@ -22,7 +22,7 @@ export function useNextExpectedKey({ target, typed, mode }: Options): KeyDef | u
   return useMemo(() => {
     if (mode === 'keyboard-zone') {
       const nextChar = target[typed.length];
-      if (!nextChar || nextChar === ' ') return undefined;
+      if (!nextChar) return undefined;
       const code = codeForHangul(nextChar);
       return code ? getKeyByCode(code) : undefined;
     }

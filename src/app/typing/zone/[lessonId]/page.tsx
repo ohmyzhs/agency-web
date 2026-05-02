@@ -6,19 +6,19 @@ import { ModeShell } from '@/components/typing/organisms/ModeShell';
 import type { ZoneLessonId } from '@/lib/typing/packs';
 
 const VALID_ZONES: ZoneLessonId[] = [
-  'home', 'middle', 'left-top', 'right-top',
-  'left-bottom', 'right-bottom', 'number', 'all',
+  'home', 'right-top', 'left-top', 'right-bottom',
+  'left-bottom', 'middle', 'number', 'all',
 ];
 
 const ZONE_LABELS: Record<ZoneLessonId, string> = {
-  home: '기본 자리',
-  middle: '중앙',
-  'left-top': '왼손 윗줄',
-  'right-top': '오른손 윗줄',
-  'left-bottom': '왼손 아랫줄',
-  'right-bottom': '오른손 아랫줄',
-  number: '숫자열',
-  all: '종합 연습',
+  home: '기본자리',
+  'right-top': '오른손윗자리',
+  'left-top': '왼손윗자리',
+  'right-bottom': '오른손아랫자리',
+  'left-bottom': '왼손아랫자리',
+  middle: '가운뎃자리',
+  number: '숫자자리',
+  all: '전체자리',
 };
 
 type Params = Promise<{ lessonId: string }>;

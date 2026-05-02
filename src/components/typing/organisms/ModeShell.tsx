@@ -36,7 +36,7 @@ import KoreanKeyboard from '../KoreanKeyboard';
 import SegmentedTabs from '@/components/tools/shared/SegmentedTabs';
 import { ZoneLessonSelector } from '../atoms/ZoneLessonSelector';
 import { zoneLessons, type ZoneLessonId } from '@/lib/typing/packs';
-import type { TypingMode, TypingLanguage, StageLevel } from '@/lib/typing/types';
+import type { TypingMode, TypingLanguage, StageLevel, LongformCategory } from '@/lib/typing/types';
 import type { ZoneId } from '@/lib/typing/korean-keyboard';
 
 const MODE_OPTIONS: { value: TypingMode; label: string }[] = [
@@ -108,6 +108,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   // ── content ──
   const { next: nextContent } = useStageContent({
     mode, stage: stage as StageLevel, language: language as TypingLanguage, lessonId,
+    category: mode === 'longform' ? (lessonId as LongformCategory) : undefined,
   });
 
   const initTarget = useCallback(() => {

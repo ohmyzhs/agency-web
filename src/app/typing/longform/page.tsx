@@ -11,6 +11,7 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 const CATEGORY_DESC: Record<string, string> = {
+  AI단편: 'AI 창작 단편소설 · 한/영 30세트',
   애국가: '국가 / 시 / 국문학 PD',
   고전: '훈민정음 · 옛 시조 · 고전 산문',
   속담: '한국 속담 · 사자성어',
@@ -29,7 +30,7 @@ export default function LongformHubPage() {
           타자연습 · 장문 / 필사
         </p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
-          장문 / 필사 8 카테고리
+          장문 / 필사 9 카테고리
         </h1>
         <p className="mt-2 text-base text-muted">
           단락 단위로 흐름을 따라 입력하는 필사 모드. 출처와 저작권은 각 단락에 표기됩니다.
