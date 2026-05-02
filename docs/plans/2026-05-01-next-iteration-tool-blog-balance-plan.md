@@ -587,7 +587,7 @@ A separate benchmark document was added after surveying `getin.kr`, `vivoldi.com
 
 - `docs/plans/2026-05-02-tool-benchmark-distinct-backlog.md`
 
-Use that file as the canonical distinct candidate backlog. Highest-priority additions from the benchmark are:
+Use that file as the canonical comprehensive candidate inventory/backlog. Highest-priority additions from the benchmark are:
 
 1. JSON/YAML/XML formatter-validator-viewer workspace.
 2. Character/word/line counter.
