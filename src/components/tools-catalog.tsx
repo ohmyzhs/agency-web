@@ -12,6 +12,8 @@ import {
 
 const FAVORITES_KEY = "zhs.favoriteTools";
 const FAVORITES_EVENT = "zhs:favorites-changed";
+const VIEW_MODE_KEY = "zhs.toolsViewMode";
+const VIEW_MODE_EVENT = "zhs:tools-view-mode-changed";
 
 const CATEGORY_ORDER: ToolCategory[] = [
   "file-media",
@@ -24,6 +26,7 @@ const CATEGORY_ORDER: ToolCategory[] = [
 ];
 
 type CategoryFilter = "all" | "favorites" | ToolCategory;
+type ViewMode = "grid" | "list";
 
 function subscribeFavorites(callback: () => void) {
   window.addEventListener("storage", callback);
@@ -69,6 +72,34 @@ function useFavoriteTools() {
   return { favorites, favoriteSet, toggleFavorite };
 }
 
+function subscribeViewMode(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(VIEW_MODE_EVENT, callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(VIEW_MODE_EVENT, callback);
+  };
+}
+
+function readViewModeSnapshot() {
+  if (typeof window === "undefined") return "";
+  return window.localStorage.getItem(VIEW_MODE_KEY) ?? "";
+}
+
+function parseViewMode(snapshot: string): ViewMode {
+  return snapshot === "list" ? "list" : "grid";
+}
+
+function useViewMode(): [ViewMode, (mode: ViewMode) => void] {
+  const snapshot = useSyncExternalStore(subscribeViewMode, readViewModeSnapshot, () => "");
+  const mode = useMemo(() => parseViewMode(snapshot), [snapshot]);
+  const setMode = (next: ViewMode) => {
+    window.localStorage.setItem(VIEW_MODE_KEY, next);
+    window.dispatchEvent(new Event(VIEW_MODE_EVENT));
+  };
+  return [mode, setMode];
+}
+
 const copy = {
   ko: {
     searchLabel: "도구 검색",
@@ -89,6 +120,9 @@ const copy = {
     favoriteRemove: "즐겨찾기 해제",
     noResultsTitle: "검색 결과가 없습니다.",
     noResultsBody: "다른 키워드나 카테고리로 다시 찾아보세요.",
+    viewModeLabel: "보기 방식",
+    viewGrid: "타일",
+    viewList: "간단",
   },
   en: {
     searchLabel: "Search tools",
@@ -109,6 +143,9 @@ const copy = {
     favoriteRemove: "Remove favorite",
     noResultsTitle: "No matching tools.",
     noResultsBody: "Try another keyword or category.",
+    viewModeLabel: "View",
+    viewGrid: "Tiles",
+    viewList: "Compact",
   },
 };
 
@@ -117,6 +154,7 @@ export function ToolsCatalog() {
   const strings = copy[locale];
   const allTools = getAllTools();
   const { favorites, favoriteSet, toggleFavorite } = useFavoriteTools();
+  const [viewMode, setViewMode] = useViewMode();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<CategoryFilter>("all");
 
@@ -239,17 +277,39 @@ export function ToolsCatalog() {
         </div>
       </section>
 
-      <div className="mt-8 flex items-center justify-between gap-3 text-sm text-muted">
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-3 text-sm text-muted">
         <span>{resultSummary}</span>
-        {filter !== "all" && (
-          <button
-            type="button"
-            onClick={() => setFilter("all")}
-            className="font-medium text-primary hover:text-primary-dark"
+        <div className="flex items-center gap-3">
+          {filter !== "all" && (
+            <button
+              type="button"
+              onClick={() => setFilter("all")}
+              className="font-medium text-primary hover:text-primary-dark"
+            >
+              {strings.filterAll}
+            </button>
+          )}
+          <div
+            role="group"
+            aria-label={strings.viewModeLabel}
+            className="inline-flex overflow-hidden rounded-lg border border-border"
           >
-            {strings.filterAll}
-          </button>
-        )}
+            <ViewModeButton
+              active={viewMode === "grid"}
+              onClick={() => setViewMode("grid")}
+              label={strings.viewGrid}
+            >
+              <GridIcon />
+            </ViewModeButton>
+            <ViewModeButton
+              active={viewMode === "list"}
+              onClick={() => setViewMode("list")}
+              label={strings.viewList}
+            >
+              <ListIcon />
+            </ViewModeButton>
+          </div>
+        </div>
       </div>
 
       {isFavoritesEmpty ? (
@@ -266,19 +326,35 @@ export function ToolsCatalog() {
                   {group.tools.length}
                 </span>
               </div>
-              <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {group.tools.map((tool) => (
-                  <CatalogToolCard
-                    key={tool.slug}
-                    tool={tool}
-                    isFavorite={favoriteSet.has(tool.slug)}
-                    onToggleFavorite={() => toggleFavorite(tool.slug)}
-                    favoriteAddLabel={strings.favoriteAdd}
-                    favoriteRemoveLabel={strings.favoriteRemove}
-                    openLabel={strings.open}
-                  />
-                ))}
-              </div>
+              {viewMode === "grid" ? (
+                <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                  {group.tools.map((tool) => (
+                    <CatalogToolCard
+                      key={tool.slug}
+                      tool={tool}
+                      isFavorite={favoriteSet.has(tool.slug)}
+                      onToggleFavorite={() => toggleFavorite(tool.slug)}
+                      favoriteAddLabel={strings.favoriteAdd}
+                      favoriteRemoveLabel={strings.favoriteRemove}
+                      openLabel={strings.open}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <ul className="mt-4 divide-y divide-border overflow-hidden rounded-xl border border-border bg-background">
+                  {group.tools.map((tool) => (
+                    <CatalogToolRow
+                      key={tool.slug}
+                      tool={tool}
+                      isFavorite={favoriteSet.has(tool.slug)}
+                      onToggleFavorite={() => toggleFavorite(tool.slug)}
+                      favoriteAddLabel={strings.favoriteAdd}
+                      favoriteRemoveLabel={strings.favoriteRemove}
+                      openLabel={strings.open}
+                    />
+                  ))}
+                </ul>
+              )}
             </section>
           ))}
         </div>
@@ -332,7 +408,7 @@ function CatalogToolCard({
   const categoryLabel = t.categories[tool.category] ?? tool.category;
 
   return (
-    <article className="hover-lift group relative rounded-xl border border-border bg-background p-5 transition-all hover:border-primary/30 hover:shadow-lg">
+    <article className="hover-lift group relative rounded-xl border border-border bg-background p-4 transition-all hover:border-primary/30 hover:shadow-lg">
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
           <span className="rounded-full bg-accent px-2 py-0.5">{tierLabel}</span>
@@ -344,7 +420,7 @@ function CatalogToolCard({
           aria-pressed={isFavorite}
           aria-label={isFavorite ? favoriteRemoveLabel : favoriteAddLabel}
           title={isFavorite ? favoriteRemoveLabel : favoriteAddLabel}
-          className={`relative z-10 rounded-full border px-2 py-1 text-sm transition-colors ${
+          className={`relative z-10 rounded-full border px-2 py-0.5 text-sm transition-colors ${
             isFavorite
               ? "border-primary bg-accent text-primary"
               : "border-border text-muted hover:border-primary hover:text-primary"
@@ -353,23 +429,149 @@ function CatalogToolCard({
           ★
         </button>
       </div>
-      <h3 className="mt-3 text-lg font-semibold transition-colors group-hover:text-primary">
+      <h3 className="mt-2.5 text-base font-semibold transition-colors group-hover:text-primary">
         <Link href={`/tools/${tool.slug}`} className="after:absolute after:inset-0">
           {content.title}
         </Link>
       </h3>
       <p className="mt-1 line-clamp-2 text-sm text-muted">{content.description}</p>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {content.examples.slice(0, 2).map((example) => (
-          <span key={example.label} className="rounded-md bg-card px-2 py-0.5 text-xs text-muted">
-            {example.label}
-          </span>
-        ))}
+      <div className="mt-2.5 flex items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-1.5">
+          {content.examples.slice(0, 2).map((example) => (
+            <span key={example.label} className="rounded-md bg-card px-2 py-0.5 text-xs text-muted">
+              {example.label}
+            </span>
+          ))}
+        </div>
+        <span className="text-sm font-medium text-primary">
+          {openLabel} →
+        </span>
       </div>
-      <span className="mt-4 inline-flex text-sm font-medium text-primary">
-        {openLabel} →
-      </span>
     </article>
+  );
+}
+
+function CatalogToolRow({
+  tool,
+  isFavorite,
+  onToggleFavorite,
+  favoriteAddLabel,
+  favoriteRemoveLabel,
+  openLabel,
+}: {
+  tool: Tool;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+  favoriteAddLabel: string;
+  favoriteRemoveLabel: string;
+  openLabel: string;
+}) {
+  const { locale, t } = useLocale();
+  const content = getToolContent(tool, locale);
+  const categoryLabel = t.categories[tool.category] ?? tool.category;
+
+  return (
+    <li className="group relative flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-card">
+      <button
+        type="button"
+        onClick={onToggleFavorite}
+        aria-pressed={isFavorite}
+        aria-label={isFavorite ? favoriteRemoveLabel : favoriteAddLabel}
+        title={isFavorite ? favoriteRemoveLabel : favoriteAddLabel}
+        className={`relative z-10 shrink-0 rounded-full border px-2 py-0.5 text-sm transition-colors ${
+          isFavorite
+            ? "border-primary bg-accent text-primary"
+            : "border-border text-muted hover:border-primary hover:text-primary"
+        }`}
+      >
+        ★
+      </button>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+          <h3 className="truncate text-sm font-semibold transition-colors group-hover:text-primary">
+            <Link href={`/tools/${tool.slug}`} className="after:absolute after:inset-0">
+              {content.title}
+            </Link>
+          </h3>
+          <span className="shrink-0 text-xs text-muted">{categoryLabel}</span>
+        </div>
+        <p className="mt-0.5 line-clamp-1 text-xs text-muted">{content.description}</p>
+      </div>
+      <span
+        aria-label={openLabel}
+        className="shrink-0 text-sm font-medium text-primary opacity-70 transition-opacity group-hover:opacity-100"
+      >
+        →
+      </span>
+    </li>
+  );
+}
+
+function ViewModeButton({
+  active,
+  onClick,
+  label,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      aria-label={label}
+      title={label}
+      className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium transition-colors ${
+        active
+          ? "bg-primary text-white"
+          : "bg-background text-muted hover:text-foreground"
+      }`}
+    >
+      {children}
+      <span>{label}</span>
+    </button>
+  );
+}
+
+function GridIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 16 16"
+      width="14"
+      height="14"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
+      <rect x="2" y="2" width="5" height="5" rx="1" />
+      <rect x="9" y="2" width="5" height="5" rx="1" />
+      <rect x="2" y="9" width="5" height="5" rx="1" />
+      <rect x="9" y="9" width="5" height="5" rx="1" />
+    </svg>
+  );
+}
+
+function ListIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 16 16"
+      width="14"
+      height="14"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    >
+      <line x1="3" y1="4" x2="13" y2="4" />
+      <line x1="3" y1="8" x2="13" y2="8" />
+      <line x1="3" y1="12" x2="13" y2="12" />
+    </svg>
   );
 }
 
