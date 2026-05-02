@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const SITE_URL = process.env.SITE_URL ?? "https://ohmyzhs.com";
+export const SITE_URL = process.env.SITE_URL ?? "https://oh-my-zhs.com";
 export const SITE_NAME = "Zero Human Studio";
 export const DEFAULT_DESCRIPTION =
   "Zero Human Studio는 한국 생활 도구, 자동화 유틸리티, 개발자 도구, 실용 가이드를 제공하는 oh-my-zhs.com의 tools and posts hub입니다.";
