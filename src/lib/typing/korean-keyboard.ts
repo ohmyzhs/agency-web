@@ -104,6 +104,15 @@ export function hangulForCode(code: string): string | undefined {
   return codeToHangul[code];
 }
 
+export function strokeForCode(code: string, shiftKey = false): string | undefined {
+  const key = allKeys.find((k) => k.code === code);
+  if (!key) return undefined;
+  if (key.hangul || key.hangulShift) {
+    return shiftKey ? (key.hangulShift ?? key.hangul) : key.hangul;
+  }
+  return shiftKey ? (key.shift ?? key.base) : key.base;
+}
+
 export function getKeyByCode(code: string): KeyDef | undefined {
   return allKeys.find((k) => k.code === code);
 }

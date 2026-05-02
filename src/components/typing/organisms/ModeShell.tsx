@@ -37,7 +37,7 @@ import SegmentedTabs from '@/components/tools/shared/SegmentedTabs';
 import { ZoneLessonSelector } from '../atoms/ZoneLessonSelector';
 import { zoneLessons, type ZoneLessonId } from '@/lib/typing/packs';
 import type { TypingMode, TypingLanguage, StageLevel, LongformCategory } from '@/lib/typing/types';
-import type { ZoneId } from '@/lib/typing/korean-keyboard';
+import { strokeForCode, type ZoneId } from '@/lib/typing/korean-keyboard';
 
 const MODE_OPTIONS: { value: TypingMode; label: string }[] = [
   { value: 'keyboard-zone', label: '자리연습' },
@@ -291,8 +291,51 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   }, [db, target, typed, startedAt, mode, language, stage, lessonId, nextContent, focusTypingInputSoon]);
 
   // ── input handling ──
+  const applyZoneStroke = useCallback((stroke: string) => {
+    const state = useTypingSession.getState();
+    const currentPhase = state.phase;
+    const currentTyped = state.typed;
+    const currentTarget = state.target;
+
+    if (currentPhase === 'finished' || currentPhase === 'countdown') return;
+    if (!stroke || stroke.length !== 1) return;
+
+    const next = (currentPhase === 'idle' ? stroke : `${currentTyped}${stroke}`).slice(0, currentTarget.length);
+
+    if (currentPhase === 'idle') {
+      if (countdownEnabled) {
+        startCountdown();
+        return;
+      }
+      startSession();
+      playKey().catch(() => {});
+      setTyped(next);
+      return;
+    }
+
+    if (currentPhase !== 'running') return;
+    playKey().catch(() => {});
+    setTyped(next);
+
+    if (next.length >= currentTarget.length && !finishScheduledRef.current) {
+      finishScheduledRef.current = true;
+      setTimeout(() => {
+        finishScheduledRef.current = false;
+        doFinish(next);
+      }, 0);
+    }
+  }, [
+    countdownEnabled,
+    startCountdown,
+    startSession,
+    playKey,
+    setTyped,
+    doFinish,
+  ]);
+
   const handleValueChange = useCallback((val: string) => {
     if (phase === 'finished') return;
+    if (mode === 'keyboard-zone') return;
     const clipped = mode === 'speed-test' ? val : val.slice(0, target.length);
 
     if (phase === 'idle' && clipped.length > 0) {
@@ -509,6 +552,28 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
         onValueChange={handleValueChange}
         onCompositionChange={handleCompositionChange}
         onKeyDownCapture={e => {
+          if (mode === 'keyboard-zone') {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+              e.preventDefault();
+              handleNext();
+              return;
+            }
+            if (e.metaKey || e.ctrlKey || e.altKey) return;
+            if (e.key === 'Backspace') {
+              e.preventDefault();
+              if (phase !== 'finished' && phase !== 'countdown') {
+                setTyped(typed.slice(0, -1));
+              }
+              return;
+            }
+            const stroke = strokeForCode(e.code, e.shiftKey);
+            if (stroke) {
+              e.preventDefault();
+              applyZoneStroke(stroke);
+            }
+            return;
+          }
+
           if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
             e.preventDefault();
             handleNext();
