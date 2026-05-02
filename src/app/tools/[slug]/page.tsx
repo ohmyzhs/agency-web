@@ -5,8 +5,11 @@ import ColorContrastChecker from "@/components/tools/ColorContrastChecker";
 import CookingMeasurementConverter from "@/components/tools/CookingMeasurementConverter";
 import CronExplainer from "@/components/tools/CronExplainer";
 import IconFaviconGenerator from "@/components/tools/IconFaviconGenerator";
+import DeveloperTextToolkit from "@/components/tools/DeveloperTextToolkit";
+import ImageEditingToolkit from "@/components/tools/ImageEditingToolkit";
 import ImageFormatConverter from "@/components/tools/ImageFormatConverter";
 import JsonYamlValidator from "@/components/tools/JsonYamlValidator";
+import LifeCalculatorSuite from "@/components/tools/LifeCalculatorSuite";
 import NetworkDiagnosticsTool from "@/components/tools/NetworkDiagnosticsTool";
 import OgImageGeneratorTool from "@/components/tools/OgImageGeneratorTool";
 import PdfToolkitTool from "@/components/tools/PdfToolkitTool";
@@ -49,6 +52,9 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
 }
 
 const widgetMap: Record<string, React.ReactNode> = {
+  "developer-text-toolkit": <DeveloperTextToolkit />,
+  "image-editing-toolkit": <ImageEditingToolkit />,
+  "life-calculator-suite": <LifeCalculatorSuite />,
   "pdf-toolkit": <PdfToolkitTool />,
   "og-image-generator": <OgImageGeneratorTool />,
   "qr-barcode-generator": <QrBarcodeGeneratorTool />,
