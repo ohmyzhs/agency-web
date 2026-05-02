@@ -34,7 +34,10 @@ import TargetText from '../TargetText';
 import TypingInput from '../TypingInput';
 import KoreanKeyboard from '../KoreanKeyboard';
 import SegmentedTabs from '@/components/tools/shared/SegmentedTabs';
+import { ZoneLessonSelector } from '../atoms/ZoneLessonSelector';
+import { zoneLessons, type ZoneLessonId } from '@/lib/typing/packs';
 import type { TypingMode, TypingLanguage, StageLevel } from '@/lib/typing/types';
+import type { ZoneId } from '@/lib/typing/korean-keyboard';
 
 const MODE_OPTIONS: { value: TypingMode; label: string }[] = [
   { value: 'keyboard-zone', label: '자리연습' },
@@ -80,6 +83,27 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   const [showInlineResult, setShowInlineResult] = useState(false);
   const [lastResult, setLastResult] = useState<{ tpm: number; accuracy: number; passed: boolean } | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const finishScheduledRef = useRef(false);
+  const intentionalFocusExitRef = useRef(false);
+
+  const focusTypingInput = useCallback(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    try {
+      el.focus({ preventScroll: true });
+    } catch {
+      el.focus();
+    }
+    if (window.scrollX !== scrollX || window.scrollY !== scrollY) {
+      window.scrollTo(scrollX, scrollY);
+    }
+  }, []);
+
+  const focusTypingInputSoon = useCallback(() => {
+    window.requestAnimationFrame(() => focusTypingInput());
+  }, [focusTypingInput]);
 
   // ── content ──
   const { next: nextContent } = useStageContent({
@@ -98,16 +122,72 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     setShowInlineResult(false);
     setLastResult(null);
     setCompletedCount(0);
+    focusTypingInputSoon();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, language, stage, lessonId, speedDuration]);
+
+  // Keep the practice textarea as the active element during typing flow. Users
+  // habitually press Space/Enter after a prompt; no implicit focus escape should
+  // turn that into page scroll or button activation.
+  useEffect(() => {
+    if (phase === 'countdown') return;
+    focusTypingInputSoon();
+  }, [phase, target, focusTypingInputSoon]);
+
+  // If focus drifts to page chrome while the user is still practicing, pull it
+  // back without scrolling. Clicking explicit controls below temporarily opts out.
+  useEffect(() => {
+    const handleFocusIn = () => {
+      if (intentionalFocusExitRef.current) return;
+      const el = inputRef.current;
+      if (!el || el.disabled) return;
+      window.requestAnimationFrame(() => {
+        const active = document.activeElement;
+        if (active !== el && active instanceof HTMLElement) {
+          const tag = active.tagName;
+          if (tag === 'BUTTON' || tag === 'A' || tag === 'INPUT' || tag === 'SELECT') {
+            focusTypingInput();
+          }
+        }
+      });
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (intentionalFocusExitRef.current || event.defaultPrevented) return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.key !== ' ' && event.key !== 'Enter') return;
+      const el = inputRef.current;
+      if (!el || el.disabled) return;
+      const active = document.activeElement;
+      if (active === el) return;
+      if (active instanceof HTMLElement && active.isContentEditable) return;
+      event.preventDefault();
+      focusTypingInput();
+    };
+
+    document.addEventListener('focusin', handleFocusIn);
+    document.addEventListener('keydown', handleKeyDown, { capture: true });
+    return () => {
+      document.removeEventListener('focusin', handleFocusIn);
+      document.removeEventListener('keydown', handleKeyDown, { capture: true });
+    };
+  }, [focusTypingInput]);
 
   // honor route-locked mode / lessonId
   useEffect(() => {
     if (lockedMode && lockedMode !== mode) setMode(lockedMode);
   }, [lockedMode, mode, setMode]);
+
+  // Sync lockedLessonId only when the prop itself changes (route navigation),
+  // not whenever the in-memory lessonId drifts via the in-page selector.
+  // Otherwise the selector would be reverted on every click.
+  const lastLockedLessonRef = useRef<string | undefined>(undefined);
   useEffect(() => {
-    if (lockedLessonId !== undefined && lockedLessonId !== lessonId) setLessonId(lockedLessonId);
-  }, [lockedLessonId, lessonId, setLessonId]);
+    if (lockedLessonId === undefined) return;
+    if (lockedLessonId === lastLockedLessonRef.current) return;
+    lastLockedLessonRef.current = lockedLessonId;
+    setLessonId(lockedLessonId);
+  }, [lockedLessonId, setLessonId]);
 
   // live tick
   useEffect(() => {
@@ -141,58 +221,73 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   }, [pendingKeyDef, setPendingKey]);
 
   // ── finish logic ──
-  const doFinish = useCallback(async () => {
+  const doFinish = useCallback((completedTyped?: string) => {
     const fin = Date.now();
-    const m = computeLiveMetricsJamo({ target, typed, startedAt, finishedAt: fin });
+    const finalTyped = completedTyped ?? typed;
+    const m = computeLiveMetricsJamo({ target, typed: finalTyped, startedAt, finishedAt: fin });
     const dur = m.elapsedSeconds;
     const stageGoal = STAGE_TARGET_TPM[stage];
     const passed = stageGoal ? m.타분당 >= stageGoal.tpm && m.정확도 >= stageGoal.accuracy : true;
 
-    finishSession();
     setLastResult({ tpm: m.타분당, accuracy: m.정확도, passed });
     setShowInlineResult(true);
     setCompletedCount(count => count + 1);
     play('complete').catch(() => {});
 
+    if (mode === 'speed-test') {
+      finishSession();
+    } else {
+      // Continuous flow: keep textarea enabled & focused, advance to a fresh target.
+      const nextT = nextContent();
+      setTarget(nextT, String(Date.now()));
+      setIsNewBest(false);
+      focusTypingInputSoon();
+    }
+
+    // Persist results without blocking UI continuity.
     if (!db) return;
+    void (async () => {
+      try {
+        const sessionId = await db.insertSession({
+          started_at: startedAt ?? fin,
+          finished_at: fin,
+          mode, language, stage,
+          lesson_id: lessonId || null,
+          content_seed: String(startedAt ?? fin),
+          jamo_typed: m.jamoTyped,
+          jamo_correct: m.jamoCorrect,
+          tpm: m.타분당,
+          tpm_raw: m.타분당Raw,
+          accuracy: m.정확도,
+          duration_seconds: dur,
+        });
 
-    const sessionId = await db.insertSession({
-      started_at: startedAt ?? fin,
-      finished_at: fin,
-      mode, language, stage,
-      lesson_id: lessonId || null,
-      content_seed: String(startedAt ?? fin),
-      jamo_typed: m.jamoTyped,
-      jamo_correct: m.jamoCorrect,
-      tpm: m.타분당,
-      tpm_raw: m.타분당Raw,
-      accuracy: m.정확도,
-      duration_seconds: dur,
-    });
+        const cfg = { mode, language, stage, lessonId };
+        const { isNewBest: newBest } = await upsertBestScoreIfBetter(
+          db, cfg, sessionId, m.타분당, m.정확도, fin,
+        );
 
-    const cfg = { mode, language, stage, lessonId };
-    const { isNewBest: newBest } = await upsertBestScoreIfBetter(
-      db, cfg, sessionId, m.타분당, m.정확도, fin,
-    );
+        if (newBest) {
+          setIsNewBest(true);
+          play('best').catch(() => {});
+          const key = configKeyFor(cfg);
+          upsertBestScore(key, {
+            config_key: key, session_id: sessionId,
+            tpm: m.타분당, accuracy: m.정확도, finished_at: fin,
+          });
+        }
 
-    if (newBest) {
-      setIsNewBest(true);
-      play('best').catch(() => {});
-      const key = configKeyFor(cfg);
-      upsertBestScore(key, {
-        config_key: key, session_id: sessionId,
-        tpm: m.타분당, accuracy: m.정확도, finished_at: fin,
-      });
-    }
-
-    setRecentTpm(m.타분당);
-    await recordToday(db, dur).catch(() => {});
-
-    if (dur > 0) {
-      await recordKeyHit(db, '__session__', true, 0).catch(() => {});
-    }
+        setRecentTpm(m.타분당);
+        await recordToday(db, dur).catch(() => {});
+        if (dur > 0) {
+          await recordKeyHit(db, '__session__', true, 0).catch(() => {});
+        }
+      } catch {
+        // swallow — UI continuity over diagnostics
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [db, target, typed, startedAt, mode, language, stage, lessonId]);
+  }, [db, target, typed, startedAt, mode, language, stage, lessonId, nextContent, focusTypingInputSoon]);
 
   // ── input handling ──
   const handleValueChange = useCallback((val: string) => {
@@ -221,8 +316,12 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     if (clipped.length > typed.length) playKey().catch(() => {});
     setTyped(clipped);
 
-    if (mode !== 'speed-test' && clipped.length >= target.length) {
-      setTimeout(() => doFinish(), 0);
+    if (mode !== 'speed-test' && clipped.length >= target.length && !finishScheduledRef.current) {
+      finishScheduledRef.current = true;
+      setTimeout(() => {
+        finishScheduledRef.current = false;
+        doFinish(clipped);
+      }, 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, mode, target.length, typed, setTyped, doFinish, startCountdown, startSession, countdownEnabled]);
@@ -233,23 +332,40 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
 
   const handleCountdownDone = useCallback(() => {
     startSession();
-    setTimeout(() => inputRef.current?.focus(), 0);
-  }, [startSession]);
+    focusTypingInputSoon();
+  }, [startSession, focusTypingInputSoon]);
 
   const handleNext = useCallback(() => {
+    intentionalFocusExitRef.current = true;
     initTarget();
     setIsNewBest(false);
     setShowInlineResult(false);
-    setTimeout(() => inputRef.current?.focus(), 0);
-  }, [initTarget]);
+    window.setTimeout(() => {
+      intentionalFocusExitRef.current = false;
+      focusTypingInput();
+    }, 0);
+  }, [initTarget, focusTypingInput]);
 
   const handleRetry = useCallback(() => {
+    intentionalFocusExitRef.current = true;
     const sameTarget = target;
     setTarget(sameTarget, String(Date.now()));
     setIsNewBest(false);
     setShowInlineResult(false);
-    setTimeout(() => inputRef.current?.focus(), 0);
-  }, [target, setTarget]);
+    window.setTimeout(() => {
+      intentionalFocusExitRef.current = false;
+      focusTypingInput();
+    }, 0);
+  }, [target, setTarget, focusTypingInput]);
+
+  const handleLessonSelect = useCallback((id: ZoneLessonId) => {
+    intentionalFocusExitRef.current = true;
+    setLessonId(id);
+    window.setTimeout(() => {
+      intentionalFocusExitRef.current = false;
+      focusTypingInput();
+    }, 0);
+  }, [setLessonId, focusTypingInput]);
 
   // ── config key for best score lookup ──
   const configKey = sessionConfigKey({ mode, language, stage, lessonId });
@@ -331,23 +447,14 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
         )}
         <button
           type="button"
+          onMouseDown={() => { intentionalFocusExitRef.current = true; }}
+          onBlur={() => { intentionalFocusExitRef.current = false; }}
           onClick={handleNext}
           className="ml-auto rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-card"
         >
           다음 지문 (Ctrl+Enter)
         </button>
       </div>
-
-      {/* Challenge bar */}
-      {language === 'ko' && (
-        <ChallengeBar
-          stage={stage}
-          currentTpm={metrics.타분당}
-          achievedTpm={lastResult?.tpm ?? bestTpm}
-          onStageChange={s => setStage(s as StageLevel)}
-          disabled={isRunning}
-        />
-      )}
 
       {/* Live metrics */}
       <div className="grid grid-cols-3 gap-2 rounded-lg border border-border bg-card p-3 text-center sm:grid-cols-5">
@@ -367,6 +474,15 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
           currentTpm={metrics.타분당}
           bestTpm={bestTpm}
           targetTpm={stageTargetTpm}
+        />
+      )}
+
+      {/* Zone lesson selector — only in keyboard-zone mode */}
+      {mode === 'keyboard-zone' && (
+        <ZoneLessonSelector
+          value={(lessonId as ZoneLessonId) || zoneLessons[0].id}
+          onSelect={handleLessonSelect}
+          onInteractionStart={() => { intentionalFocusExitRef.current = true; }}
         />
       )}
 
@@ -395,9 +511,17 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
           if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
             e.preventDefault();
             handleNext();
+            return;
+          }
+          // Once a non-speed-test session is captured as finished (rare —
+          // we now stay in the running flow), or while idle waiting for the
+          // next target, swallow Space/Enter so they cannot scroll the page
+          // or activate buttons that may have stolen focus.
+          if (isFinished && (e.key === ' ' || e.key === 'Enter')) {
+            e.preventDefault();
           }
         }}
-        disabled={isFinished || phase === 'countdown'}
+        disabled={phase === 'countdown'}
         ariaLabel="타자 입력"
         placeholder={
           phase === 'idle'
@@ -414,7 +538,11 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       {showKeyboard && (
         <KoreanKeyboard
           expectedKey={pendingKey}
-          highlightZone={mode === 'keyboard-zone' ? (lessonId as import('@/lib/typing/korean-keyboard').ZoneId) : undefined}
+          highlightZone={
+            mode === 'keyboard-zone' && lessonId && lessonId !== 'all'
+              ? (lessonId as ZoneId)
+              : undefined
+          }
           showHangul={language === 'ko'}
         />
       )}
@@ -422,6 +550,18 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       {/* Hand overlay — placeholder fingertip ring */}
       {showHands && (
         <HandOverlay expectedFinger={pendingKey?.finger} />
+      )}
+
+      {/* Challenge bar — compact, below practice surface */}
+      {language === 'ko' && (
+        <ChallengeBar
+          variant="compact"
+          stage={stage}
+          currentTpm={metrics.타분당}
+          achievedTpm={lastResult?.tpm ?? bestTpm}
+          onStageChange={s => setStage(s as StageLevel)}
+          disabled={isRunning}
+        />
       )}
 
       {/* Countdown overlay */}

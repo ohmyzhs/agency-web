@@ -4,16 +4,19 @@ import type { TypingLanguage } from "./types";
 
 export type ZoneLessonId =
   | "home"
-  | "left-top"
-  | "left-bottom"
-  | "right-top"
-  | "right-bottom"
   | "middle"
+  | "left-top"
+  | "right-top"
+  | "left-bottom"
+  | "right-bottom"
+  | "number"
   | "all";
 
 export type ZoneLesson = {
   id: ZoneLessonId;
+  step: number;
   titleKo: string;
+  subtitleKo: string;
   titleEn: string;
   // 두벌식 jamo sequence for the drill. Repeats a small set so muscle memory builds.
   drill: string;
@@ -22,50 +25,73 @@ export type ZoneLesson = {
 export const zoneLessons: ZoneLesson[] = [
   {
     id: "home",
-    titleKo: "기본자리 (ㅁㄴㅇㄹ ㅓㅏㅣ)",
-    titleEn: "Home row (ㅁㄴㅇㄹ ㅓㅏㅣ)",
+    step: 1,
+    titleKo: "기본자리",
+    subtitleKo: "ㅁㄴㅇㄹ · ㅓㅏㅣ",
+    titleEn: "Home row",
     drill:
       "ㅁ ㄴ ㅇ ㄹ ㅓ ㅏ ㅣ ㅁㄴ ㅇㄹ ㅓㅏ ㅣㅁ ㄴㅇ ㄹㅓ ㅏㅣ ㅁㅇ ㄴㄹ ㅓㅣ ㅏㄴ ㅇㄹ ㅓㅁ",
   },
   {
-    id: "left-top",
-    titleKo: "왼손 윗자리 (ㅂㅈㄷㄱㅅ)",
-    titleEn: "Left top (ㅂㅈㄷㄱㅅ)",
-    drill:
-      "ㅂ ㅈ ㄷ ㄱ ㅅ ㅂㅈ ㄷㄱ ㅅㅂ ㅈㄷ ㄱㅅ ㅂㄷ ㅈㄱ ㄷㅅ ㅂㄱ ㅈㅅ ㄷㅂ ㄱㅈ ㅅㄷ",
-  },
-  {
-    id: "left-bottom",
-    titleKo: "왼손 아랫자리 (ㅋㅌㅊㅍㅠ)",
-    titleEn: "Left bottom (ㅋㅌㅊㅍㅠ)",
-    drill:
-      "ㅋ ㅌ ㅊ ㅍ ㅠ ㅋㅌ ㅊㅍ ㅠㅋ ㅌㅊ ㅍㅠ ㅋㅊ ㅌㅍ ㅊㅠ ㅋㅍ ㅌㅠ ㅊㅋ ㅍㅌ ㅠㅊ",
-  },
-  {
-    id: "right-top",
-    titleKo: "오른손 윗자리 (ㅛㅕㅑㅐㅔ)",
-    titleEn: "Right top (ㅛㅕㅑㅐㅔ)",
-    drill:
-      "ㅛ ㅕ ㅑ ㅐ ㅔ ㅛㅕ ㅑㅐ ㅔㅛ ㅕㅑ ㅐㅔ ㅛㅑ ㅕㅐ ㅑㅔ ㅛㅐ ㅕㅔ ㅑㅛ ㅐㅕ ㅔㅑ",
-  },
-  {
-    id: "right-bottom",
-    titleKo: "오른손 아랫자리 (ㅜㅡ)",
-    titleEn: "Right bottom (ㅜㅡ)",
-    drill:
-      "ㅜ ㅡ ㅜㅡ ㅡㅜ ㅜㅜ ㅡㅡ ㅜㅡㅜ ㅡㅜㅡ ㅜㅡ ㅡㅜ",
-  },
-  {
     id: "middle",
-    titleKo: "가운데자리 (ㅎㅗ)",
-    titleEn: "Middle (ㅎㅗ)",
+    step: 2,
+    titleKo: "가운데자리",
+    subtitleKo: "ㅎ · ㅗ",
+    titleEn: "Middle",
     drill:
       "ㅎ ㅗ ㅎㅗ ㅗㅎ ㅎㅎ ㅗㅗ ㅎㅗㅎ ㅗㅎㅗ ㅎㅗ ㅗㅎ",
   },
   {
+    id: "left-top",
+    step: 3,
+    titleKo: "왼손 윗자리",
+    subtitleKo: "ㅂㅈㄷㄱㅅ",
+    titleEn: "Left top",
+    drill:
+      "ㅂ ㅈ ㄷ ㄱ ㅅ ㅂㅈ ㄷㄱ ㅅㅂ ㅈㄷ ㄱㅅ ㅂㄷ ㅈㄱ ㄷㅅ ㅂㄱ ㅈㅅ ㄷㅂ ㄱㅈ ㅅㄷ",
+  },
+  {
+    id: "right-top",
+    step: 4,
+    titleKo: "오른손 윗자리",
+    subtitleKo: "ㅛㅕㅑㅐㅔ",
+    titleEn: "Right top",
+    drill:
+      "ㅛ ㅕ ㅑ ㅐ ㅔ ㅛㅕ ㅑㅐ ㅔㅛ ㅕㅑ ㅐㅔ ㅛㅑ ㅕㅐ ㅑㅔ ㅛㅐ ㅕㅔ ㅑㅛ ㅐㅕ ㅔㅑ",
+  },
+  {
+    id: "left-bottom",
+    step: 5,
+    titleKo: "왼손 아랫자리",
+    subtitleKo: "ㅋㅌㅊㅍㅠ",
+    titleEn: "Left bottom",
+    drill:
+      "ㅋ ㅌ ㅊ ㅍ ㅠ ㅋㅌ ㅊㅍ ㅠㅋ ㅌㅊ ㅍㅠ ㅋㅊ ㅌㅍ ㅊㅠ ㅋㅍ ㅌㅠ ㅊㅋ ㅍㅌ ㅠㅊ",
+  },
+  {
+    id: "right-bottom",
+    step: 6,
+    titleKo: "오른손 아랫자리",
+    subtitleKo: "ㅜ · ㅡ",
+    titleEn: "Right bottom",
+    drill:
+      "ㅜ ㅡ ㅜㅡ ㅡㅜ ㅜㅜ ㅡㅡ ㅜㅡㅜ ㅡㅜㅡ ㅜㅡ ㅡㅜ",
+  },
+  {
+    id: "number",
+    step: 7,
+    titleKo: "숫자열",
+    subtitleKo: "1 2 3 · 7 8 9 0",
+    titleEn: "Number row",
+    drill:
+      "1 2 3 4 5 6 7 8 9 0 12 34 56 78 90 13 24 57 80 19 28 37 46 50",
+  },
+  {
     id: "all",
-    titleKo: "전체자리 (자모 통합)",
-    titleEn: "All keys (mixed jamo)",
+    step: 8,
+    titleKo: "종합 연습",
+    subtitleKo: "전 자모 통합",
+    titleEn: "All keys",
     drill:
       "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ ㅂㅈㄷㄱㅅㅁㄴㅇㄹㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡ",
   },

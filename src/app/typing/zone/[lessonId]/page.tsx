@@ -3,14 +3,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createPageMetadata } from '@/lib/seo';
 import { ModeShell } from '@/components/typing/organisms/ModeShell';
-import type { ZoneId } from '@/lib/typing/korean-keyboard';
+import type { ZoneLessonId } from '@/lib/typing/packs';
 
-const VALID_ZONES: ZoneId[] = [
+const VALID_ZONES: ZoneLessonId[] = [
   'home', 'middle', 'left-top', 'right-top',
-  'left-bottom', 'right-bottom', 'number',
+  'left-bottom', 'right-bottom', 'number', 'all',
 ];
 
-const ZONE_LABELS: Record<ZoneId, string> = {
+const ZONE_LABELS: Record<ZoneLessonId, string> = {
   home: '기본 자리',
   middle: '중앙',
   'left-top': '왼손 윗줄',
@@ -18,13 +18,14 @@ const ZONE_LABELS: Record<ZoneId, string> = {
   'left-bottom': '왼손 아랫줄',
   'right-bottom': '오른손 아랫줄',
   number: '숫자열',
+  all: '종합 연습',
 };
 
 type Params = Promise<{ lessonId: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { lessonId } = await params;
-  const label = ZONE_LABELS[lessonId as ZoneId] ?? '자리연습';
+  const label = ZONE_LABELS[lessonId as ZoneLessonId] ?? '자리연습';
   return createPageMetadata({
     title: `${label} 자리연습 | oh-my-zhs 타자`,
     description: `${label} 자리를 단계별로 익힙니다. 손가락 가이드와 다음 키 펄스로 정확한 위치를 익히는 두벌식 자리연습.`,
@@ -34,9 +35,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function ZoneLessonPage({ params }: { params: Params }) {
   const { lessonId } = await params;
-  if (!VALID_ZONES.includes(lessonId as ZoneId)) notFound();
+  if (!VALID_ZONES.includes(lessonId as ZoneLessonId)) notFound();
 
-  const label = ZONE_LABELS[lessonId as ZoneId];
+  const label = ZONE_LABELS[lessonId as ZoneLessonId];
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">

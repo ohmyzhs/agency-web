@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
-import type { ZoneId } from '@/lib/typing/korean-keyboard';
+import type { ZoneLessonId } from '@/lib/typing/packs';
 
-const ZONE_LIST: ZoneId[] = [
+const ZONE_LIST: ZoneLessonId[] = [
   'home', 'middle', 'left-top', 'right-top',
-  'left-bottom', 'right-bottom', 'number',
+  'left-bottom', 'right-bottom', 'number', 'all',
 ];
 
 export const metadata: Metadata = createPageMetadata({
@@ -15,7 +15,7 @@ export const metadata: Metadata = createPageMetadata({
   path: '/typing/zone',
 });
 
-const ZONE_LABELS: Record<ZoneId, { ko: string; desc: string }> = {
+const ZONE_LABELS: Record<ZoneLessonId, { ko: string; desc: string }> = {
   home:         { ko: '기본 자리',  desc: 'A S D F · J K L ;' },
   middle:       { ko: '중앙',       desc: 'G · H' },
   'left-top':   { ko: '왼손 윗줄',  desc: 'Q W E R T' },
@@ -23,6 +23,7 @@ const ZONE_LABELS: Record<ZoneId, { ko: string; desc: string }> = {
   'left-bottom':{ ko: '왼손 아랫줄', desc: 'Z X C V B' },
   'right-bottom':{ ko: '오른손 아랫줄', desc: 'N M , . /' },
   number:       { ko: '숫자열',     desc: '1 2 3 · 7 8 9 0' },
+  all:          { ko: '종합 연습',  desc: '전 자모 통합 드릴' },
 };
 
 export default function ZoneHubPage() {

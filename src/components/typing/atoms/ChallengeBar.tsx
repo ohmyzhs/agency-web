@@ -7,6 +7,7 @@ type Props = {
   achievedTpm?: number | null;
   onStageChange?: (stage: number) => void;
   disabled?: boolean;
+  variant?: 'compact' | 'full';
 };
 
 const MIN_STAGE = 200;
@@ -28,15 +29,76 @@ function tierLabel(stage: number) {
   return '입문';
 }
 
-export function ChallengeBar({ stage, currentTpm = 0, achievedTpm, onStageChange, disabled }: Props) {
+export function ChallengeBar({ stage, currentTpm = 0, achievedTpm, onStageChange, disabled, variant = 'compact' }: Props) {
   const activeTarget = STAGE_TARGET_TPM[stage];
   const targetTpm = activeTarget?.tpm ?? stage;
   const displayAchieved = Math.max(currentTpm, achievedTpm ?? 0);
   const targetPct = pctForTpm(targetTpm);
   const achievedPct = pctForTpm(displayAchieved);
-  const gap = Math.max(0, targetTpm - displayAchieved);
   const reached = displayAchieved >= targetTpm;
   const targetAccuracy = activeTarget ? Math.round(activeTarget.accuracy * 100) : 0;
+
+  if (variant === 'compact') {
+    return (
+      <section className="rounded-xl border border-border bg-card/70 px-3 py-2 shadow-sm">
+        <div className="flex items-center gap-2.5">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">도전</span>
+          <span className="rounded-full bg-foreground px-2 py-0.5 text-[11px] font-bold tabular-nums text-background">
+            {targetTpm}타
+          </span>
+          <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-border/70">
+            <div
+              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-400 transition-[width] duration-300"
+              style={{ width: `${achievedPct}%` }}
+            />
+            <div
+              className="absolute inset-y-[-2px] w-[2px] rounded bg-foreground/80"
+              style={{ left: `calc(${targetPct}% - 1px)` }}
+              title={`목표 ${targetTpm}타`}
+            />
+          </div>
+          <span
+            className={`text-[11px] font-semibold tabular-nums ${
+              reached ? 'text-emerald-600 dark:text-emerald-300' : 'text-muted'
+            }`}
+          >
+            {Math.round(displayAchieved)}/{targetTpm}
+          </span>
+          <span className="hidden text-[10px] text-muted sm:inline">
+            {tierLabel(stage)} · {targetAccuracy}%
+          </span>
+        </div>
+        <div className="mt-1.5 flex gap-1 overflow-x-auto pb-0.5">
+          {STAGE_LIST.filter(s => s >= MIN_STAGE).map(s => {
+            const target = STAGE_TARGET_TPM[s];
+            const isActive = s === stage;
+            const passed = displayAchieved >= target.tpm;
+            return (
+              <button
+                key={s}
+                type="button"
+                disabled={disabled}
+                onClick={() => onStageChange?.(s)}
+                className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold tabular-nums transition
+                  ${isActive
+                    ? 'border-foreground bg-foreground text-background'
+                    : passed
+                    ? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-700 hover:border-emerald-500 dark:text-emerald-300'
+                    : 'border-border bg-background/70 text-muted hover:border-primary/40 hover:text-foreground'
+                  }
+                  disabled:cursor-default disabled:opacity-70`}
+                title={`${s}타/분 (정확도 ${(target.accuracy * 100).toFixed(0)}% 이상)`}
+              >
+                {s}{passed ? '✓' : ''}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    );
+  }
+
+  const gap = Math.max(0, targetTpm - displayAchieved);
 
   return (
     <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">

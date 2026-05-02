@@ -1,11 +1,12 @@
 "use client";
 
-import { topRow, homeRow, bottomRow, type KeyDef, type ZoneId } from "@/lib/typing/korean-keyboard";
+import { numberRow, topRow, homeRow, bottomRow, type KeyDef, type ZoneId } from "@/lib/typing/korean-keyboard";
 
 type KoreanKeyboardProps = {
   expectedKey?: KeyDef;
   highlightZone?: ZoneId;
   showHangul?: boolean;
+  showNumberRow?: boolean;
 };
 
 const fingerColor: Record<string, string> = {
@@ -26,13 +27,11 @@ function Key({
   expectedCode,
   highlightZone,
   showHangul,
-  offsetClass,
 }: {
   def: KeyDef;
   expectedCode?: string;
   highlightZone?: ZoneId;
   showHangul: boolean;
-  offsetClass?: string;
 }) {
   const isExpected = expectedCode === def.code;
   const isInZone = highlightZone && def.zone === highlightZone;
@@ -41,14 +40,13 @@ function Key({
   return (
     <div
       className={[
-        "relative h-12 w-12 shrink-0 rounded-md border bg-background text-center text-xs font-mono leading-none transition-colors",
+        "relative h-11 w-11 shrink-0 rounded-md border bg-background text-center text-xs font-mono leading-none transition-colors sm:h-12 sm:w-12",
         fingerBorder,
         isExpected
           ? "ring-2 ring-primary border-primary bg-accent text-foreground"
           : isInZone
             ? "bg-accent/40"
             : "text-muted",
-        offsetClass,
       ]
         .filter(Boolean)
         .join(" ")}
@@ -67,17 +65,41 @@ export default function KoreanKeyboard({
   expectedKey,
   highlightZone,
   showHangul = true,
+  showNumberRow = true,
 }: KoreanKeyboardProps) {
   const expectedCode = expectedKey?.code;
 
   return (
-    <div className="space-y-1.5 overflow-x-auto rounded-lg border border-border bg-card p-3">
-      <Row keys={topRow} expectedCode={expectedCode} highlightZone={highlightZone} showHangul={showHangul} indent="" />
-      <Row keys={homeRow} expectedCode={expectedCode} highlightZone={highlightZone} showHangul={showHangul} indent="ml-3" />
-      <Row keys={bottomRow} expectedCode={expectedCode} highlightZone={highlightZone} showHangul={showHangul} indent="ml-7" />
-      <div className="mt-2 flex items-center justify-center">
-        <div className="h-9 w-64 rounded-md border border-border bg-background text-center text-xs leading-9 text-muted">
-          space
+    <div className="overflow-x-auto rounded-lg border border-border bg-card p-3">
+      <div className="mx-auto inline-flex flex-col items-stretch gap-1.5">
+        {showNumberRow && (
+          <Row keys={numberRow} expectedCode={expectedCode} highlightZone={highlightZone} showHangul={showHangul} indentClass="" />
+        )}
+        <Row
+          keys={topRow}
+          expectedCode={expectedCode}
+          highlightZone={highlightZone}
+          showHangul={showHangul}
+          indentClass="pl-[24px] sm:pl-[28px]"
+        />
+        <Row
+          keys={homeRow}
+          expectedCode={expectedCode}
+          highlightZone={highlightZone}
+          showHangul={showHangul}
+          indentClass="pl-[36px] sm:pl-[42px]"
+        />
+        <Row
+          keys={bottomRow}
+          expectedCode={expectedCode}
+          highlightZone={highlightZone}
+          showHangul={showHangul}
+          indentClass="pl-[60px] sm:pl-[70px]"
+        />
+        <div className="mt-1 flex justify-center">
+          <div className="h-9 w-72 rounded-md border border-border bg-background text-center text-xs leading-9 text-muted sm:w-80">
+            space
+          </div>
         </div>
       </div>
     </div>
@@ -89,16 +111,16 @@ function Row({
   expectedCode,
   highlightZone,
   showHangul,
-  indent,
+  indentClass,
 }: {
   keys: KeyDef[];
   expectedCode?: string;
   highlightZone?: ZoneId;
   showHangul: boolean;
-  indent: string;
+  indentClass: string;
 }) {
   return (
-    <div className={`flex gap-1.5 ${indent}`}>
+    <div className={`flex gap-1.5 ${indentClass}`}>
       {keys.map((k) => (
         <Key
           key={k.code}

@@ -65,7 +65,7 @@ const TypingInput = forwardRef<HTMLTextAreaElement, TypingInputProps>(function T
       autoCorrect="off"
       autoCapitalize="off"
       rows={3}
-      className="block w-full rounded-lg border border-border bg-background px-4 py-3 font-mono text-lg focus:border-primary focus:outline-none disabled:opacity-60"
+      className="block w-full rounded-2xl border-2 border-primary/30 bg-background px-5 py-4 font-mono text-xl shadow-sm transition-shadow focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:opacity-60"
     />
   );
 });
