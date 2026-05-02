@@ -1,13 +1,11 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export type CountdownState = 'idle' | 'counting' | 'done';
 
 export function useCountdown(seconds = 3, onDone?: () => void) {
   const [remaining, setRemaining] = useState(seconds);
   const [state, setState] = useState<CountdownState>('idle');
-  const onDoneRef = useRef(onDone);
-  onDoneRef.current = onDone;
 
   function start() {
     setRemaining(seconds);
@@ -21,14 +19,18 @@ export function useCountdown(seconds = 3, onDone?: () => void) {
 
   useEffect(() => {
     if (state !== 'counting') return;
-    if (remaining <= 0) {
-      setState('done');
-      onDoneRef.current?.();
-      return;
-    }
-    const id = window.setTimeout(() => setRemaining(r => r - 1), 1000);
+    const id = window.setTimeout(() => {
+      setRemaining((current) => {
+        if (current <= 1) {
+          setState('done');
+          onDone?.();
+          return 0;
+        }
+        return current - 1;
+      });
+    }, 1000);
     return () => clearTimeout(id);
-  }, [state, remaining]);
+  }, [onDone, state, remaining]);
 
   return { remaining, state, start, cancel };
 }

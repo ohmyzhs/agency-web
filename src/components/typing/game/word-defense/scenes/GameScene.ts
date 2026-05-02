@@ -2,7 +2,7 @@
  * Phaser GameScene — falling Korean words, jamo-by-jamo destruction.
  * Renders only with primitives (no sprites) so it works without external assets.
  */
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { disassemble } from 'es-hangul';
 import type { StageLevel } from '@/lib/typing/types';
 import { getWordsForStage } from '@/lib/typing/packs-staged';

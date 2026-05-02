@@ -159,7 +159,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     });
 
     const cfg = { mode, language, stage, lessonId };
-    const { isNewBest: newBest, previous } = await upsertBestScoreIfBetter(
+    const { isNewBest: newBest } = await upsertBestScoreIfBetter(
       db, cfg, sessionId, m.타분당, m.정확도, fin,
     );
 
