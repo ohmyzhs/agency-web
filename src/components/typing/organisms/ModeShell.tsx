@@ -342,7 +342,8 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       {language === 'ko' && (
         <ChallengeBar
           stage={stage}
-          currentTpm={isFinished ? metrics.타분당 : undefined}
+          currentTpm={metrics.타분당}
+          achievedTpm={lastResult?.tpm ?? bestTpm}
           onStageChange={s => setStage(s as StageLevel)}
           disabled={isRunning}
         />
