@@ -6,6 +6,7 @@ const dictionaries = {
   ko: {
     nav: {
       home: "홈",
+      typing: "타자",
       tools: "도구",
       posts: "글",
       guides: "가이드",
@@ -260,6 +261,7 @@ const dictionaries = {
     footer: {
       tagline: "Zero Human Studio — 조용히 작동하는 작은 도구들.",
       site: "사이트",
+      typing: "타자연습",
       tools: "도구",
       posts: "글",
       guides: "가이드",
@@ -311,6 +313,7 @@ const dictionaries = {
   en: {
     nav: {
       home: "Home",
+      typing: "Typing",
       tools: "Tools",
       posts: "Posts",
       guides: "Guides",
@@ -565,6 +568,7 @@ const dictionaries = {
     footer: {
       tagline: "Zero Human Studio — small tools that quietly work.",
       site: "Site",
+      typing: "Typing practice",
       tools: "Tools",
       posts: "Posts",
       guides: "Guides",
