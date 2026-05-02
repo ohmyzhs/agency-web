@@ -167,9 +167,9 @@ export const tools: Tool[] = [
     ko: {
       title: "PDF 도구 모음",
       shortTitle: "PDF 도구",
-      description: "PDF 병합·분할·재정렬, PDF 페이지 이미지 변환, 이미지 여러 장 PDF 생성을 한 메뉴에서 처리합니다.",
-      seoTitle: "PDF 도구 모음 | PDF 병합 분할 재정렬, PDF 이미지 변환, 이미지 PDF 만들기",
-      seoDescription: "PDF 병합/분할/재정렬, PDF 페이지 PNG/JPG 변환, PNG/JPG 이미지 여러 장 PDF 생성을 브라우저 로컬 처리로 제공합니다.",
+      description: "PDF 병합·분할·재정렬, PDF 페이지 이미지 변환, 이미지 여러 장 PDF 생성, 텍스트 추출, 페이지 삭제, 2-up 병합, 여백 자르기를 한 메뉴에서 처리합니다.",
+      seoTitle: "PDF 도구 모음 | PDF 병합 분할 재정렬, 텍스트 추출, 여백 자르기",
+      seoDescription: "PDF 병합/분할/재정렬, PDF 페이지 PNG/JPG 변환, 이미지 PDF 생성, 텍스트 추출, 페이지 삭제, 2-up 병합, 여백 자르기를 브라우저 로컬 처리로 제공합니다.",
       inputs: [
         { label: "PDF 또는 이미지 파일", description: "병합/분할/페이지 이미지 변환에는 PDF를, 이미지 PDF 생성에는 PNG/JPG 이미지를 업로드합니다." },
         { label: "작업별 옵션", description: "페이지 범위, 출력 이미지 포맷, 렌더 배율, 페이지 크기, 여백, 파일 순서를 조정합니다." },
