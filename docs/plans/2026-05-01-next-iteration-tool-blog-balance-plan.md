@@ -581,6 +581,27 @@ Add this to the next TODO/backlog, not the current Phase A-C implementation:
 - `타자연습` / `Typing` if typing becomes a flagship interactive feature
 - `실험실` / `Experiments` for tarot/saju and other playful layers
 
+### Benchmark-derived tool backlog update (2026-05-02)
+
+A separate benchmark document was added after surveying `getin.kr`, `vivoldi.com/tools`, `googsu.com`, and `itool.co.kr`:
+
+- `docs/plans/2026-05-02-tool-benchmark-distinct-backlog.md`
+
+Use that file as the canonical distinct candidate backlog. Highest-priority additions from the benchmark are:
+
+1. JSON/YAML/XML formatter-validator-viewer workspace.
+2. Character/word/line counter.
+3. Base64 encode/decode.
+4. Image compression.
+5. Text diff/compare.
+6. URL encode/decode.
+7. JWT decoder.
+8. Color picker + image color extraction.
+9. Markdown preview/table utilities.
+10. Regex/hash/UUID/Cron developer utilities.
+
+Keep the existing constraint that the public network tool remains only `내 IP 확인 / Check My IP` unless Gabriel explicitly reopens DNS/ping/TLS/header-check style diagnostics.
+
 ### Candidate complex tools
 1. **Korean real-estate cost estimator**
    - Inputs: region, deposit/monthly rent, management fee, area, brokerage category.
