@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/posts";
 import { getAllTools } from "@/lib/tools";
 
-const BASE_URL = process.env.SITE_URL ?? "https://ohmyzhs.com";
+const BASE_URL = process.env.SITE_URL ?? "https://oh-my-zhs.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const toolEntries: MetadataRoute.Sitemap = getAllTools().map((tool) => ({
