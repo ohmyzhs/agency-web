@@ -6,7 +6,7 @@ import { useLocale } from "@/components/providers";
 import QuickToolSlots from "@/components/tools/shared/QuickToolSlots";
 import { getRelatedTools, getToolContent, type Tool } from "@/lib/tools";
 
-const localOnlyCategories = new Set(["developer-automation", "micro-utility"]);
+const localOnlyCategories = new Set(["developer-automation", "micro-utility", "file-media"]);
 
 type ToolPageShellProps = {
   tool: Tool;
