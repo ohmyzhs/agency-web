@@ -45,7 +45,7 @@ const defaults: TypingSettingsState = {
   showKeyboard: true,
   showHands: true,
   keymap: 'dubeolsik',
-  countdownEnabled: true,
+  countdownEnabled: false,
   autoNextContent: true,
   isSynced: false,
 };

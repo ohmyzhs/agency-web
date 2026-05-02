@@ -1,9 +1,10 @@
 'use client';
 /**
- * 현재 mode + stage 기준으로 연습 콘텐츠를 가져온다.
- * next() 호출 시 다음 콘텐츠(랜덤)를 반환한다.
+ * 현재 mode + stage 기준으로 연습 콘텐츠를 순차 공급한다.
+ * 랜덤 1개 반환 방식은 같은 지문 반복/리셋 체감을 만들기 쉬워서,
+ * 모드·단계·언어별 풀을 섞은 뒤 커서로 다음 항목을 꺼낸다.
  */
-import { useCallback } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import {
   buildWordStreamFromStage,
   getSentencesForStage,
@@ -23,33 +24,62 @@ type Options = {
   category?: LongformCategory;
 };
 
+function hashString(input: string): number {
+  let hash = 2166136261;
+  for (let i = 0; i < input.length; i += 1) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function seededShuffle<T>(items: T[], seedText: string): T[] {
+  const arr = [...items];
+  let seed = hashString(seedText) || 1;
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    const j = seed % (i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 export function useStageContent(opts: Options) {
-  const next = useCallback((): string => {
+  const key = `${opts.mode}:${opts.stage}:${opts.language}:${opts.lessonId ?? ''}:${opts.category ?? ''}`;
+  const cursorByKey = useRef<Record<string, number>>({});
+
+  const sequence = useMemo((): string[] => {
     const { mode, stage, language, lessonId, category } = opts;
 
     if (mode === 'keyboard-zone') {
       const lesson =
         zoneLessons.find(l => l.id === (lessonId as ZoneLessonId)) ?? zoneLessons[0];
-      return lesson.drill;
+      return [lesson.drill];
     }
 
     if (language === 'en') {
-      // 영문은 기존 packs 사용
-      if (mode === 'word') return buildWordStream('en', 25);
-      if (mode === 'sentence') return pickRandom(englishSentences);
-      return pickRandom(englishPassages);
+      if (mode === 'word') return Array.from({ length: 12 }, () => buildWordStream('en', 25));
+      if (mode === 'sentence') return seededShuffle(englishSentences, key);
+      if (mode === 'speed-test') return Array.from({ length: 12 }, () => buildWordStream('en', 80));
+      return seededShuffle(englishPassages, key);
     }
 
-    if (mode === 'word') return buildWordStreamFromStage(stage, 25);
-    if (mode === 'sentence') return pickRandom(getSentencesForStage(stage));
-    if (mode === 'speed-test') return buildWordStreamFromStage(stage, 80);
+    if (mode === 'word') return Array.from({ length: 12 }, (_, idx) => buildWordStreamFromStage(stage, 25 + (idx % 3) * 5));
+    if (mode === 'sentence') return seededShuffle(getSentencesForStage(stage), key);
+    if (mode === 'speed-test') return Array.from({ length: 12 }, (_, idx) => buildWordStreamFromStage(stage, 80 + (idx % 3) * 10));
 
-    // longform
     const cat = category ?? pickRandom(LONGFORM_CATEGORIES);
-    const passages = getPassagesForCategory(cat);
-    if (!passages.length) return '';
-    return pickRandom(passages).text;
-  }, [opts]);
+    const passages = getPassagesForCategory(cat).map(p => p.text);
+    return seededShuffle(passages, key);
+  }, [key, opts]);
+
+  const next = useCallback((): string => {
+    if (!sequence.length) return '';
+    const cursor = cursorByKey.current[key] ?? 0;
+    const value = sequence[cursor % sequence.length];
+    cursorByKey.current[key] = cursor + 1;
+    return value;
+  }, [key, sequence]);
 
   return { next };
 }

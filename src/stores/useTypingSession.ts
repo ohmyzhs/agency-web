@@ -82,7 +82,16 @@ export const useTypingSession = create<TypingSessionState & TypingSessionActions
   setStage: (stage) => set({ stage }),
   setLessonId: (lessonId) => set({ lessonId }),
   setTarget: (target, seed) =>
-    set({ target, contentSeed: seed ?? String(Date.now()), typed: '', isComposing: false }),
+    set({
+      target,
+      contentSeed: seed ?? String(Date.now()),
+      typed: '',
+      isComposing: false,
+      phase: 'idle',
+      startedAt: null,
+      finishedAt: null,
+      countdownStartedAt: null,
+    }),
   setTyped: (typed) => set({ typed }),
   setIsComposing: (isComposing) => set({ isComposing }),
   setPendingKey: (pendingKey) => set({ pendingKey }),

@@ -113,7 +113,7 @@ export function RightSettingsRail() {
 
       <Section title="진행">
         <ToggleRow
-          label="3초 카운트다운"
+          label="시작 전 카운트다운"
           checked={s.countdownEnabled}
           onChange={s.setCountdownEnabled}
         />
