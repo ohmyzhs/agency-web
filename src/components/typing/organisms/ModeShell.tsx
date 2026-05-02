@@ -63,7 +63,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     target, startedAt, finishedAt, pendingKey,
     setMode, setLanguage, setStage, setLessonId,
     setTarget, setTyped, setIsComposing, setPendingKey,
-    startCountdown, startSession, finishSession, reset: resetSession,
+    startCountdown, startSession, finishSession,
   } = useTypingSession();
 
   // ── settings ──
@@ -76,6 +76,9 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   const [speedDuration, setSpeedDuration] = useState<SpeedDuration>(60);
   const [isNewBest, setIsNewBest] = useState(false);
   const [tick, setTick] = useState(0);
+  const [completedCount, setCompletedCount] = useState(0);
+  const [showInlineResult, setShowInlineResult] = useState(false);
+  const [lastResult, setLastResult] = useState<{ tpm: number; accuracy: number; passed: boolean } | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   // ── content ──
@@ -92,6 +95,9 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   useEffect(() => {
     initTarget();
     setIsNewBest(false);
+    setShowInlineResult(false);
+    setLastResult(null);
+    setCompletedCount(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, language, stage, lessonId, speedDuration]);
 
@@ -136,13 +142,19 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
 
   // ── finish logic ──
   const doFinish = useCallback(async () => {
-    finishSession();
-    play('complete').catch(() => {});
-
-    if (!db) return;
     const fin = Date.now();
     const m = computeLiveMetricsJamo({ target, typed, startedAt, finishedAt: fin });
     const dur = m.elapsedSeconds;
+    const stageGoal = STAGE_TARGET_TPM[stage];
+    const passed = stageGoal ? m.타분당 >= stageGoal.tpm && m.정확도 >= stageGoal.accuracy : true;
+
+    finishSession();
+    setLastResult({ tpm: m.타분당, accuracy: m.정확도, passed });
+    setShowInlineResult(true);
+    setCompletedCount(count => count + 1);
+    play('complete').catch(() => {});
+
+    if (!db) return;
 
     const sessionId = await db.insertSession({
       started_at: startedAt ?? fin,
@@ -188,14 +200,20 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     const clipped = mode === 'speed-test' ? val : val.slice(0, target.length);
 
     if (phase === 'idle' && clipped.length > 0) {
-      startCountdown(); // phase → 'countdown' (or immediately 'running' via CountdownGate)
+      if (countdownEnabled) {
+        // Optional benchmark-style pre-start countdown. Do not trap a user who
+        // already started typing unless they explicitly enabled it.
+        startCountdown();
+        return;
+      }
+      startSession();
+      playKey().catch(() => {});
       setTyped(clipped);
       return;
     }
 
     if (phase === 'countdown') {
-      // buffer typing during countdown
-      setTyped(clipped);
+      // Countdown is a pre-start gate, not an input buffer.
       return;
     }
 
@@ -207,7 +225,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       setTimeout(() => doFinish(), 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, mode, target.length, typed, setTyped, doFinish, startCountdown]);
+  }, [phase, mode, target.length, typed, setTyped, doFinish, startCountdown, startSession, countdownEnabled]);
 
   const handleCompositionChange = useCallback((c: boolean) => {
     setIsComposing(c);
@@ -219,11 +237,19 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   }, [startSession]);
 
   const handleNext = useCallback(() => {
-    resetSession();
     initTarget();
     setIsNewBest(false);
+    setShowInlineResult(false);
     setTimeout(() => inputRef.current?.focus(), 0);
-  }, [resetSession, initTarget]);
+  }, [initTarget]);
+
+  const handleRetry = useCallback(() => {
+    const sameTarget = target;
+    setTarget(sameTarget, String(Date.now()));
+    setIsNewBest(false);
+    setShowInlineResult(false);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  }, [target, setTarget]);
 
   // ── config key for best score lookup ──
   const configKey = sessionConfigKey({ mode, language, stage, lessonId });
@@ -244,6 +270,10 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
 
   const isRunning = phase === 'running';
   const isFinished = phase === 'finished';
+  const shouldAutoAdvance = autoNextContent && mode !== 'speed-test';
+  const progressLabel = shouldAutoAdvance
+    ? `연속 연습 중 · ${completedCount}개 완료`
+    : `${completedCount}개 완료`;
 
   // Auto-advance to next content after a finished session (if enabled).
   // Skipped for speed-test (which doesn't have "next" the same way).
@@ -251,7 +281,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     if (!isFinished) return;
     if (!autoNextContent) return;
     if (mode === 'speed-test') return;
-    const id = window.setTimeout(() => handleNext(), 1500);
+    const id = window.setTimeout(() => handleNext(), 900);
     return () => window.clearTimeout(id);
   }, [isFinished, autoNextContent, mode, handleNext]);
 
@@ -304,7 +334,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
           onClick={handleNext}
           className="ml-auto rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-card"
         >
-          다시 시작 (Ctrl+Enter)
+          다음 지문 (Ctrl+Enter)
         </button>
       </div>
 
@@ -319,7 +349,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       )}
 
       {/* Live metrics */}
-      <div className="grid grid-cols-3 gap-2 rounded-lg border border-border bg-card p-3 text-center sm:grid-cols-4">
+      <div className="grid grid-cols-3 gap-2 rounded-lg border border-border bg-card p-3 text-center sm:grid-cols-5">
         <StatChip label="타/분" value={Math.round(metrics.타분당)} />
         <StatChip label="정확도" value={`${Math.round(metrics.정확도 * 100)}%`} />
         <StatChip
@@ -327,6 +357,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
           value={bestTpm !== null ? `${Math.round(bestTpm)}` : '—'}
         />
         <StatChip label="시간" value={elapsedDisplay} />
+        <StatChip label="흐름" value={progressLabel} />
       </div>
 
       {/* Live best comparator — visible while running */}
@@ -339,7 +370,19 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       )}
 
       {/* Target text */}
-      <TargetText target={target} typed={typed} isComposing={isComposing} />
+      <TargetText target={target} typed={typed} isComposing={isComposing} mode={mode} />
+
+      {showInlineResult && lastResult && (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-primary/25 bg-primary/5 px-4 py-3 text-sm">
+          <span className="font-semibold text-foreground">
+            {lastResult.passed ? '목표 통과' : '완료'} · {Math.round(lastResult.tpm)}타/분
+          </span>
+          <span className="text-muted">정확도 {Math.round(lastResult.accuracy * 100)}%</span>
+          {shouldAutoAdvance && !isFinished && (
+            <span className="ml-auto text-xs text-muted">다음 지문으로 이어갑니다.</span>
+          )}
+        </div>
+      )}
 
       {/* Input */}
       <TypingInput
@@ -357,9 +400,11 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
         ariaLabel="타자 입력"
         placeholder={
           phase === 'idle'
-            ? '입력창을 클릭하고 타자를 시작하세요.'
+            ? countdownEnabled
+              ? '준비되면 첫 글자를 누르세요. 카운트다운 후 시작합니다.'
+              : '바로 입력하세요. 첫 타부터 기록합니다.'
             : phase === 'countdown'
-            ? '잠시 대기...'
+            ? '카운트다운 중입니다. 잠시 후 입력하세요.'
             : ''
         }
       />
@@ -386,7 +431,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       />
 
       {/* Result */}
-      {isFinished && (
+      {isFinished && !shouldAutoAdvance && (
         <ResultPanel
           metrics={metrics}
           stage={stage}
@@ -394,12 +439,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
           bestTpm={bestTpm}
           isNewBest={isNewBest}
           onNext={handleNext}
-          onRetry={() => {
-            resetSession();
-            setTyped('');
-            setIsNewBest(false);
-            setTimeout(() => inputRef.current?.focus(), 0);
-          }}
+          onRetry={handleRetry}
         />
       )}
 
