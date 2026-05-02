@@ -80,6 +80,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   const [showInlineResult, setShowInlineResult] = useState(false);
   const [lastResult, setLastResult] = useState<{ tpm: number; accuracy: number; passed: boolean } | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const finishingRef = useRef(false);
 
   // ── content ──
   const { next: nextContent } = useStageContent({
@@ -141,18 +142,33 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   }, [pendingKeyDef, setPendingKey]);
 
   // ── finish logic ──
-  const doFinish = useCallback(async () => {
+  const doFinish = useCallback(async (completedTyped = typed) => {
+    if (finishingRef.current) return;
+    finishingRef.current = true;
     const fin = Date.now();
-    const m = computeLiveMetricsJamo({ target, typed, startedAt, finishedAt: fin });
+    const m = computeLiveMetricsJamo({ target, typed: completedTyped, startedAt, finishedAt: fin });
     const dur = m.elapsedSeconds;
     const stageGoal = STAGE_TARGET_TPM[stage];
     const passed = stageGoal ? m.타분당 >= stageGoal.tpm && m.정확도 >= stageGoal.accuracy : true;
+    const continueInPlace = autoNextContent && mode !== 'speed-test';
 
-    finishSession();
     setLastResult({ tpm: m.타분당, accuracy: m.정확도, passed });
     setShowInlineResult(true);
     setCompletedCount(count => count + 1);
     play('complete').catch(() => {});
+
+    if (continueInPlace) {
+      // 연속 연습은 결과 화면/disabled 상태를 거치지 않는다. 현재 textarea
+      // 포커스를 유지한 채 같은 자리에서 다음 지문만 교체한다.
+      initTarget();
+      setTimeout(() => {
+        finishingRef.current = false;
+        inputRef.current?.focus();
+      }, 0);
+    } else {
+      finishSession();
+      finishingRef.current = false;
+    }
 
     if (!db) return;
 
@@ -192,7 +208,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       await recordKeyHit(db, '__session__', true, 0).catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [db, target, typed, startedAt, mode, language, stage, lessonId]);
+  }, [db, target, typed, startedAt, mode, language, stage, lessonId, autoNextContent, initTarget]);
 
   // ── input handling ──
   const handleValueChange = useCallback((val: string) => {
@@ -209,6 +225,9 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       startSession();
       playKey().catch(() => {});
       setTyped(clipped);
+      if (mode !== 'speed-test' && clipped.length >= target.length) {
+        setTimeout(() => doFinish(clipped), 0);
+      }
       return;
     }
 
@@ -222,7 +241,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     setTyped(clipped);
 
     if (mode !== 'speed-test' && clipped.length >= target.length) {
-      setTimeout(() => doFinish(), 0);
+      setTimeout(() => doFinish(clipped), 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, mode, target.length, typed, setTyped, doFinish, startCountdown, startSession, countdownEnabled]);
@@ -275,15 +294,9 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     ? `연속 연습 중 · ${completedCount}개 완료`
     : `${completedCount}개 완료`;
 
-  // Auto-advance to next content after a finished session (if enabled).
-  // Skipped for speed-test (which doesn't have "next" the same way).
-  useEffect(() => {
-    if (!isFinished) return;
-    if (!autoNextContent) return;
-    if (mode === 'speed-test') return;
-    const id = window.setTimeout(() => handleNext(), 900);
-    return () => window.clearTimeout(id);
-  }, [isFinished, autoNextContent, mode, handleNext]);
+  // 연속 연습은 doFinish()에서 즉시 같은 자리의 다음 지문으로 교체한다.
+  // 여기서 별도 타이머를 두면 textarea가 disabled 되는 finished 화면을 거쳐
+  // 사용자가 말한 "화면이동"처럼 느껴진다.
 
   const stageTargetTpm = STAGE_TARGET_TPM[stage]?.tpm ?? stage;
 
@@ -378,8 +391,8 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
             {lastResult.passed ? '목표 통과' : '완료'} · {Math.round(lastResult.tpm)}타/분
           </span>
           <span className="text-muted">정확도 {Math.round(lastResult.accuracy * 100)}%</span>
-          {shouldAutoAdvance && !isFinished && (
-            <span className="ml-auto text-xs text-muted">다음 지문으로 이어갑니다.</span>
+          {shouldAutoAdvance && (
+            <span className="ml-auto text-xs text-muted">포커스를 유지한 채 다음 지문으로 이어졌습니다.</span>
           )}
         </div>
       )}
