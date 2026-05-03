@@ -7,9 +7,8 @@
 import { useMemo } from 'react';
 import {
   decomposeForKeystrokes,
-  getKeyByCode,
-  codeForHangul,
-  type KeyDef,
+  keyHintForChar,
+  type KeyHint,
 } from '@/lib/typing/korean-keyboard';
 
 type Options = {
@@ -18,20 +17,18 @@ type Options = {
   mode: string;
 };
 
-export function useNextExpectedKey({ target, typed, mode }: Options): KeyDef | undefined {
+export function useNextExpectedKey({ target, typed, mode }: Options): KeyHint | undefined {
   return useMemo(() => {
     if (mode === 'keyboard-zone') {
       const nextChar = target[typed.length];
       if (!nextChar) return undefined;
-      const code = codeForHangul(nextChar);
-      return code ? getKeyByCode(code) : undefined;
+      return keyHintForChar(nextChar);
     }
 
     const remaining = target.slice(typed.length);
     const seq = decomposeForKeystrokes(remaining);
     const next = seq[0];
     if (!next || next === ' ') return undefined;
-    const code = codeForHangul(next);
-    return code ? getKeyByCode(code) : undefined;
+    return keyHintForChar(next);
   }, [target, typed, mode]);
 }

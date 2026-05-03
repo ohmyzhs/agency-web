@@ -4,7 +4,7 @@
  */
 import { create } from 'zustand';
 import type { TypingMode, TypingLanguage, StageLevel } from '@/lib/typing/types';
-import type { KeyDef } from '@/lib/typing/korean-keyboard';
+import type { KeyHint } from '@/lib/typing/korean-keyboard';
 
 export type SessionPhase =
   | 'idle'        // 아직 시작 전
@@ -32,7 +32,7 @@ type TypingSessionState = {
   countdownStartedAt: number | null;
 
   // 키보드 힌트
-  pendingKey: KeyDef | undefined;
+  pendingKey: KeyHint | undefined;
 
   // 여러 줄 모드용
   currentLineIdx: number;
@@ -47,7 +47,7 @@ type TypingSessionActions = {
   setTarget: (target: string, seed?: string) => void;
   setTyped: (typed: string) => void;
   setIsComposing: (v: boolean) => void;
-  setPendingKey: (key: KeyDef | undefined) => void;
+  setPendingKey: (key: KeyHint | undefined) => void;
   setCurrentLineIdx: (idx: number) => void;
 
   startCountdown: () => void;

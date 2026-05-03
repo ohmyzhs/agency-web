@@ -1,3 +1,5 @@
+export type ShiftSide = "left" | "right";
+
 export type KeyDef = {
   code: string;
   base: string;
@@ -6,6 +8,12 @@ export type KeyDef = {
   hangulShift?: string;
   finger: "L5" | "L4" | "L3" | "L2" | "L1" | "R1" | "R2" | "R3" | "R4" | "R5";
   zone: ZoneId;
+};
+
+export type KeyHint = KeyDef & {
+  requiredShift?: boolean;
+  shiftSide?: ShiftSide;
+  output?: string;
 };
 
 export type ZoneId =
@@ -115,6 +123,27 @@ export function strokeForCode(code: string, shiftKey = false): string | undefine
 
 export function getKeyByCode(code: string): KeyDef | undefined {
   return allKeys.find((k) => k.code === code);
+}
+
+export function preferredShiftSideForKey(key: KeyDef): ShiftSide {
+  // Standard touch-typing convention: hold Shift with the hand opposite to the
+  // character key. Therefore right-hand punctuation such as : ? > < uses the
+  // left Shift, while left-hand double consonants use the right Shift.
+  return key.finger.startsWith("L") ? "right" : "left";
+}
+
+export function keyHintForChar(ch: string): KeyHint | undefined {
+  const code = codeForHangul(ch);
+  if (!code) return undefined;
+  const key = getKeyByCode(code);
+  if (!key) return undefined;
+  const requiresShift = key.shift === ch || key.hangulShift === ch;
+  return {
+    ...key,
+    requiredShift: requiresShift,
+    shiftSide: requiresShift ? preferredShiftSideForKey(key) : undefined,
+    output: ch,
+  };
 }
 
 // 두벌식 jamo decomposition tables.
