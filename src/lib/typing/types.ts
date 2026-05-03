@@ -17,7 +17,8 @@ export type LongformCategory =
   | "에세이"
   | "한국사"
   | "과학"
-  | "CS";
+  | "CS"
+  | "AI단편";
 
 export type TypingLanguage = "ko" | "en";
 

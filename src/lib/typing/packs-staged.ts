@@ -4,6 +4,7 @@
  * 검증: scripts/verify-content.ts로 자모 빈도/길이 분포 검사.
  */
 
+import { englishAiShortStoryPassages, koreanAiShortStoryPassages } from './longform-stories';
 import type { LongformCategory, StageLevel } from './types';
 
 // ─── 낱말 풀 (단계별) ────────────────────────────────────────────────────────
@@ -266,6 +267,7 @@ export type PassageItem = {
 };
 
 export const koreanPassagesByCategory: Record<LongformCategory, PassageItem[]> = {
+  "AI단편": koreanAiShortStoryPassages,
   "애국가": [
     {
       title: "애국가 1절",
@@ -581,7 +583,10 @@ export function getSentencesForStage(stage: StageLevel): string[] {
   return koreanSentencesByStage[stage] ?? koreanSentencesByStage[400];
 }
 
-export function getPassagesForCategory(category: LongformCategory): PassageItem[] {
+export function getPassagesForCategory(category: LongformCategory, language: 'ko' | 'en' = 'ko'): PassageItem[] {
+  if (category === 'AI단편' && language === 'en') {
+    return englishAiShortStoryPassages;
+  }
   return koreanPassagesByCategory[category] ?? [];
 }
 
@@ -599,5 +604,5 @@ export function buildWordStreamFromStage(stage: StageLevel, count = 25): string 
 }
 
 export const LONGFORM_CATEGORIES: LongformCategory[] = [
-  "애국가", "고전", "속담", "명언", "에세이", "한국사", "과학", "CS",
+  "AI단편", "애국가", "고전", "속담", "명언", "에세이", "한국사", "과학", "CS",
 ];

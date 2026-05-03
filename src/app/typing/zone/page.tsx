@@ -1,12 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
-import type { ZoneId } from '@/lib/typing/korean-keyboard';
+import { zoneLessons } from '@/lib/typing/packs';
 
-const ZONE_LIST: ZoneId[] = [
-  'home', 'middle', 'left-top', 'right-top',
-  'left-bottom', 'right-bottom', 'number',
-];
 
 export const metadata: Metadata = createPageMetadata({
   title: '자리연습 — 8단계 손가락 자리 익히기 | oh-my-zhs 타자',
@@ -15,15 +11,6 @@ export const metadata: Metadata = createPageMetadata({
   path: '/typing/zone',
 });
 
-const ZONE_LABELS: Record<ZoneId, { ko: string; desc: string }> = {
-  home:         { ko: '기본 자리',  desc: 'A S D F · J K L ;' },
-  middle:       { ko: '중앙',       desc: 'G · H' },
-  'left-top':   { ko: '왼손 윗줄',  desc: 'Q W E R T' },
-  'right-top':  { ko: '오른손 윗줄', desc: 'Y U I O P' },
-  'left-bottom':{ ko: '왼손 아랫줄', desc: 'Z X C V B' },
-  'right-bottom':{ ko: '오른손 아랫줄', desc: 'N M , . /' },
-  number:       { ko: '숫자열',     desc: '1 2 3 · 7 8 9 0' },
-};
 
 export default function ZoneHubPage() {
   return (
@@ -41,22 +28,21 @@ export default function ZoneHubPage() {
       </header>
 
       <ul className="grid gap-3 sm:grid-cols-2">
-        {ZONE_LIST.map((zoneId, idx) => {
-          const meta = ZONE_LABELS[zoneId];
+        {zoneLessons.map((lesson, idx) => {
           return (
-            <li key={zoneId}>
+            <li key={lesson.id}>
               <Link
-                href={`/typing/zone/${zoneId}`}
+                href={`/typing/zone/${lesson.id}`}
                 className="group block rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/60"
               >
                 <div className="flex items-baseline justify-between gap-2">
                   <h2 className="text-lg font-semibold">
                     <span className="mr-2 text-muted">{idx + 1}.</span>
-                    {meta.ko}
+                    {lesson.titleKo}
                   </h2>
                   <span className="text-xs text-muted group-hover:text-primary">시작 →</span>
                 </div>
-                <p className="mt-1 font-mono text-sm text-muted">{meta.desc}</p>
+                <p className="mt-1 font-mono text-sm text-muted">{lesson.subtitleKo}</p>
               </Link>
             </li>
           );

@@ -31,6 +31,8 @@ export const numberRow: RowDef = [
   { code: "Digit8", base: "8", shift: "*", finger: "R3", zone: "number" },
   { code: "Digit9", base: "9", shift: "(", finger: "R4", zone: "number" },
   { code: "Digit0", base: "0", shift: ")", finger: "R5", zone: "number" },
+  { code: "Minus", base: "-", shift: "_", finger: "R5", zone: "number" },
+  { code: "Equal", base: "=", shift: "+", finger: "R5", zone: "number" },
 ];
 
 export const topRow: RowDef = [
@@ -56,6 +58,7 @@ export const homeRow: RowDef = [
   { code: "KeyJ", base: "j", shift: "J", hangul: "ㅓ", finger: "R2", zone: "home" },
   { code: "KeyK", base: "k", shift: "K", hangul: "ㅏ", finger: "R3", zone: "home" },
   { code: "KeyL", base: "l", shift: "L", hangul: "ㅣ", finger: "R4", zone: "home" },
+  { code: "Semicolon", base: ";", shift: ":", finger: "R5", zone: "home" },
 ];
 
 export const bottomRow: RowDef = [
@@ -66,6 +69,9 @@ export const bottomRow: RowDef = [
   { code: "KeyB", base: "b", shift: "B", hangul: "ㅠ", finger: "L2", zone: "left-bottom" },
   { code: "KeyN", base: "n", shift: "N", hangul: "ㅜ", finger: "R2", zone: "right-bottom" },
   { code: "KeyM", base: "m", shift: "M", hangul: "ㅡ", finger: "R2", zone: "right-bottom" },
+  { code: "Comma", base: ",", shift: "<", finger: "R3", zone: "right-bottom" },
+  { code: "Period", base: ".", shift: ">", finger: "R4", zone: "right-bottom" },
+  { code: "Slash", base: "/", shift: "?", finger: "R5", zone: "right-bottom" },
 ];
 
 export const allRows: RowDef[] = [topRow, homeRow, bottomRow];
@@ -75,6 +81,9 @@ export const allKeys: KeyDef[] = [...numberRow, ...topRow, ...homeRow, ...bottom
 const codeToHangul: Record<string, string> = {};
 const hangulToCode: Record<string, string> = {};
 for (const k of allKeys) {
+  if (k.shift) {
+    hangulToCode[k.shift] = k.code;
+  }
   if (k.hangul) {
     codeToHangul[k.code] = k.hangul;
     hangulToCode[k.hangul] = k.code;
@@ -85,11 +94,23 @@ for (const k of allKeys) {
 }
 
 export function codeForHangul(jamo: string): string | undefined {
+  if (jamo.length === 1 && /[0-9\-_=+!@#$%^&*(),.<>/?;:]/.test(jamo)) {
+    return allKeys.find((k) => k.base === jamo || k.shift === jamo)?.code;
+  }
   return hangulToCode[jamo];
 }
 
 export function hangulForCode(code: string): string | undefined {
   return codeToHangul[code];
+}
+
+export function strokeForCode(code: string, shiftKey = false): string | undefined {
+  const key = allKeys.find((k) => k.code === code);
+  if (!key) return undefined;
+  if (key.hangul || key.hangulShift) {
+    return shiftKey ? (key.hangulShift ?? key.hangul) : key.hangul;
+  }
+  return shiftKey ? (key.shift ?? key.base) : key.base;
 }
 
 export function getKeyByCode(code: string): KeyDef | undefined {
