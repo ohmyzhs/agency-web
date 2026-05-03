@@ -36,9 +36,12 @@ export function CountdownGate({ enabled, onStart, seconds = 3, phase }: Props) {
   }, [phase]);
 
   useEffect(() => {
-    if (state === 'counting') {
-      play('countdown-tick').catch(() => {});
-    }
+    if (state !== 'counting') return;
+    const tickName =
+      remaining >= 3 ? 'count-tick-3' :
+      remaining === 2 ? 'count-tick-2' :
+      'count-tick-1';
+    play(tickName).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remaining]);
 

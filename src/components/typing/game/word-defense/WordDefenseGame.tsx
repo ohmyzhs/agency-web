@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { disassemble } from 'es-hangul';
 import { useDB } from '@/lib/typing/db/provider';
+import { useSoundFx } from '@/hooks/useSoundFx';
 import type { StageLevel } from '@/lib/typing/types';
 import { STAGE_LIST } from '@/lib/typing/metrics-jamo';
 
@@ -32,6 +33,7 @@ async function loadGameModule(): Promise<GameModule> {
 
 export function WordDefenseGame() {
   const db = useDB();
+  const { playKey, play, playBgm, stopBgm } = useSoundFx();
   const hostRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const gameRef = useRef<import('phaser').Game | null>(null);
@@ -54,11 +56,18 @@ export function WordDefenseGame() {
     const bus = new Phaser.Events.EventEmitter();
     busRef.current = bus;
     bus.on('hud', (h: HudState) => setHud(h));
+    bus.on('hit', () => { play('game-hit').catch(() => {}); });
+    bus.on('miss', () => { play('miss').catch(() => {}); });
+    bus.on('boom', () => { play('game-boom').catch(() => {}); });
     bus.on('gameover', (f: { score: number; wave: number; comboMax: number }) => {
       setFinal(f); setPhase('gameover');
+      stopBgm();
+      play('game-boom').catch(() => {});
     });
     bus.on('clear', (f: { score: number; wave: number; comboMax: number }) => {
       setFinal(f); setPhase('clear');
+      stopBgm();
+      play('tada').catch(() => {});
     });
 
     const game = new Phaser.Game({
@@ -77,13 +86,15 @@ export function WordDefenseGame() {
     setFinal(null);
     setPhase('playing');
     setHud({ wave: 1, hp: 100, score: 0, combo: 1 });
+    playBgm().catch(() => {});
     setTimeout(() => inputRef.current?.focus(), 50);
-  }, [stage]);
+  }, [stage, play, playBgm, stopBgm]);
 
   useEffect(() => () => {
     gameRef.current?.destroy(true);
     gameRef.current = null;
-  }, []);
+    stopBgm();
+  }, [stopBgm]);
 
   // Persist score on game end.
   useEffect(() => {
@@ -110,10 +121,11 @@ export function WordDefenseGame() {
     const jamos = disassemble(last);
     for (const j of jamos) {
       busRef.current?.emit('jamo', j);
+      playKey().catch(() => {});
     }
     // Clear so we always get the next keystroke fresh
     e.target.value = '';
-  }, []);
+  }, [playKey]);
 
   return (
     <div className="space-y-3">

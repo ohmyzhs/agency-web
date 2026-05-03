@@ -372,6 +372,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
 
     if (phase !== 'running') return;
     if (clipped.length > typed.length) playKey().catch(() => {});
+    else if (clipped.length < typed.length) play('miss').catch(() => {});
     setTyped(clipped);
 
     if (mode !== 'speed-test' && clipped.length >= target.length && !finishScheduledRef.current) {
@@ -381,8 +382,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
         doFinish(clipped);
       }, 0);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, mode, target.length, typed, setTyped, doFinish, startCountdown, startSession, countdownEnabled, focusTypingInput]);
+  }, [phase, mode, target.length, typed, setTyped, doFinish, startCountdown, startSession, countdownEnabled, focusTypingInput, play, playKey]);
 
   const handleCompositionChange = useCallback((c: boolean) => {
     setIsComposing(c);
@@ -576,6 +576,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
             if (e.key === 'Backspace') {
               e.preventDefault();
               if (phase !== 'finished' && phase !== 'countdown') {
+                if (typed.length > 0) play('miss').catch(() => {});
                 setTyped(typed.slice(0, -1));
               }
               return;
