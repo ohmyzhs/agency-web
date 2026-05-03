@@ -336,7 +336,21 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   const handleValueChange = useCallback((val: string) => {
     if (phase === 'finished') return;
     if (mode === 'keyboard-zone') return;
-    const clipped = mode === 'speed-test' ? val : val.slice(0, target.length);
+
+    let nextVal = val;
+    if (mode === 'sentence') {
+      const latestTyped = useTypingSession.getState().typed;
+      if (latestTyped.length === 0 || /^[ \r\n]+$/.test(latestTyped)) {
+        nextVal = nextVal.replace(/^[ \r\n]+/, '');
+        if (nextVal.length === 0) {
+          setTyped('');
+          focusTypingInput();
+          return;
+        }
+      }
+    }
+
+    const clipped = mode === 'speed-test' ? nextVal : nextVal.slice(0, target.length);
 
     if (phase === 'idle' && clipped.length > 0) {
       if (countdownEnabled) {
@@ -368,7 +382,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       }, 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, mode, target.length, typed, setTyped, doFinish, startCountdown, startSession, countdownEnabled]);
+  }, [phase, mode, target.length, typed, setTyped, doFinish, startCountdown, startSession, countdownEnabled, focusTypingInput]);
 
   const handleCompositionChange = useCallback((c: boolean) => {
     setIsComposing(c);
