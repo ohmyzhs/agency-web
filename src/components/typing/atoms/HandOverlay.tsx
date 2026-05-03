@@ -5,6 +5,7 @@
  */
 import { motion } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import type { ShiftSide } from '@/lib/typing/korean-keyboard';
 
 type Finger = 'L5' | 'L4' | 'L3' | 'L2' | 'L1' | 'R1' | 'R2' | 'R3' | 'R4' | 'R5';
 
@@ -34,16 +35,21 @@ const FINGERS: Array<{ id: Finger; cx: number; cy: number }> = [
 
 type Props = {
   expectedFinger?: Finger;
+  shiftSide?: ShiftSide;
 };
 
-export function HandOverlay({ expectedFinger }: Props) {
+export function HandOverlay({ expectedFinger, shiftSide }: Props) {
   const reduced = useReducedMotion();
+  const shiftFinger: Finger | undefined = shiftSide === 'left' ? 'L5' : shiftSide === 'right' ? 'R5' : undefined;
+  const label = expectedFinger
+    ? `${shiftSide ? `${shiftSide === 'left' ? '왼Shift' : '오Shift'} + ` : ''}${FINGER_LABEL[expectedFinger]}`
+    : '대기';
 
   return (
     <div className="rounded-lg border border-border bg-card p-3">
       <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-wider text-muted">
         <span>손가락 가이드</span>
-        <span>{expectedFinger ? FINGER_LABEL[expectedFinger] : '대기'}</span>
+        <span>{label}</span>
       </div>
       <svg viewBox="0 0 400 80" className="h-16 w-full">
         {/* palm shapes */}
@@ -54,6 +60,7 @@ export function HandOverlay({ expectedFinger }: Props) {
 
         {FINGERS.map(f => {
           const isExpected = f.id === expectedFinger;
+          const isShift = f.id === shiftFinger;
           const color = FINGER_COLOR[f.id];
           // Connector line from palm to fingertip
           const palmY = 70;
@@ -65,20 +72,20 @@ export function HandOverlay({ expectedFinger }: Props) {
               <line
                 x1={palmX} y1={palmY}
                 x2={f.cx}  y2={f.cy + 6}
-                stroke={isExpected ? color : 'currentColor'}
-                strokeOpacity={isExpected ? 0.9 : 0.25}
-                strokeWidth={isExpected ? 2 : 1}
+                stroke={isExpected || isShift ? color : 'currentColor'}
+                strokeOpacity={isExpected || isShift ? 0.9 : 0.25}
+                strokeWidth={isExpected || isShift ? 2 : 1}
               />
               <motion.circle
                 cx={f.cx}
                 cy={f.cy}
-                fill={isExpected ? color : 'currentColor'}
-                fillOpacity={isExpected ? 1 : 0.3}
-                initial={{ r: isExpected ? 8 : 5 }}
+                fill={isExpected || isShift ? color : 'currentColor'}
+                fillOpacity={isExpected || isShift ? 1 : 0.3}
+                initial={{ r: isExpected || isShift ? 8 : 5 }}
                 animate={
-                  isExpected && !reduced
+                  (isExpected || isShift) && !reduced
                     ? { r: [8, 11, 8] }
-                    : { r: isExpected ? 8 : 5 }
+                    : { r: isExpected || isShift ? 8 : 5 }
                 }
                 transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
               />

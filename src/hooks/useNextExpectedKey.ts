@@ -1,8 +1,11 @@
 'use client';
 /**
  * 현재 입력 위치 기준으로 다음에 눌러야 할 키를 계산한다.
- * 자리연습: target의 다음 자모를 직접 매핑.
- * 나머지 모드: 남은 텍스트를 자소 분해 후 첫 자소를 매핑.
+ *
+ * 한글 문장/낱말/장문은 textarea 값이 음절 단위로 들어오지만,
+ * 가이드는 실제 두벌식 타건 순서(초성 → 중성 → 종성)로 움직여야 한다.
+ * 예: "팀원"은 target/typed의 문자열 인덱스가 아니라
+ * ㅌ → ㅣ → ㅁ → ㅇ → ㅜ → ㅓ → ㄴ 순서로 안내한다.
  */
 import { useMemo } from 'react';
 import {
@@ -25,9 +28,9 @@ export function useNextExpectedKey({ target, typed, mode }: Options): KeyHint | 
       return keyHintForChar(nextChar);
     }
 
-    const remaining = target.slice(typed.length);
-    const seq = decomposeForKeystrokes(remaining);
-    const next = seq[0];
+    const targetSeq = decomposeForKeystrokes(target);
+    const typedSeq = decomposeForKeystrokes(typed);
+    const next = targetSeq[typedSeq.length];
     if (!next || next === ' ') return undefined;
     return keyHintForChar(next);
   }, [target, typed, mode]);
