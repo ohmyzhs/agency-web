@@ -5,9 +5,9 @@
  */
 import { motion } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import type { ShiftSide } from '@/lib/typing/korean-keyboard';
+import type { FingerId, ShiftSide } from '@/lib/typing/korean-keyboard';
 
-type Finger = 'L5' | 'L4' | 'L3' | 'L2' | 'L1' | 'R1' | 'R2' | 'R3' | 'R4' | 'R5';
+type Finger = FingerId;
 
 const FINGER_COLOR: Record<Finger, string> = {
   L5: '#f9a8d4', L4: '#c4b5fd', L3: '#7dd3fc', L2: '#86efac', L1: '#fcd34d',
@@ -36,13 +36,18 @@ const FINGERS: Array<{ id: Finger; cx: number; cy: number }> = [
 type Props = {
   expectedFinger?: Finger;
   shiftSide?: ShiftSide;
+  extraFingers?: Finger[];
 };
 
-export function HandOverlay({ expectedFinger, shiftSide }: Props) {
+export function HandOverlay({ expectedFinger, shiftSide, extraFingers = [] }: Props) {
   const reduced = useReducedMotion();
   const shiftFinger: Finger | undefined = shiftSide === 'left' ? 'L5' : shiftSide === 'right' ? 'R5' : undefined;
-  const label = expectedFinger
-    ? `${shiftSide ? `${shiftSide === 'left' ? '왼Shift' : '오Shift'} + ` : ''}${FINGER_LABEL[expectedFinger]}`
+  const highlightedFingers = Array.from(new Set([expectedFinger, shiftFinger, ...extraFingers].filter(Boolean))) as Finger[];
+  const label = highlightedFingers.length > 0
+    ? `${shiftSide ? `${shiftSide === 'left' ? '왼Shift' : '오Shift'} + ` : ''}${highlightedFingers
+        .filter((finger) => finger !== shiftFinger)
+        .map((finger) => FINGER_LABEL[finger])
+        .join(' + ')}`
     : '대기';
 
   return (
@@ -61,6 +66,7 @@ export function HandOverlay({ expectedFinger, shiftSide }: Props) {
         {FINGERS.map(f => {
           const isExpected = f.id === expectedFinger;
           const isShift = f.id === shiftFinger;
+          const isExtra = extraFingers.includes(f.id);
           const color = FINGER_COLOR[f.id];
           // Connector line from palm to fingertip
           const palmY = 70;
@@ -72,20 +78,20 @@ export function HandOverlay({ expectedFinger, shiftSide }: Props) {
               <line
                 x1={palmX} y1={palmY}
                 x2={f.cx}  y2={f.cy + 6}
-                stroke={isExpected || isShift ? color : 'currentColor'}
-                strokeOpacity={isExpected || isShift ? 0.9 : 0.25}
-                strokeWidth={isExpected || isShift ? 2 : 1}
+                stroke={isExpected || isShift || isExtra ? color : 'currentColor'}
+                strokeOpacity={isExpected || isShift || isExtra ? 0.9 : 0.25}
+                strokeWidth={isExpected || isShift || isExtra ? 2 : 1}
               />
               <motion.circle
                 cx={f.cx}
                 cy={f.cy}
-                fill={isExpected || isShift ? color : 'currentColor'}
-                fillOpacity={isExpected || isShift ? 1 : 0.3}
-                initial={{ r: isExpected || isShift ? 8 : 5 }}
+                fill={isExpected || isShift || isExtra ? color : 'currentColor'}
+                fillOpacity={isExpected || isShift || isExtra ? 1 : 0.3}
+                initial={{ r: isExpected || isShift || isExtra ? 8 : 5 }}
                 animate={
-                  (isExpected || isShift) && !reduced
+                  (isExpected || isShift || isExtra) && !reduced
                     ? { r: [8, 11, 8] }
-                    : { r: isExpected || isShift ? 8 : 5 }
+                    : { r: isExpected || isShift || isExtra ? 8 : 5 }
                 }
                 transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
               />

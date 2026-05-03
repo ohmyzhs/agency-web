@@ -629,7 +629,11 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
 
       {/* Hand overlay — placeholder fingertip ring */}
       {showHands && (
-        <HandOverlay expectedFinger={pendingKey?.finger} shiftSide={pendingKey?.shiftSide} />
+        <HandOverlay
+          expectedFinger={pendingKey?.finger}
+          shiftSide={pendingKey?.shiftSide}
+          extraFingers={pendingKey?.extraFingers}
+        />
       )}
 
       {/* Challenge bar — compact, below practice surface */}

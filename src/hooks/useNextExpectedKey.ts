@@ -31,7 +31,7 @@ export function useNextExpectedKey({ target, typed, mode }: Options): KeyHint | 
     const targetSeq = decomposeForKeystrokes(target);
     const typedSeq = decomposeForKeystrokes(typed);
     const next = targetSeq[typedSeq.length];
-    if (!next || next === ' ') return undefined;
+    if (!next) return undefined;
     return keyHintForChar(next);
   }, [target, typed, mode]);
 }

@@ -1,12 +1,14 @@
 export type ShiftSide = "left" | "right";
 
+export type FingerId = "L5" | "L4" | "L3" | "L2" | "L1" | "R1" | "R2" | "R3" | "R4" | "R5";
+
 export type KeyDef = {
   code: string;
   base: string;
   shift?: string;
   hangul?: string;
   hangulShift?: string;
-  finger: "L5" | "L4" | "L3" | "L2" | "L1" | "R1" | "R2" | "R3" | "R4" | "R5";
+  finger: FingerId;
   zone: ZoneId;
 };
 
@@ -14,6 +16,7 @@ export type KeyHint = KeyDef & {
   requiredShift?: boolean;
   shiftSide?: ShiftSide;
   output?: string;
+  extraFingers?: FingerId[];
 };
 
 export type ZoneId =
@@ -133,6 +136,17 @@ export function preferredShiftSideForKey(key: KeyDef): ShiftSide {
 }
 
 export function keyHintForChar(ch: string): KeyHint | undefined {
+  if (ch === " ") {
+    return {
+      code: "Space",
+      base: "Space",
+      finger: "L1",
+      zone: "home",
+      output: " ",
+      extraFingers: ["R1"],
+    };
+  }
+
   const code = codeForHangul(ch);
   if (!code) return undefined;
   const key = getKeyByCode(code);

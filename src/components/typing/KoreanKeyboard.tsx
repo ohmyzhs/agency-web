@@ -41,6 +41,7 @@ type LegendDef = {
   kind?: "key" | "control" | "shift" | "space";
   shiftSide?: ShiftSide;
   span?: number;
+  colStart?: number;
 };
 
 function control(id: string, label: string, span = 1, kind: LegendDef["kind"] = "control", shiftSide?: ShiftSide): LegendDef {
@@ -71,7 +72,7 @@ const keyboardRows: LegendDef[][] = [
     ...bottomRow.map((def) => ({ id: def.code, def, kind: "key" as const })),
     control("ShiftRight", "Shift", 2, "shift", "right"),
   ],
-  [control("Space", "Space", 8, "space")],
+  [{ ...control("Space", "Space", 7, "space"), colStart: 5 }],
 ];
 
 function KeyCap({
@@ -87,6 +88,7 @@ function KeyCap({
 }) {
   const def = item.def;
   const isExpected = def && expected?.code === def.code;
+  const isExpectedControl = !def && expected?.code === item.id;
   const isRequiredShift = item.kind === "shift" && expected?.shiftSide === item.shiftSide;
   const isInZone = def && highlightZone && def.zone === highlightZone;
   const fingerBorder = def ? (fingerColor[def.finger] ?? "border-border") : "border-border";
@@ -96,9 +98,8 @@ function KeyCap({
     <div
       className={[
         "relative flex h-10 min-w-0 shrink-0 items-center justify-center rounded-[4px] border bg-background text-center font-mono text-[10px] leading-none shadow-sm transition-colors sm:h-12",
-        item.kind === "space" ? "col-start-4" : "",
         item.kind === "control" || item.kind === "shift" || item.kind === "space" ? "px-1 text-muted" : fingerBorder,
-        isExpected || isRequiredShift
+        isExpected || isExpectedControl || isRequiredShift
           ? "border-primary bg-accent text-foreground ring-2 ring-primary"
           : isInZone
             ? "bg-accent/40 text-foreground"
@@ -106,7 +107,11 @@ function KeyCap({
       ]
         .filter(Boolean)
         .join(" ")}
-      style={{ gridColumn: `span ${item.span ?? 1} / span ${item.span ?? 1}` }}
+      style={{
+        gridColumn: item.colStart
+          ? `${item.colStart} / span ${item.span ?? 1}`
+          : `span ${item.span ?? 1} / span ${item.span ?? 1}`,
+      }}
       aria-label={def ? `${def.base}${def.hangul ? ` ${def.hangul}` : ""}` : item.label}
     >
       {def ? (
