@@ -1,11 +1,10 @@
 /**
  * Phaser GameScene — falling Korean words, jamo-by-jamo destruction.
- * Sprite assets are missing in /public/typing/sprites; this scene generates
- * its own textures procedurally (parallax stars, meteor halo, ship, particles)
- * so it stays self-contained but visually richer than raw primitives.
+ * Wires keyed PNG assets (space bg, ship, meteors, explosion sheet) and emits
+ * aim state to React so the input overlay and ship can track the active word.
  */
 import * as Phaser from 'phaser';
-import { disassemble } from 'es-hangul';
+import { disassemble, assemble } from 'es-hangul';
 import type { StageLevel } from '@/lib/typing/types';
 import { getWordsForStage } from '@/lib/typing/packs-staged';
 import {
@@ -20,19 +19,32 @@ type SpecialKind = null | 'red' | 'purple' | 'gold';
 type Meteor = {
   id: number;
   word: string;
-  jamoSeq: string;        // full decomposed jamo string
-  matched: number;        // jamos matched so far
+  jamoSeq: string;
+  matched: number;
   special: SpecialKind;
   container: Phaser.GameObjects.Container;
   textObj: Phaser.GameObjects.Text;
   bgObj: Phaser.GameObjects.Rectangle;
-  haloObj: Phaser.GameObjects.Image;
+  spriteObj: Phaser.GameObjects.Image;
   speed: number;
+};
+
+export type AimState = {
+  x: number;
+  y: number;
+  typed: string;
+  active: boolean;
 };
 
 const FLOOR_Y_OFFSET = 80;
 const WIDTH = 800;
 const HEIGHT = 600;
+const SHIP_BASE_Y = HEIGHT - 56;
+const INPUT_OFFSET_Y = -56; // input overlay above ship sprite
+const SHIP_LERP = 8;        // ship glide speed (units / sec)
+
+const ASSET_BASE = '/typing/game/word-defense/sprites/keyed';
+const BG_PATH = '/typing/illustrations/space-bg.png';
 
 export class GameScene extends Phaser.Scene {
   private meteors: Meteor[] = [];
@@ -46,11 +58,14 @@ export class GameScene extends Phaser.Scene {
   private bgFar?: Phaser.GameObjects.TileSprite;
   private bgNear?: Phaser.GameObjects.TileSprite;
   private particles?: Phaser.GameObjects.Particles.ParticleEmitter;
+  private ship!: Phaser.GameObjects.Image;
+  private shipTargetX = WIDTH / 2;
+  private activeTargetId: number | null = null;
+  private pendingInput = '';
+  private lastAim: AimState = { x: WIDTH / 2, y: SHIP_BASE_Y + INPUT_OFFSET_Y, typed: '', active: false };
 
-  // External event bus (Phaser → React)
   private bus!: Phaser.Events.EventEmitter;
 
-  // HUD
   private waveIdx = 1;
   private hp = 100;
   private score = 0;
@@ -76,29 +91,60 @@ export class GameScene extends Phaser.Scene {
     this.score = 0;
     this.combo = 1;
     this.comboMax = 1;
+    this.activeTargetId = null;
+    this.pendingInput = '';
+    this.shipTargetX = WIDTH / 2;
+  }
+
+  preload() {
+    this.load.image('wd-bg-space', BG_PATH);
+    this.load.image('wd-ship-img', `${ASSET_BASE}/ship.png`);
+    this.load.image('wd-meteor-large', `${ASSET_BASE}/meteor-large.png`);
+    this.load.image('wd-meteor-medium', `${ASSET_BASE}/meteor-medium.png`);
+    this.load.image('wd-meteor-small', `${ASSET_BASE}/meteor-small.png`);
+    this.load.image('wd-meteor-gem', `${ASSET_BASE}/gem.png`);
+    this.load.spritesheet('wd-explosion', `${ASSET_BASE}/explosion-sheet.png`, {
+      frameWidth: 256,
+      frameHeight: 256,
+    });
   }
 
   create() {
-    this.cameras.main.setBackgroundColor('#0c0c0e');
+    this.cameras.main.setBackgroundColor('#05060c');
 
-    this.buildTextures();
+    this.buildProceduralTextures();
 
-    // Parallax: two scrolling star tile layers.
-    this.bgFar = this.add.tileSprite(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, 'wd-stars-far')
-      .setAlpha(0.6);
-    this.bgNear = this.add.tileSprite(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, 'wd-stars-near')
-      .setAlpha(0.9);
+    // Background image — stretched to canvas; subtle parallax stars float over it.
+    if (this.textures.exists('wd-bg-space')) {
+      this.add.image(WIDTH / 2, HEIGHT / 2, 'wd-bg-space')
+        .setDisplaySize(WIDTH, HEIGHT)
+        .setAlpha(0.95);
+    }
+    this.bgFar = this.add.tileSprite(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, 'wd-stars-far').setAlpha(0.35);
+    this.bgNear = this.add.tileSprite(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, 'wd-stars-near').setAlpha(0.55);
 
-    // Floor defense line + ship sprite.
-    this.add.rectangle(WIDTH / 2, HEIGHT - FLOOR_Y_OFFSET / 2, WIDTH, 4, 0xff5b1f, 0.6);
-    this.add.image(WIDTH / 2, HEIGHT - 38, 'wd-ship').setOrigin(0.5, 1);
-    this.add.text(WIDTH / 2, HEIGHT - 16, 'oh-my-zhs · DEFENSE LINE', {
+    // Defense line.
+    this.add.rectangle(WIDTH / 2, HEIGHT - FLOOR_Y_OFFSET / 2, WIDTH, 2, 0xff5b1f, 0.55);
+    this.add.text(WIDTH / 2, HEIGHT - 14, 'oh-my-zhs · DEFENSE LINE', {
       fontFamily: 'monospace',
       fontSize: '11px',
       color: '#ff5b1f',
     }).setOrigin(0.5);
 
-    // Particle emitter for explosion effects (manual emit on destroy).
+    this.ship = this.add.image(WIDTH / 2, SHIP_BASE_Y, 'wd-ship-img')
+      .setOrigin(0.5, 0.5)
+      .setDisplaySize(96, 96);
+
+    // Explosion animation from 4×4 sheet (16 frames).
+    if (!this.anims.exists('wd-boom')) {
+      this.anims.create({
+        key: 'wd-boom',
+        frames: this.anims.generateFrameNumbers('wd-explosion', { start: 0, end: 15 }),
+        frameRate: 32,
+        repeat: 0,
+      });
+    }
+
     this.particles = this.add.particles(0, 0, 'wd-particle', {
       speed: { min: 80, max: 220 },
       lifespan: 420,
@@ -108,21 +154,19 @@ export class GameScene extends Phaser.Scene {
       emitting: false,
     });
 
-    // Listen for jamo input from React via the bus
     this.bus.on('jamo', this.onJamoInput, this);
-    this.bus.on('reset', this.scene.restart.bind(this.scene));
+    this.bus.on('reset', this.scene.restart, this.scene);
 
     this.bus.emit('hud', { wave: 1, hp: 100, score: 0, combo: 1 });
+    this.emitAim();
   }
 
   update(_time: number, delta: number) {
-    // Parallax scroll runs even while paused-by-hp; keeps the scene alive.
     if (this.bgFar) this.bgFar.tilePositionY -= delta * 0.02;
     if (this.bgNear) this.bgNear.tilePositionY -= delta * 0.06;
 
     if (this.hp <= 0) return;
 
-    // slow-mo expiry
     if (this.slowUntil && this.time.now > this.slowUntil) {
       this.slowUntil = 0;
       this.slowFactor = 1;
@@ -147,6 +191,8 @@ export class GameScene extends Phaser.Scene {
       this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
       if (this.waveIdx > WAVES_TO_CLEAR) {
         this.bus.emit('clear', { score: this.score, wave: this.waveIdx, comboMax: this.comboMax });
+        this.activeTargetId = null;
+        this.emitAim();
         this.scene.pause();
         return;
       }
@@ -159,6 +205,14 @@ export class GameScene extends Phaser.Scene {
         this.onMeteorReachFloor(m);
       }
     }
+
+    // Ship glide toward active target x (or center).
+    const active = this.getActiveMeteor();
+    this.shipTargetX = active ? active.container.x : WIDTH / 2;
+    const t = Math.min(1, dt * SHIP_LERP);
+    this.ship.x = Phaser.Math.Linear(this.ship.x, this.shipTargetX, t);
+
+    this.emitAim();
   }
 
   // ─── Spawning ──────────────────────────────────────────────────────────────
@@ -175,10 +229,7 @@ export class GameScene extends Phaser.Scene {
 
     const x = Phaser.Math.Between(60, WIDTH - 60);
     const fontSize = Phaser.Math.Clamp(28 - word.length * 1.2, 16, 28);
-    const padding = 12;
-
-    const tint = this.specialColor(special);
-    const bgFill = special ? tint : 0x1f1f24;
+    const padding = 10;
 
     const textObj = this.add.text(0, 0, word, {
       fontFamily: 'system-ui, sans-serif',
@@ -190,17 +241,20 @@ export class GameScene extends Phaser.Scene {
     const w = textObj.width + padding * 2;
     const h = textObj.height + padding * 1.2;
 
-    const bgObj = this.add.rectangle(0, 0, w, h, bgFill, 0.85)
-      .setStrokeStyle(2, tint, 0.9);
+    // Pick meteor sprite by word length; gold special always uses the gem.
+    const spriteKey = this.pickMeteorSpriteKey(word.length, special);
+    const tint = this.specialColor(special);
+    const spriteSize = Math.max(96, Math.min(160, w + 40));
+    const spriteObj = this.add.image(0, 0, spriteKey)
+      .setDisplaySize(spriteSize, spriteSize)
+      .setOrigin(0.5);
+    if (special && special !== 'gold') spriteObj.setTint(tint);
 
-    const haloRadius = Math.max(w, h) * 0.95;
-    const haloObj = this.add.image(0, 0, 'wd-halo')
-      .setDisplaySize(haloRadius * 2, haloRadius * 2)
-      .setTint(tint)
-      .setAlpha(0.55)
-      .setBlendMode(Phaser.BlendModes.ADD);
+    // Slim plate behind text for legibility against meteor texture.
+    const bgObj = this.add.rectangle(0, 0, w, h, 0x05060c, 0.55)
+      .setStrokeStyle(1, tint, 0.7);
 
-    const container = this.add.container(x, -40, [haloObj, bgObj, textObj]);
+    const container = this.add.container(x, -40, [spriteObj, bgObj, textObj]);
     container.setSize(w, h);
 
     const speed = cfg.fallSpeed * (1 + (this.waveIdx - 1) * 0.08);
@@ -208,8 +262,16 @@ export class GameScene extends Phaser.Scene {
     this.meteors.push({
       id: this.nextId++,
       word, jamoSeq, matched: 0, special,
-      container, textObj, bgObj, haloObj, speed,
+      container, textObj, bgObj, spriteObj, speed,
     });
+  }
+
+  private pickMeteorSpriteKey(wordLen: number, special: SpecialKind): string {
+    if (special === 'gold' && this.textures.exists('wd-meteor-gem')) return 'wd-meteor-gem';
+    if (wordLen >= 4 && this.textures.exists('wd-meteor-large')) return 'wd-meteor-large';
+    if (wordLen >= 2 && this.textures.exists('wd-meteor-medium')) return 'wd-meteor-medium';
+    if (this.textures.exists('wd-meteor-small')) return 'wd-meteor-small';
+    return 'wd-particle';
   }
 
   // ─── Input ─────────────────────────────────────────────────────────────────
@@ -217,26 +279,51 @@ export class GameScene extends Phaser.Scene {
     if (this.hp <= 0) return;
     if (!jamo) return;
 
-    // First find any meteor whose next jamo matches.
     let matched: Meteor | null = null;
-    for (const m of this.meteors) {
-      if (m.jamoSeq[m.matched] === jamo) {
-        matched = m;
-        break;
+
+    // Lock-on: prefer the active target if its next jamo matches.
+    if (this.activeTargetId !== null) {
+      const cur = this.meteors.find(m => m.id === this.activeTargetId);
+      if (cur && cur.jamoSeq[cur.matched] === jamo) {
+        matched = cur;
+      }
+    }
+    // Strict miss when locked: if active target exists but didn't match, treat as miss
+    // and release the lock. Otherwise look for a fresh meteor to acquire.
+    if (!matched && this.activeTargetId === null) {
+      for (const m of this.meteors) {
+        if (m.jamoSeq[m.matched] === jamo) {
+          matched = m;
+          break;
+        }
       }
     }
 
     if (!matched) {
-      // Wrong key — combo break.
       this.combo = Math.max(1, this.combo * 0.5);
+      // Reset progress on the released meteor so its visual matches.
+      if (this.activeTargetId !== null) {
+        const released = this.meteors.find(m => m.id === this.activeTargetId);
+        if (released) {
+          released.matched = 0;
+          released.bgObj.fillAlpha = 0.55;
+          released.textObj.setColor('#ffffff');
+        }
+        this.activeTargetId = null;
+      }
+      this.pendingInput = assemble((this.pendingInput + jamo).slice(-5).split(''));
       this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
       this.bus.emit('miss', { jamo });
+      this.emitAim();
       return;
     }
 
+    if (this.activeTargetId !== matched.id) this.pendingInput = '';
     matched.matched += 1;
-    matched.bgObj.fillAlpha = 1;
+    this.pendingInput = '';
+    matched.bgObj.fillAlpha = 0.85;
     matched.textObj.setColor('#ff5b1f');
+    this.activeTargetId = matched.id;
     this.bus.emit('hit', { jamo, special: matched.special });
     this.tweens.add({
       targets: matched.container,
@@ -247,6 +334,7 @@ export class GameScene extends Phaser.Scene {
     if (matched.matched >= matched.jamoSeq.length) {
       this.destroyMeteor(matched, true);
     }
+    this.emitAim();
   }
 
   private destroyMeteor(m: Meteor, byPlayer: boolean) {
@@ -268,6 +356,15 @@ export class GameScene extends Phaser.Scene {
       this.particles.emitParticleAt(m.container.x, m.container.y, byPlayer ? 14 : 22);
     }
 
+    // Sprite-sheet explosion at meteor position.
+    if (this.anims.exists('wd-boom') && this.textures.exists('wd-explosion')) {
+      const boom = this.add.sprite(m.container.x, m.container.y, 'wd-explosion', 0)
+        .setDisplaySize(160, 160)
+        .setBlendMode(Phaser.BlendModes.ADD);
+      boom.play('wd-boom');
+      boom.once('animationcomplete', () => boom.destroy());
+    }
+
     this.tweens.add({
       targets: m.container,
       alpha: 0,
@@ -276,8 +373,13 @@ export class GameScene extends Phaser.Scene {
       onComplete: () => m.container.destroy(),
     });
     this.meteors = this.meteors.filter(x => x.id !== m.id);
+    if (this.activeTargetId === m.id) {
+      this.activeTargetId = null;
+    }
+    this.pendingInput = '';
 
     this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
+    this.emitAim();
   }
 
   private onMeteorReachFloor(m: Meteor) {
@@ -293,8 +395,34 @@ export class GameScene extends Phaser.Scene {
 
     if (this.hp <= 0) {
       this.bus.emit('gameover', { score: this.score, wave: this.waveIdx, comboMax: this.comboMax });
+      this.activeTargetId = null;
+      this.emitAim();
       this.scene.pause();
     }
+  }
+
+  private getActiveMeteor(): Meteor | null {
+    if (this.activeTargetId === null) return null;
+    return this.meteors.find(m => m.id === this.activeTargetId) ?? null;
+  }
+
+  private emitAim() {
+    const active = this.getActiveMeteor();
+    const x = active ? active.container.x : WIDTH / 2;
+    const y = SHIP_BASE_Y + INPUT_OFFSET_Y;
+    const typed = active ? assemble(active.jamoSeq.slice(0, active.matched).split('')) : this.pendingInput;
+    const isActive = !!active;
+
+    if (
+      this.lastAim.x === x &&
+      this.lastAim.y === y &&
+      this.lastAim.typed === typed &&
+      this.lastAim.active === isActive
+    ) {
+      return;
+    }
+    this.lastAim = { x, y, typed, active: isActive };
+    this.bus.emit('aim', this.lastAim);
   }
 
   private specialColor(s: SpecialKind): number {
@@ -306,19 +434,13 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  // ─── Procedural textures ───────────────────────────────────────────────────
-  private buildTextures() {
+  // ─── Procedural textures (stars + particle only; bg/ship/meteors come from PNGs) ─
+  private buildProceduralTextures() {
     if (!this.textures.exists('wd-stars-far')) {
       this.makeStarTileTexture('wd-stars-far', 256, 70, 1, 0.5);
     }
     if (!this.textures.exists('wd-stars-near')) {
       this.makeStarTileTexture('wd-stars-near', 256, 30, 2, 0.85);
-    }
-    if (!this.textures.exists('wd-halo')) {
-      this.makeHaloTexture('wd-halo', 128);
-    }
-    if (!this.textures.exists('wd-ship')) {
-      this.makeShipTexture('wd-ship');
     }
     if (!this.textures.exists('wd-particle')) {
       this.makeParticleTexture('wd-particle');
@@ -334,36 +456,6 @@ export class GameScene extends Phaser.Scene {
       g.fillCircle(x, y, dotSize);
     }
     g.generateTexture(key, size, size);
-    g.destroy();
-  }
-
-  private makeHaloTexture(key: string, size: number) {
-    const g = this.make.graphics({ x: 0, y: 0 }, false);
-    const cx = size / 2;
-    const cy = size / 2;
-    // Soft radial falloff in concentric rings.
-    for (let r = size / 2; r > 0; r--) {
-      const a = Math.pow(r / (size / 2), 2);
-      g.fillStyle(0xffffff, (1 - a) * 0.05);
-      g.fillCircle(cx, cy, r);
-    }
-    g.generateTexture(key, size, size);
-    g.destroy();
-  }
-
-  private makeShipTexture(key: string) {
-    const w = 96;
-    const h = 32;
-    const g = this.make.graphics({ x: 0, y: 0 }, false);
-    g.fillStyle(0x1f1f24, 1);
-    g.fillRoundedRect(0, h - 14, w, 12, 4);
-    g.fillStyle(0xff5b1f, 1);
-    g.fillTriangle(w / 2 - 22, h - 14, w / 2 + 22, h - 14, w / 2, 0);
-    g.fillStyle(0xffffff, 0.85);
-    g.fillCircle(w / 2, h - 12, 3);
-    g.fillCircle(w / 2 - 18, h - 8, 2);
-    g.fillCircle(w / 2 + 18, h - 8, 2);
-    g.generateTexture(key, w, h);
     g.destroy();
   }
 
