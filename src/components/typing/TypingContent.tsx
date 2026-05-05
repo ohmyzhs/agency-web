@@ -6,7 +6,7 @@ const KO = {
   intro: {
     title: "한국어 타자, 어떻게 빠르게 만드나요?",
     body: [
-      "타자 속도는 거창한 결심보다 매일 짧게 반복하는 습관에서 만들어집니다. ohmyzhs 타자연습은 자리연습 → 낱말 → 단문 → 장문 → 60초 속도 측정의 다섯 단계를 한 페이지에서 제공합니다.",
+      "타자 속도는 거창한 결심보다 매일 짧게 반복하는 습관에서 만들어집니다. ohmyzhs 타자연습은 자리연습 → 낱말 → 단문 → 장문 → 60초 속도 측정의 다섯 단계를 로비에서 고르고, 실제 연습은 각 전용 화면에서 집중해서 진행하도록 구성했습니다.",
       "처음부터 60초 측정을 반복하기보다는, 자리연습으로 손가락 위치를 교정하고, 낱말과 단문으로 리듬을 맞춘 뒤에 속도 측정을 하는 흐름을 추천합니다.",
     ],
   },
@@ -53,9 +53,9 @@ const KO = {
     ],
   },
   ad: {
-    title: "광고 배치 정책",
+    title: "기록과 랭킹은 어떻게 제공되나요?",
     body: [
-      "광고는 활성 입력창, 결과 패널, 다시 시작 버튼 주변에 배치하지 않습니다. 사용자가 도구 동작과 광고를 혼동하지 않도록, 본 페이지의 교육 콘텐츠 영역 아래에서만 광고를 노출할 수 있습니다.",
+      "현재 대시보드는 이 브라우저에 저장된 개인 기록, 최근 세션, 약점 키를 보여줍니다. 공개 랭킹은 로그인과 검증 흐름이 준비된 뒤 별도 기능으로 추가할 예정입니다.",
     ],
   },
 };
@@ -64,7 +64,7 @@ const EN = {
   intro: {
     title: "How to actually get faster at Korean typing",
     body: [
-      "Speed comes from short, daily repetition more than ambitious one-off sessions. This page offers a five-step flow on a single screen: keyboard zones → words → sentences → long-form → a 60-second test.",
+      "Speed comes from short, daily repetition more than ambitious one-off sessions. The typing lobby lets you choose between keyboard zones, words, sentences, long-form passages, and a 60-second test, while each dedicated practice page keeps the actual typing surface focused.",
       "Don't grind the 60-second test from day one. Use zone drills to put your fingers in the right places, settle into a rhythm with words and sentences, then run the test.",
     ],
   },
@@ -111,9 +111,9 @@ const EN = {
     ],
   },
   ad: {
-    title: "Ad placement policy",
+    title: "Records and ranking dashboard",
     body: [
-      "No ad sits beside the active typing area, the result panel, or the restart button. Ads, if any, will appear only below the educational sections so they cannot be confused with tool actions.",
+      "The dashboard currently shows personal records, recent sessions, and weak-key hints stored in this browser. Public leaderboards will be added later with optional login and verified submissions.",
     ],
   },
 };
@@ -122,12 +122,17 @@ export default function TypingContent() {
   const { locale } = useLocale();
   const c = locale === "ko" ? KO : EN;
 
-  const sections = [c.intro, c.metrics, c.ime, c.privacy];
+  const sections = [
+    { ...c.intro, id: "guide" },
+    { ...c.metrics, id: "metrics" },
+    { ...c.ime, id: "ime" },
+    { ...c.privacy, id: "privacy" },
+  ];
 
   return (
     <div className="space-y-10">
       {sections.map((s) => (
-        <section key={s.title}>
+        <section key={s.title} id={s.id}>
           <h2 className="text-xl font-semibold tracking-tight">{s.title}</h2>
           {s.body.map((p) => (
             <p key={p} className="mt-3 text-sm leading-relaxed text-muted">

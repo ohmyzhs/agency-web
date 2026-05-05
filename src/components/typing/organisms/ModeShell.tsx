@@ -26,13 +26,11 @@ import { StatChip } from '../atoms/StatChip';
 import { CountdownGate } from '../atoms/CountdownGate';
 import { Confetti } from '../atoms/Confetti';
 import { LiveBestComparator } from '../atoms/LiveBestComparator';
-import { HandOverlay } from '../atoms/HandOverlay';
+import { KeyboardFingerGuide } from '../atoms/KeyboardFingerGuide';
 import { ResultPanel } from './ResultPanel';
-import { LeftStatsRail } from './LeftStatsRail';
 import { RightSettingsRail } from './RightSettingsRail';
 import TargetText from '../TargetText';
 import TypingInput from '../TypingInput';
-import KoreanKeyboard from '../KoreanKeyboard';
 import SegmentedTabs from '@/components/tools/shared/SegmentedTabs';
 import { ZoneLessonSelector } from '../atoms/ZoneLessonSelector';
 import { zoneLessons, type ZoneLessonId } from '@/lib/typing/packs';
@@ -70,7 +68,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   } = useTypingSession();
 
   // ── settings ──
-  const { showKeyboard, showHands, countdownEnabled, autoNextContent } = useTypingSettings();
+  const { showKeyboard, countdownEnabled, autoNextContent } = useTypingSettings();
 
   // ── progress ──
   const { bestScores, recentTpm, upsertBestScore, setRecentTpm } = useTypingProgress();
@@ -462,9 +460,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   const stageTargetTpm = STAGE_TARGET_TPM[stage]?.tpm ?? stage;
 
   return (
-    <div className="flex gap-6">
-      <LeftStatsRail />
-
+    <div className="mx-auto max-w-5xl space-y-4">
       <div className="min-w-0 flex-1 space-y-4">
       {/* Mode tabs — hidden when route locks the mode */}
       {!lockedMode && (
@@ -615,9 +611,9 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
         }
       />
 
-      {/* On-screen keyboard */}
+      {/* Integrated keyboard + finger guide */}
       {showKeyboard && (
-        <KoreanKeyboard
+        <KeyboardFingerGuide
           expectedKey={pendingKey}
           highlightZone={
             mode === 'keyboard-zone' && lessonId && lessonId !== 'all'
@@ -625,15 +621,6 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
               : undefined
           }
           showHangul={language === 'ko'}
-        />
-      )}
-
-      {/* Hand overlay — placeholder fingertip ring */}
-      {showHands && (
-        <HandOverlay
-          expectedFinger={pendingKey?.finger}
-          shiftSide={pendingKey?.shiftSide}
-          extraFingers={pendingKey?.extraFingers}
         />
       )}
 
@@ -673,7 +660,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       <Confetti active={isNewBest && isFinished} />
       </div>
 
-      <RightSettingsRail />
+      <RightSettingsRail variant="drawer" />
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { useRef, useState } from 'react';
 import { useTypingSettings } from '@/stores/useTypingSettings';
 import { useDB } from '@/lib/typing/db/provider';
 
-export function RightSettingsRail() {
+export function RightSettingsRail({ variant = 'rail' }: { variant?: 'rail' | 'drawer' }) {
   const s = useTypingSettings();
   const db = useDB();
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -78,8 +78,8 @@ export function RightSettingsRail() {
     }
   }
 
-  return (
-    <aside className="hidden w-56 shrink-0 space-y-4 lg:block">
+  const content = (
+    <>
       <Section title="음량">
         <SliderRow
           label="타건음"
@@ -100,14 +100,9 @@ export function RightSettingsRail() {
 
       <Section title="화면 표시">
         <ToggleRow
-          label="가상 키보드"
+          label="키보드·손가락 가이드"
           checked={s.showKeyboard}
           onChange={s.setShowKeyboard}
-        />
-        <ToggleRow
-          label="손 가이드"
-          checked={s.showHands}
-          onChange={s.setShowHands}
         />
       </Section>
 
@@ -168,8 +163,24 @@ export function RightSettingsRail() {
           ))}
         </div>
       </Section>
-    </aside>
+    </>
   );
+
+  if (variant === 'drawer') {
+    return (
+      <details className="rounded-2xl border border-border bg-card">
+        <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium marker:hidden">
+          설정 · 데이터 관리
+          <span className="ml-2 text-xs font-normal text-muted">필요할 때만 펼치기</span>
+        </summary>
+        <div className="grid gap-3 border-t border-border p-4 sm:grid-cols-2 lg:grid-cols-4">
+          {content}
+        </div>
+      </details>
+    );
+  }
+
+  return <aside className="hidden w-56 shrink-0 space-y-4 lg:block">{content}</aside>;
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {

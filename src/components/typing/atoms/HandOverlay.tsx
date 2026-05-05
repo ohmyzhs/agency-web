@@ -37,9 +37,10 @@ type Props = {
   expectedFinger?: Finger;
   shiftSide?: ShiftSide;
   extraFingers?: Finger[];
+  variant?: 'standalone' | 'embedded';
 };
 
-export function HandOverlay({ expectedFinger, shiftSide, extraFingers = [] }: Props) {
+export function HandOverlay({ expectedFinger, shiftSide, extraFingers = [], variant = 'standalone' }: Props) {
   const reduced = useReducedMotion();
   const shiftFinger: Finger | undefined = shiftSide === 'left' ? 'L5' : shiftSide === 'right' ? 'R5' : undefined;
   const highlightedFingers = Array.from(new Set([expectedFinger, shiftFinger, ...extraFingers].filter(Boolean))) as Finger[];
@@ -51,7 +52,7 @@ export function HandOverlay({ expectedFinger, shiftSide, extraFingers = [] }: Pr
     : '대기';
 
   return (
-    <div className="rounded-lg border border-border bg-card p-3">
+    <div className={variant === 'embedded' ? 'h-full bg-card p-3' : 'rounded-lg border border-border bg-card p-3'}>
       <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-wider text-muted">
         <span>손가락 가이드</span>
         <span>{label}</span>
