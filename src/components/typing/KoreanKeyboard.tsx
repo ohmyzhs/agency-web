@@ -16,6 +16,7 @@ type KoreanKeyboardProps = {
   highlightZone?: ZoneId;
   showHangul?: boolean;
   showNumberRow?: boolean;
+  variant?: 'standalone' | 'embedded';
 };
 
 const fingerColor: Record<string, string> = {
@@ -140,11 +141,12 @@ export default function KoreanKeyboard({
   highlightZone,
   showHangul = true,
   showNumberRow = true,
+  variant = 'standalone',
 }: KoreanKeyboardProps) {
   const rows = showNumberRow ? keyboardRows : keyboardRows.slice(1);
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-border bg-card px-3 py-4">
+    <div className={variant === 'embedded' ? 'overflow-x-auto px-3 py-4' : 'overflow-x-auto rounded-lg border border-border bg-card px-3 py-4'}>
       <div
         className="mx-auto grid w-max gap-1.5"
         style={{ gridTemplateColumns: `repeat(15, ${KEY_UNIT})` }}
