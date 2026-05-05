@@ -31,11 +31,12 @@ import { ResultPanel } from './ResultPanel';
 import { RightSettingsRail } from './RightSettingsRail';
 import TargetText from '../TargetText';
 import TypingInput from '../TypingInput';
+import { MultilineTypingSurface } from '../MultilineTypingSurface';
 import SegmentedTabs from '@/components/tools/shared/SegmentedTabs';
 import { ZoneLessonSelector } from '../atoms/ZoneLessonSelector';
 import { zoneLessons, type ZoneLessonId } from '@/lib/typing/packs';
 import type { TypingMode, TypingLanguage, StageLevel, LongformCategory } from '@/lib/typing/types';
-import { strokeForCode, type ZoneId } from '@/lib/typing/korean-keyboard';
+import { strokeForCode, decomposeForKeystrokes, type ZoneId } from '@/lib/typing/korean-keyboard';
 
 const MODE_OPTIONS: { value: TypingMode; label: string }[] = [
   { value: 'keyboard-zone', label: '자리연습' },
@@ -46,6 +47,59 @@ const MODE_OPTIONS: { value: TypingMode; label: string }[] = [
 ];
 
 type SpeedDuration = 15 | 30 | 60 | 120;
+type PracticeStats = {
+  count: number;
+  bestTpm: number;
+  worstTpm: number;
+  totalTpm: number;
+  correct: number;
+  incorrect: number;
+  seconds: number;
+};
+
+type LastResult = {
+  tpm: number;
+  peakTpm: number;
+  correct: number;
+  incorrect: number;
+  accuracy: number;
+  seconds: number;
+  passed: boolean;
+};
+
+const EMPTY_PRACTICE_STATS: PracticeStats = {
+  count: 0,
+  bestTpm: 0,
+  worstTpm: 0,
+  totalTpm: 0,
+  correct: 0,
+  incorrect: 0,
+  seconds: 0,
+};
+
+function appendPracticeStats(stats: PracticeStats, result: LastResult): PracticeStats {
+  return {
+    count: stats.count + 1,
+    bestTpm: stats.count === 0 ? result.tpm : Math.max(stats.bestTpm, result.tpm),
+    worstTpm: stats.count === 0 ? result.tpm : Math.min(stats.worstTpm, result.tpm),
+    totalTpm: stats.totalTpm + result.tpm,
+    correct: stats.correct + result.correct,
+    incorrect: stats.incorrect + result.incorrect,
+    seconds: stats.seconds + result.seconds,
+  };
+}
+
+function formatTpm(value: number): string {
+  return String(Math.round(value));
+}
+
+function currentZoneInput(target: string, typed: string): string {
+  const typedStrokes = decomposeForKeystrokes(typed);
+  const targetStrokes = decomposeForKeystrokes(target);
+  if (typedStrokes.length === 0) return '';
+  const idx = Math.min(typedStrokes.length - 1, Math.max(0, targetStrokes.length - 1));
+  return typedStrokes[idx] ?? '';
+}
 
 type ModeShellProps = {
   /** Lock to a specific mode and hide mode tabs. Used by route-level pages. */
@@ -77,12 +131,14 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   const [speedDuration, setSpeedDuration] = useState<SpeedDuration>(60);
   const [isNewBest, setIsNewBest] = useState(false);
   const [tick, setTick] = useState(0);
-  const [completedCount, setCompletedCount] = useState(0);
+  const [, setCompletedCount] = useState(0);
   const [showInlineResult, setShowInlineResult] = useState(false);
-  const [lastResult, setLastResult] = useState<{ tpm: number; accuracy: number; passed: boolean } | null>(null);
+  const [lastResult, setLastResult] = useState<LastResult | null>(null);
+  const [practiceStats, setPracticeStats] = useState<PracticeStats>(EMPTY_PRACTICE_STATS);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const finishScheduledRef = useRef(false);
   const intentionalFocusExitRef = useRef(false);
+  const applyZoneStrokeRef = useRef<((stroke: string) => void) | null>(null);
 
   const focusTypingInput = useCallback(() => {
     const el = inputRef.current;
@@ -121,6 +177,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     setShowInlineResult(false);
     setLastResult(null);
     setCompletedCount(0);
+    setPracticeStats(EMPTY_PRACTICE_STATS);
     focusTypingInputSoon();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, language, stage, lessonId, speedDuration]);
@@ -154,12 +211,30 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (intentionalFocusExitRef.current || event.defaultPrevented) return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
-      if (event.key !== ' ' && event.key !== 'Enter') return;
       const el = inputRef.current;
       if (!el || el.disabled) return;
       const active = document.activeElement;
       if (active === el) return;
       if (active instanceof HTMLElement && active.isContentEditable) return;
+
+      if (useTypingSession.getState().mode === 'keyboard-zone') {
+        if (event.key === 'Backspace') {
+          event.preventDefault();
+          focusTypingInput();
+          if (useTypingSession.getState().typed.length > 0) play('miss').catch(() => {});
+          setTyped(useTypingSession.getState().typed.slice(0, -1));
+          return;
+        }
+        const stroke = strokeForCode(event.code, event.shiftKey);
+        if (stroke) {
+          event.preventDefault();
+          focusTypingInput();
+          applyZoneStrokeRef.current?.(stroke);
+          return;
+        }
+      }
+
+      if (event.key !== ' ' && event.key !== 'Enter') return;
       event.preventDefault();
       focusTypingInput();
     };
@@ -170,7 +245,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       document.removeEventListener('focusin', handleFocusIn);
       document.removeEventListener('keydown', handleKeyDown, { capture: true });
     };
-  }, [focusTypingInput]);
+  }, [focusTypingInput, phase, play, setTyped, target]);
 
   // honor route-locked mode / lessonId
   useEffect(() => {
@@ -228,7 +303,18 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     const stageGoal = STAGE_TARGET_TPM[stage];
     const passed = stageGoal ? m.타분당 >= stageGoal.tpm && m.정확도 >= stageGoal.accuracy : true;
 
-    setLastResult({ tpm: m.타분당, accuracy: m.정확도, passed });
+    const result: LastResult = {
+      tpm: m.타분당,
+      peakTpm: m.타분당Raw,
+      correct: m.jamoCorrect,
+      incorrect: m.jamoIncorrect,
+      accuracy: m.정확도,
+      seconds: dur,
+      passed,
+    };
+
+    setLastResult(result);
+    setPracticeStats(stats => appendPracticeStats(stats, result));
     setShowInlineResult(true);
     setCompletedCount(count => count + 1);
     play('complete').catch(() => {});
@@ -330,6 +416,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
     setTyped,
     doFinish,
   ]);
+  applyZoneStrokeRef.current = applyZoneStroke;
 
   const handleValueChange = useCallback((val: string) => {
     if (phase === 'finished') return;
@@ -442,11 +529,10 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
 
   const isRunning = phase === 'running';
   const isFinished = phase === 'finished';
+  const practiceAverageTpm = practiceStats.count > 0 ? practiceStats.totalTpm / practiceStats.count : 0;
+  const practiceAccuracy = practiceStats.correct + practiceStats.incorrect > 0 ? practiceStats.correct / (practiceStats.correct + practiceStats.incorrect) : 0;
+  const shouldShowPracticeStats = practiceStats.count > 0;
   const shouldAutoAdvance = autoNextContent && mode !== 'speed-test';
-  const progressLabel = shouldAutoAdvance
-    ? `연속 연습 중 · ${completedCount}개 완료`
-    : `${completedCount}개 완료`;
-
   // Auto-advance to next content after a finished session (if enabled).
   // Skipped for speed-test (which doesn't have "next" the same way).
   useEffect(() => {
@@ -458,6 +544,47 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   }, [isFinished, autoNextContent, mode, handleNext]);
 
   const stageTargetTpm = STAGE_TARGET_TPM[stage]?.tpm ?? stage;
+  const useMultilineSurface = mode === 'word' || mode === 'sentence' || mode === 'longform' || mode === 'speed-test';
+
+  const typingPlaceholder = '';
+
+  const typingKeyDownCapture = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (mode === 'keyboard-zone') {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        handleNext();
+        return;
+      }
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        if (phase !== 'finished' && phase !== 'countdown') {
+          if (typed.length > 0) play('miss').catch(() => {});
+          setTyped(typed.slice(0, -1));
+        }
+        return;
+      }
+      const stroke = strokeForCode(e.code, e.shiftKey);
+      if (stroke) {
+        e.preventDefault();
+        applyZoneStroke(stroke);
+      }
+      return;
+    }
+
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      handleNext();
+      return;
+    }
+    // Once a non-speed-test session is captured as finished (rare —
+    // we now stay in the running flow), or while idle waiting for the
+    // next target, swallow Space/Enter so they cannot scroll the page
+    // or activate buttons that may have stolen focus.
+    if (isFinished && (e.key === ' ' || e.key === 'Enter')) {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div className="mx-auto max-w-5xl space-y-4">
@@ -510,17 +637,34 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
         </button>
       </div>
 
-      {/* Live metrics */}
-      <div className="grid grid-cols-3 gap-2 rounded-lg border border-border bg-card p-3 text-center sm:grid-cols-5">
-        <StatChip label="타/분" value={Math.round(metrics.타분당)} />
-        <StatChip label="정확도" value={`${Math.round(metrics.정확도 * 100)}%`} />
-        <StatChip
-          label="최고"
-          value={bestTpm !== null ? `${Math.round(bestTpm)}` : '—'}
-        />
-        <StatChip label="시간" value={elapsedDisplay} />
-        <StatChip label="흐름" value={progressLabel} />
+      {/* Current passage metrics */}
+      <div className="space-y-2 rounded-lg border border-border bg-card p-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted">현재 지문 결과</p>
+        <div className="grid grid-cols-3 gap-2 text-center sm:grid-cols-6">
+          <StatChip label="타/분" value={Math.round(metrics.타분당)} />
+          <StatChip label="순간최고타수" value={Math.round(metrics.타분당Raw)} />
+          <StatChip label="정타수" value={metrics.jamoCorrect} />
+          <StatChip label="오타수" value={metrics.jamoIncorrect} />
+          <StatChip label="정확도" value={`${Math.round(metrics.정확도 * 100)}%`} />
+          <StatChip label="시간" value={elapsedDisplay} />
+        </div>
       </div>
+
+      {shouldShowPracticeStats && (
+        <div className="space-y-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted">이번 연습 결과</p>
+          <div className="grid grid-cols-4 gap-2 text-center sm:grid-cols-8">
+            <StatChip label="문장수" value={`${practiceStats.count}개`} />
+            <StatChip label="평균타수" value={formatTpm(practiceAverageTpm)} />
+            <StatChip label="최고타수" value={formatTpm(practiceStats.bestTpm)} />
+            <StatChip label="최저타수" value={formatTpm(practiceStats.worstTpm)} />
+            <StatChip label="정타수" value={practiceStats.correct} />
+            <StatChip label="오타수" value={practiceStats.incorrect} />
+            <StatChip label="정확도" value={`${Math.round(practiceAccuracy * 100)}%`} />
+            <StatChip label="시간" value={`${Math.round(practiceStats.seconds)}s`} />
+          </div>
+        </div>
+      )}
 
       {/* Live best comparator — visible while running */}
       {isRunning && language === 'ko' && (
@@ -540,8 +684,51 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
         />
       )}
 
-      {/* Target text */}
-      <TargetText target={target} typed={typed} isComposing={isComposing} mode={mode} />
+      {mode === 'keyboard-zone' ? (
+        <>
+          <TargetText target={target} typed={typed} isComposing={isComposing} mode={mode} />
+          <div className="rounded-2xl border border-border bg-card p-3">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">입력할 자리</p>
+            <TypingInput
+              ref={inputRef}
+              value={currentZoneInput(target, typed)}
+              onValueChange={handleValueChange}
+              onCompositionChange={handleCompositionChange}
+              onKeyDownCapture={typingKeyDownCapture}
+              disabled={false}
+              ariaLabel="현재 자리 입력"
+              rows={1}
+            />
+          </div>
+        </>
+      ) : useMultilineSurface ? (
+        <MultilineTypingSurface
+          target={target}
+          typed={typed}
+          isComposing={isComposing}
+          mode={mode}
+          inputRef={inputRef}
+          onValueChange={handleValueChange}
+          onCompositionChange={handleCompositionChange}
+          onKeyDownCapture={typingKeyDownCapture}
+          disabled={false}
+          placeholder={typingPlaceholder}
+        />
+      ) : (
+        <>
+          <TargetText target={target} typed={typed} isComposing={isComposing} mode={mode} />
+          <TypingInput
+            ref={inputRef}
+            value={typed}
+            onValueChange={handleValueChange}
+            onCompositionChange={handleCompositionChange}
+            onKeyDownCapture={typingKeyDownCapture}
+            disabled={false}
+            ariaLabel="타자 입력"
+            placeholder={typingPlaceholder}
+          />
+        </>
+      )}
 
       {showInlineResult && lastResult && (
         <div className="flex flex-wrap items-center gap-2 rounded-xl border border-primary/25 bg-primary/5 px-4 py-3 text-sm">
@@ -549,67 +736,12 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
             {lastResult.passed ? '목표 통과' : '완료'} · {Math.round(lastResult.tpm)}타/분
           </span>
           <span className="text-muted">정확도 {Math.round(lastResult.accuracy * 100)}%</span>
+          <span className="text-muted">정타 {lastResult.correct} · 오타 {lastResult.incorrect} · 시간 {Math.round(lastResult.seconds)}s</span>
           {shouldAutoAdvance && !isFinished && (
             <span className="ml-auto text-xs text-muted">다음 지문으로 이어갑니다.</span>
           )}
         </div>
       )}
-
-      {/* Input */}
-      <TypingInput
-        ref={inputRef}
-        value={typed}
-        onValueChange={handleValueChange}
-        onCompositionChange={handleCompositionChange}
-        onKeyDownCapture={e => {
-          if (mode === 'keyboard-zone') {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-              e.preventDefault();
-              handleNext();
-              return;
-            }
-            if (e.metaKey || e.ctrlKey || e.altKey) return;
-            if (e.key === 'Backspace') {
-              e.preventDefault();
-              if (phase !== 'finished' && phase !== 'countdown') {
-                if (typed.length > 0) play('miss').catch(() => {});
-                setTyped(typed.slice(0, -1));
-              }
-              return;
-            }
-            const stroke = strokeForCode(e.code, e.shiftKey);
-            if (stroke) {
-              e.preventDefault();
-              applyZoneStroke(stroke);
-            }
-            return;
-          }
-
-          if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-            e.preventDefault();
-            handleNext();
-            return;
-          }
-          // Once a non-speed-test session is captured as finished (rare —
-          // we now stay in the running flow), or while idle waiting for the
-          // next target, swallow Space/Enter so they cannot scroll the page
-          // or activate buttons that may have stolen focus.
-          if (isFinished && (e.key === ' ' || e.key === 'Enter')) {
-            e.preventDefault();
-          }
-        }}
-        disabled={phase === 'countdown'}
-        ariaLabel="타자 입력"
-        placeholder={
-          phase === 'idle'
-            ? countdownEnabled
-              ? '준비되면 첫 글자를 누르세요. 카운트다운 후 시작합니다.'
-              : '바로 입력하세요. 첫 타부터 기록합니다.'
-            : phase === 'countdown'
-            ? '카운트다운 중입니다. 잠시 후 입력하세요.'
-            : ''
-        }
-      />
 
       {/* Integrated keyboard + finger guide */}
       {showKeyboard && (
@@ -638,7 +770,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
 
       {/* Countdown overlay */}
       <CountdownGate
-        enabled={countdownEnabled}
+        enabled={false}
         phase={phase}
         onStart={handleCountdownDone}
       />

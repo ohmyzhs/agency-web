@@ -2,7 +2,6 @@
 
 import { forwardRef, useCallback } from "react";
 import type { ChangeEvent, CompositionEvent, KeyboardEvent } from "react";
-// CompositionEvent is only used as a type below.
 
 type TypingInputProps = {
   value: string;
@@ -13,6 +12,8 @@ type TypingInputProps = {
   placeholder?: string;
   autoFocus?: boolean;
   ariaLabel?: string;
+  variant?: "visible" | "surface";
+  rows?: number;
 };
 
 const TypingInput = forwardRef<HTMLTextAreaElement, TypingInputProps>(function TypingInput(
@@ -25,6 +26,8 @@ const TypingInput = forwardRef<HTMLTextAreaElement, TypingInputProps>(function T
     placeholder,
     autoFocus,
     ariaLabel,
+    variant = "visible",
+    rows,
   },
   ref,
 ) {
@@ -48,6 +51,10 @@ const TypingInput = forwardRef<HTMLTextAreaElement, TypingInputProps>(function T
     [onCompositionChange, onValueChange],
   );
 
+  const className = variant === "surface"
+    ? "absolute inset-0 z-10 h-full w-full resize-none rounded-2xl border-0 bg-transparent p-0 text-[16px] text-transparent caret-primary opacity-5 outline-none selection:bg-transparent focus:opacity-5 disabled:opacity-0"
+    : "block w-full rounded-2xl border-2 border-primary/30 bg-background px-5 py-4 font-mono text-xl shadow-sm transition-shadow focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:opacity-60";
+
   return (
     <textarea
       ref={ref}
@@ -64,8 +71,8 @@ const TypingInput = forwardRef<HTMLTextAreaElement, TypingInputProps>(function T
       autoComplete="off"
       autoCorrect="off"
       autoCapitalize="off"
-      rows={3}
-      className="block w-full rounded-2xl border-2 border-primary/30 bg-background px-5 py-4 font-mono text-xl shadow-sm transition-shadow focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:opacity-60"
+      rows={rows ?? (variant === "surface" ? 1 : 3)}
+      className={className}
     />
   );
 });

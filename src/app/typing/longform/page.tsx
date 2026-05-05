@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
-import { LONGFORM_CATEGORIES, koreanPassagesByCategory } from '@/lib/typing/packs-staged';
+import { LONGFORM_CATEGORIES, getPassagesForCategory } from '@/lib/typing/packs-staged';
 
 export const metadata: Metadata = createPageMetadata({
-  title: '장문연습 / 필사 — 8개 카테고리 한국어 글 | oh-my-zhs 타자',
+  title: '장문연습 / 필사 — 긴 지문 카테고리 선택 | oh-my-zhs 타자',
   description:
-    '애국가·고전·속담·명언·에세이·한국사·과학·CS 등 8개 카테고리의 단락을 직접 필사하며 호흡과 리듬을 가다듬는 장문 타자연습.',
+    '1000자 내외의 긴 지문을 카테고리와 글 제목별로 선택해 필사하며 호흡과 리듬을 가다듬는 장문 타자연습.',
   path: '/typing/longform',
 });
 
@@ -30,16 +30,17 @@ export default function LongformHubPage() {
           타자연습 · 장문 / 필사
         </p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
-          장문 / 필사 9 카테고리
+          장문 / 필사 카테고리 선택
         </h1>
         <p className="mt-2 text-base text-muted">
-          단락 단위로 흐름을 따라 입력하는 필사 모드. 출처와 저작권은 각 단락에 표기됩니다.
+          1000자 내외 지문을 카테고리와 글 제목별로 선택해 입력합니다. 너무 짧은 섹션은 제외했습니다.
         </p>
       </header>
 
       <ul className="grid gap-3 sm:grid-cols-2">
         {LONGFORM_CATEGORIES.map(cat => {
-          const count = koreanPassagesByCategory[cat]?.length ?? 0;
+          const passages = getPassagesForCategory(cat, 'ko');
+          const count = passages.length;
           return (
             <li key={cat}>
               <Link
@@ -51,6 +52,7 @@ export default function LongformHubPage() {
                   <span className="text-xs tabular-nums text-muted">{count}편</span>
                 </div>
                 <p className="mt-1 text-sm text-muted">{CATEGORY_DESC[cat] ?? ''}</p>
+                <p className="mt-2 text-xs text-muted">{passages.slice(0, 3).map(p => p.title).join(' · ')}</p>
               </Link>
             </li>
           );
