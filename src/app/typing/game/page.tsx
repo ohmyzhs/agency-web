@@ -5,7 +5,7 @@ import { createPageMetadata } from '@/lib/seo';
 export const metadata: Metadata = createPageMetadata({
   title: '타자 게임 — 워드 디펜스 | oh-my-zhs',
   description:
-    '한국어 자모 입력으로 떨어지는 단어 운석을 부수는 워드 디펜스. 콤보 × 도전단계 점수 시스템.',
+    '떨어지는 한국어 단어를 자모 단위로 입력해 격파하는 워드 디펜스입니다. 연습이 지루해질 때 반응 속도와 조합 감각을 게임처럼 훈련합니다.',
   path: '/typing/game',
 });
 
@@ -17,6 +17,9 @@ export default function GameHubPage() {
           타자연습 · 게임
         </p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">타자 게임</h1>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          연습이 지루해지는 순간을 위해 만든 게임형 훈련입니다. 정확한 자모 입력이 곧 공격이 됩니다.
+        </p>
       </header>
 
       <ul className="space-y-3">
@@ -30,7 +33,7 @@ export default function GameHubPage() {
               <span className="text-xs text-muted group-hover:text-primary">시작 →</span>
             </div>
             <p className="mt-1 text-sm text-muted">
-              떨어지는 한국어 단어를 자모 단위로 입력해 부숩니다. 7 웨이브 클리어가 목표.
+              떨어지는 단어를 끝까지 읽고 자모 단위로 입력해 격파합니다. 순발력과 정확도를 함께 쓰는 7 웨이브 타자 게임입니다.
             </p>
           </Link>
         </li>
