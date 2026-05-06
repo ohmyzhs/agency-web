@@ -3,7 +3,7 @@
 import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import type { KeyboardEvent } from "react";
 import type { CharStatus } from "@/lib/typing/metrics";
-import { decomposeForKeystrokes } from "@/lib/typing/korean-keyboard";
+import { buildTypingSurfaceParts } from "@/lib/typing/surface-render";
 import type { TypingMode } from "@/lib/typing/types";
 import TypingInput from "./TypingInput";
 
@@ -28,76 +28,6 @@ const colorByStatus: Record<CharStatus, string> = {
 };
 
 
-function isHangulSyllable(char: string): boolean {
-  const code = char.codePointAt(0);
-  return code !== undefined && code >= 0xac00 && code <= 0xd7a3;
-}
-
-type RenderPart = {
-  key: string;
-  text: string;
-  status: CharStatus;
-  isCursor?: boolean;
-  jamo?: boolean;
-};
-
-function buildJamoAwareParts(target: string, typed: string, isComposing: boolean): { parts: RenderPart[]; cursorIndex: number; totalChars: number } {
-  const chars = Array.from(target);
-  const typedChars = Array.from(typed);
-  const typedStrokes = decomposeForKeystrokes(typed);
-  const parts: RenderPart[] = [];
-  let strokeCursor = 0;
-  let visualCursor = chars.length;
-
-  chars.forEach((char, charIndex) => {
-    const targetStrokes = decomposeForKeystrokes(char);
-    const remainingStrokes = typedStrokes.slice(strokeCursor);
-    const typedSlice = remainingStrokes.slice(0, targetStrokes.length);
-    const matched = typedSlice.filter((stroke, idx) => stroke === targetStrokes[idx]).length;
-    const consumed = Math.min(typedSlice.length, targetStrokes.length);
-    const hasAny = consumed > 0;
-    const fullyTyped = consumed >= targetStrokes.length;
-    const typedChar = typedChars[charIndex];
-    const isCurrent = !fullyTyped && visualCursor === chars.length;
-    if (isCurrent) visualCursor = charIndex;
-
-    if (isHangulSyllable(char) && hasAny && !fullyTyped) {
-      targetStrokes.forEach((stroke, strokeIndex) => {
-        const typedStroke = typedSlice[strokeIndex];
-        const status: CharStatus = typedStroke === undefined
-          ? 'untyped'
-          : typedStroke === stroke
-          ? (isComposing && strokeIndex === consumed - 1 ? 'pending' : 'correct')
-          : 'incorrect';
-        parts.push({
-          key: `${charIndex}-${strokeIndex}-${stroke}`,
-          text: typedStroke ?? stroke,
-          status,
-          isCursor: strokeIndex === consumed && !isComposing,
-          jamo: true,
-        });
-      });
-    } else {
-      const status: CharStatus = !hasAny
-        ? 'untyped'
-        : typedChar === char || matched === targetStrokes.length
-        ? 'correct'
-        : fullyTyped
-        ? 'incorrect'
-        : 'pending';
-      parts.push({
-        key: `${charIndex}-${char}`,
-        text: char === "\n" ? "\n" : char,
-        status: isComposing && hasAny && !fullyTyped ? 'pending' : status,
-        isCursor: isCurrent && !isComposing,
-      });
-    }
-    if (hasAny) strokeCursor += consumed;
-  });
-
-  if (visualCursor === chars.length && typed.length < target.length) visualCursor = typed.length;
-  return { parts, cursorIndex: Math.min(typed.length, chars.length), totalChars: chars.length };
-}
 
 function visibleLinesForMode(mode: TypingMode): number {
   if (mode === "longform") return 5;
@@ -126,7 +56,7 @@ export function MultilineTypingSurface({
   onKeyDownCapture,
   disabled,
 }: MultilineTypingSurfaceProps) {
-  const { parts, cursorIndex, totalChars } = useMemo(() => buildJamoAwareParts(target, typed, isComposing), [target, typed, isComposing]);
+  const { parts, cursorIndex, totalChars } = useMemo(() => buildTypingSurfaceParts(target, typed, isComposing), [target, typed, isComposing]);
   const progress = totalChars > 0 ? Math.min(100, Math.round((cursorIndex / totalChars) * 100)) : 0;
   const refIndex = parts.findIndex((part) => part.isCursor);
   const visibleLines = visibleLinesForMode(mode);
@@ -206,7 +136,7 @@ export function MultilineTypingSurface({
               <span
                 key={part.key}
                 ref={i === refIndex ? cursorRef : undefined}
-                className={[cursorClass, part.jamo ? "mx-0.5 inline-block min-w-[0.7em] text-center" : ""].join(" ")}
+                className={cursorClass}
               >
                 {part.text}
               </span>
