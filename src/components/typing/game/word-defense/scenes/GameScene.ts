@@ -135,12 +135,14 @@ export class GameScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setDisplaySize(96, 96);
 
-    // Explosion animation from 4×4 sheet (16 frames).
+    // Explosion animation from the normalized mixed-grid sheet:
+    // source top area is 16 small 128px frames, bottom area is 12 large 256px frames,
+    // all repacked into uniform 256px frames for Phaser spritesheet playback.
     if (!this.anims.exists('wd-boom')) {
       this.anims.create({
         key: 'wd-boom',
-        frames: this.anims.generateFrameNumbers('wd-explosion', { start: 0, end: 15 }),
-        frameRate: 32,
+        frames: this.anims.generateFrameNumbers('wd-explosion', { start: 0, end: 27 }),
+        frameRate: 34,
         repeat: 0,
       });
     }

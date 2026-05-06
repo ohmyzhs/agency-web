@@ -34,10 +34,16 @@
 ### Task A — Asset 분석/분리
 
 - 이미지 크기 확인: `explosion.jpeg` 1024×1024, `game-static-sheet.jpeg` 1024×1024, `space-bg.png` 1536×1024.
-- ImageMagick/ffmpeg/Python으로 4×4 grid crop을 생성한다.
+- `game-static-sheet.jpeg`는 4×4 grid crop으로 분리한다.
+- `explosion.jpeg`는 단일 4×4 grid가 아니라 mixed atlas로 처리한다.
+  - 상단 256px: 8×2개의 128×128 early frames.
+  - 하단 768px: 4×3개의 256×256 main/fade frames.
+  - Phaser spritesheet 재생을 위해 28개 frame을 모두 256×256 canvas에 repack하여 `2048×1024` uniform sheet로 저장한다.
+- JPEG magenta 배경은 artifact tolerance를 둔 chroma key로 alpha 처리한다.
 - output path:
   - `public/typing/game/word-defense/sprites/static-00.jpeg` …
-  - `public/typing/game/word-defense/sprites/explosion-00.jpeg` …
+  - `public/typing/game/word-defense/sprites/keyed/explosion-00.png` … `explosion-27.png`
+  - `public/typing/game/word-defense/sprites/keyed/explosion-sheet.png`
 - 브라우저에서 직접 로딩 가능한 public path를 사용한다.
 
 ### Task B — Phaser scene asset화
