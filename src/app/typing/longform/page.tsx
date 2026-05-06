@@ -4,9 +4,9 @@ import { createPageMetadata } from '@/lib/seo';
 import { LONGFORM_CATEGORIES, getPassagesForCategory } from '@/lib/typing/packs-staged';
 
 export const metadata: Metadata = createPageMetadata({
-  title: '장문연습 / 필사 — 긴 지문 카테고리 선택 | oh-my-zhs 타자',
+  title: '장문연습 / 필사 — 긴 글을 고르고 끝까지 입력하기 | oh-my-zhs 타자',
   description:
-    '1000자 내외의 긴 지문을 카테고리와 글 제목별로 선택해 필사하며 호흡과 리듬을 가다듬는 장문 타자연습.',
+    '1000자 안팎의 한국어 긴 글을 카테고리와 제목으로 고른 뒤 문단형 입력면에서 필사하는 장문 타자연습입니다. 집중력, 호흡, 정확도를 함께 훈련합니다.',
   path: '/typing/longform',
 });
 
@@ -30,10 +30,10 @@ export default function LongformHubPage() {
           타자연습 · 장문 / 필사
         </p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
-          장문 / 필사 카테고리 선택
+          필사할 글을 직접 고르세요
         </h1>
         <p className="mt-2 text-base text-muted">
-          1000자 내외 지문을 카테고리와 글 제목별로 선택해 입력합니다. 너무 짧은 섹션은 제외했습니다.
+          짧은 예문만 반복하지 않도록 1000자 안팎의 글만 남겼습니다. 주제와 제목을 보고 오늘 끝까지 입력할 글을 고르세요.
         </p>
       </header>
 

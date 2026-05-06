@@ -100,11 +100,11 @@ export function TypingLobbyDashboard() {
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-muted">내 연습 대시보드</p>
           <h2 id="typing-dashboard-title" className="mt-1 text-2xl font-semibold tracking-tight">
-            오늘은 어디서 시작할까요?
+            오늘의 손 상태를 먼저 확인하세요
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-            실제 연습 화면은 입력에만 집중하도록 분리했습니다. 이 로비에서 기록을 보고 모드를 고른 뒤,
-            각 전용 화면에서 바로 타이핑을 시작하세요.
+            타자연습은 매번 처음부터 다시 시작할 필요가 없습니다. 오늘 연습 시간, 최근 최고 타수,
+            평균 정확도와 약점 키를 보고 지금 필요한 모드로 바로 들어가세요.
           </p>
         </div>
         <Link
@@ -131,7 +131,7 @@ export function TypingLobbyDashboard() {
             </Link>
           </div>
           {state.recent.length === 0 ? (
-            <p className="mt-3 text-sm text-muted">아직 기록이 없습니다. 낱말연습이나 단문연습부터 시작해보세요.</p>
+            <p className="mt-3 text-sm text-muted">아직 기록이 없습니다. 낱말연습으로 손을 풀거나 자리연습으로 기본기를 먼저 잡아보세요.</p>
           ) : (
             <ul className="mt-3 divide-y divide-border text-sm">
               {state.recent.map((row) => (
@@ -149,7 +149,7 @@ export function TypingLobbyDashboard() {
         <div className="rounded-2xl border border-border bg-background p-4">
           <h3 className="font-semibold">약점 키 힌트</h3>
           {state.weakKeys.length === 0 ? (
-            <p className="mt-3 text-sm text-muted">데이터가 쌓이면 자주 틀리는 자모를 보여줍니다.</p>
+            <p className="mt-3 text-sm text-muted">연습 기록이 쌓이면 자주 흔들리는 자모를 골라 보여줍니다.</p>
           ) : (
             <ul className="mt-3 flex flex-wrap gap-2">
               {state.weakKeys.map((key) => {
@@ -164,7 +164,7 @@ export function TypingLobbyDashboard() {
             </ul>
           )}
           <p className="mt-3 text-xs leading-relaxed text-muted">
-            공개 랭킹은 준비 중이며, 현재는 브라우저 안에 저장된 개인 기록을 기준으로 표시합니다.
+            현재는 이 브라우저에 저장된 개인 기록만 사용합니다. 공개 랭킹은 검증 흐름이 준비된 뒤 붙일 예정입니다.
           </p>
         </div>
       </div>

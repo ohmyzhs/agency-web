@@ -5,9 +5,9 @@ import { zoneLessons } from '@/lib/typing/packs';
 
 
 export const metadata: Metadata = createPageMetadata({
-  title: '자리연습 — 8단계 손가락 자리 익히기 | oh-my-zhs 타자',
+  title: '자리연습 — 두벌식 손가락 위치를 처음부터 제대로 | oh-my-zhs 타자',
   description:
-    'A-S-D-F / J-K-L-; 기본 자리부터 위/아래 단·이중자음·숫자열까지 단계별 자리연습. 다음 키 펄스와 손가락 가이드로 정확한 위치를 익힙니다.',
+    '두벌식 기본 자리, 윗줄·아랫줄, Shift 조합, 숫자열까지 단계별로 익히는 한글 자리연습입니다. 다음 키와 손가락 힌트로 키 위치를 몸에 익힙니다.',
   path: '/typing/zone',
 });
 
@@ -20,10 +20,10 @@ export default function ZoneHubPage() {
           타자연습 · 자리연습
         </p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
-          자리연습 8단계
+          두벌식 자리연습 8단계
         </h1>
         <p className="mt-2 text-base text-muted">
-          손가락 자리를 단계별로 익힙니다. 각 단계는 30~60초 분량의 자모 드릴입니다.
+          키 위치를 눈으로 외우는 데서 끝내지 않고 손가락이 먼저 반응하도록 연습합니다. 기본 자리부터 Shift 조합과 숫자열까지 짧은 드릴로 나눴습니다.
         </p>
       </header>
 
