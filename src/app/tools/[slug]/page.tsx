@@ -22,6 +22,7 @@ import PyeongConverter from "@/components/tools/PyeongConverter";
 import SlugGenerator from "@/components/tools/SlugGenerator";
 import TextCaseConverter from "@/components/tools/TextCaseConverter";
 import TimestampConverter from "@/components/tools/TimestampConverter";
+import TwoFactorCodeGenerator from "@/components/tools/TwoFactorCodeGenerator";
 import UnitConverter from "@/components/tools/UnitConverter";
 import UtmBuilder from "@/components/tools/UtmBuilder";
 import WebhookPayloadFormatter from "@/components/tools/WebhookPayloadFormatter";
@@ -59,6 +60,7 @@ const widgetMap: Record<string, React.ReactNode> = {
   "og-image-generator": <OgImageGeneratorTool />,
   "qr-barcode-generator": <QrBarcodeGeneratorTool />,
   "webhook-request-simulator": <WebhookRequestSimulatorTool />,
+  "two-factor-code-generator": <TwoFactorCodeGenerator />,
   "network-diagnostics": <NetworkDiagnosticsTool />,
   "icon-favicon-generator": <IconFaviconGenerator />,
   "image-format-converter": <ImageFormatConverter />,

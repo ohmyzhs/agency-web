@@ -201,6 +201,66 @@ export const tools: Tool[] = [
     slug: "qr-barcode-generator", title: "QR & Barcode Generator", shortTitle: "QR/Barcode", description: "Generate QR codes and common barcodes locally in the browser.", category: "file-media", tier: 1, seoTitle: "QR Code and Barcode Generator | SVG PNG Download", seoDescription: "Create URL, text, Wi-Fi, vCard QR codes and Code128/EAN/UPC barcodes locally with SVG or PNG download.", inputs: [{ label: "Content", description: "Choose QR content type and barcode value." }], outputs: [{ label: "QR SVG and barcode PNG", description: "Download generated codes." }], examples: [{ label: "Wi-Fi QR", input: "SSID and password", output: "Scannable QR code" }], explanation: ["QR codes are generated as SVG and barcodes as PNG in the browser.", "For product labels or payments, verify the result with a real scanner."], faqs: [{ question: "Are values uploaded?", answer: "No. Generation is local." }], relatedToolSlugs: ["og-image-generator", "icon-favicon-generator", "image-format-converter"], ko: { title: "QR / Barcode 생성기", shortTitle: "QR/Barcode", description: "URL, 텍스트, Wi-Fi, vCard QR과 주요 바코드를 브라우저에서 생성합니다.", seoTitle: "QR코드 바코드 생성기 | SVG PNG 다운로드", seoDescription: "URL, 텍스트, Wi-Fi, vCard QR 코드와 Code128/EAN/UPC 바코드를 로컬에서 생성합니다.", inputs: [{ label: "내용", description: "QR 유형과 바코드 값을 입력합니다." }], outputs: [{ label: "QR SVG와 바코드 PNG", description: "생성된 코드를 다운로드합니다." }], examples: [{ label: "Wi-Fi QR", input: "SSID와 비밀번호", output: "스캔 가능한 QR 코드" }], explanation: ["QR은 SVG, 바코드는 PNG로 브라우저에서 생성합니다.", "상품 라벨이나 결제 용도는 실제 스캐너로 검증하세요."], faqs: [{ question: "입력값이 업로드되나요?", answer: "아닙니다. 생성은 로컬에서 수행됩니다." }] },
   },
   {
+    slug: "two-factor-code-generator",
+    title: "2FA Verification Code Generator",
+    shortTitle: "2FA Code",
+    description: "Generate 6-digit TOTP verification codes from a 2FA secret locally in the browser.",
+    category: "developer-automation",
+    tier: 1,
+    seoTitle: "2FA Verification Code Generator | TOTP 6 Digit Authenticator Code",
+    seoDescription: "Generate 6-digit TOTP authenticator verification codes from a 2FA secret in your browser. Supports Base32 secrets and otpauth URLs with local-only processing.",
+    inputs: [
+      { label: "2FA secret", description: "Paste a Base32 authenticator secret or an otpauth://totp URL." },
+      { label: "TOTP options", description: "Use the standard 30-second period, 6 digits, and SHA-1 unless your service specifies otherwise." },
+    ],
+    outputs: [
+      { label: "Verification code", description: "Shows the current 6-digit TOTP code and seconds remaining before it rotates." },
+    ],
+    examples: [
+      { label: "Authenticator secret", input: "JBSWY3DPEHPK3PXP", output: "6-digit code that refreshes every 30 seconds" },
+      { label: "otpauth URL", input: "otpauth://totp/Example:user?secret=...", output: "Parsed issuer/account and current code" },
+    ],
+    explanation: [
+      "This tool implements the standard TOTP flow used by authenticator apps: decode the Base32 secret, combine it with the current 30-second time counter, sign with HMAC, then truncate the result into a short numeric code.",
+      "Generation runs in your browser with the Web Crypto API. The secret is not sent to this site, but a 2FA secret is still highly sensitive. Use this only on a device and network you trust.",
+      "Most services use 6 digits, SHA-1, and a 30-second period. If a service uses different settings, change the options before copying the code.",
+    ],
+    faqs: [
+      { question: "Is the 2FA secret uploaded?", answer: "No. The code is generated in your browser. Avoid pasting real production secrets on shared or untrusted devices." },
+      { question: "Why does the code keep changing?", answer: "TOTP codes are time-based. A new code is calculated each period, commonly every 30 seconds." },
+      { question: "Can this replace an authenticator app?", answer: "It can calculate the same style of code, but a dedicated authenticator app or password manager is safer for daily storage." },
+    ],
+    relatedToolSlugs: ["developer-text-toolkit", "json-yaml-validator", "timestamp-converter"],
+    ko: {
+      title: "2FA 인증 코드 생성기",
+      shortTitle: "2FA 코드",
+      description: "2FA 인증 시크릿값으로 6자리 TOTP verification code를 브라우저에서 생성합니다.",
+      seoTitle: "2FA 인증 코드 생성기 | TOTP 6자리 verification code",
+      seoDescription: "Base32 2FA 시크릿 또는 otpauth URL을 입력해 6자리 TOTP 인증 코드를 브라우저 로컬에서 생성합니다.",
+      inputs: [
+        { label: "2FA 시크릿", description: "Authenticator 앱에 등록하는 Base32 secret 또는 otpauth://totp URL을 붙여넣습니다." },
+        { label: "TOTP 옵션", description: "서비스가 별도로 안내하지 않으면 표준값인 30초, 6자리, SHA-1을 사용합니다." },
+      ],
+      outputs: [
+        { label: "인증 코드", description: "현재 6자리 verification code와 다음 코드까지 남은 시간을 표시합니다." },
+      ],
+      examples: [
+        { label: "Authenticator secret", input: "JBSWY3DPEHPK3PXP", output: "30초마다 갱신되는 6자리 코드" },
+        { label: "otpauth URL", input: "otpauth://totp/Example:user?secret=...", output: "issuer/account 파싱 및 현재 코드" },
+      ],
+      explanation: [
+        "이 도구는 인증 앱에서 쓰는 표준 TOTP 흐름을 따릅니다. Base32 시크릿을 디코딩하고, 현재 30초 단위 시간 counter와 HMAC을 계산한 뒤 짧은 숫자 코드로 변환합니다.",
+        "코드 생성은 Web Crypto API로 브라우저에서 실행됩니다. 시크릿은 이 사이트로 전송하지 않지만, 2FA 시크릿 자체는 매우 민감하므로 신뢰할 수 있는 기기에서만 사용하세요.",
+        "대부분의 서비스는 6자리, SHA-1, 30초 주기를 씁니다. 다른 설정을 안내받은 경우 옵션을 바꾼 뒤 코드를 복사하세요.",
+      ],
+      faqs: [
+        { question: "2FA 시크릿이 서버로 전송되나요?", answer: "아닙니다. 코드는 브라우저에서 생성됩니다. 다만 실제 운영 계정의 시크릿은 공용/불신 기기에서 붙여넣지 마세요." },
+        { question: "코드가 계속 바뀌는 이유는?", answer: "TOTP는 시간 기반 코드입니다. 보통 30초마다 새 코드가 계산됩니다." },
+        { question: "인증 앱 대신 써도 되나요?", answer: "같은 방식의 코드를 계산할 수는 있지만, 일상적인 보관 용도로는 인증 앱이나 비밀번호 관리자가 더 안전합니다." },
+      ],
+    },
+  },
+  {
     slug: "webhook-request-simulator", title: "Webhook Request Simulator", shortTitle: "Webhook Tester", description: "Send test HTTP requests from the browser and inspect status, headers, and body.", category: "developer-automation", tier: 1, seoTitle: "Webhook Request Simulator | Browser HTTP Tester", seoDescription: "Test webhook URLs with GET, POST, PUT, PATCH, DELETE, custom headers, JSON bodies, and response inspection.", inputs: [{ label: "Request", description: "URL, method, headers, and body." }], outputs: [{ label: "Response", description: "Status, timing, response headers, and body." }], examples: [{ label: "POST test", input: "JSON payload", output: "Webhook response" }], explanation: ["The request is sent with browser fetch, so CORS policies apply.", "Do not paste production secrets into a public browser tool."], faqs: [{ question: "Why did my webhook fail?", answer: "The most common reason is CORS. Server-side webhook testing can be added later." }], relatedToolSlugs: ["json-yaml-validator", "cron-explainer", "network-diagnostics"], ko: { title: "웹훅 요청 시뮬레이터", shortTitle: "Webhook 테스트", description: "GET/POST 등 HTTP 요청을 보내고 상태, 헤더, 본문을 확인합니다.", seoTitle: "웹훅 요청 시뮬레이터 | 브라우저 HTTP 테스트", seoDescription: "Webhook URL에 GET, POST, PUT, PATCH, DELETE 요청과 커스텀 헤더/JSON 본문을 보내고 응답을 확인합니다.", inputs: [{ label: "요청", description: "URL, method, headers, body를 입력합니다." }], outputs: [{ label: "응답", description: "상태, 시간, 응답 헤더와 본문을 확인합니다." }], examples: [{ label: "POST 테스트", input: "JSON payload", output: "Webhook 응답" }], explanation: ["브라우저 fetch로 요청하므로 대상 서버의 CORS 정책이 적용됩니다.", "공개 브라우저 도구에 운영 비밀 토큰을 붙여넣지 마세요."], faqs: [{ question: "웹훅 요청이 실패하는 이유는?", answer: "가장 흔한 원인은 CORS입니다. 서버 측 웹훅 테스트는 이후 추가할 수 있습니다." }] },
   },
   {
