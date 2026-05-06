@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
+import { memo, useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import type { KeyboardEvent } from "react";
 import type { CharStatus } from "@/lib/typing/metrics";
-import { buildTypingSurfaceParts } from "@/lib/typing/surface-render";
+import { buildTypingSurfaceCache, buildTypingSurfaceParts } from "@/lib/typing/surface-render";
 import type { TypingMode } from "@/lib/typing/types";
 import TypingInput from "./TypingInput";
 
@@ -31,7 +31,7 @@ const colorByStatus: Record<CharStatus, string> = {
 
 function visibleLinesForMode(mode: TypingMode): number {
   if (mode === "longform") return 5;
-  if (mode === "sentence") return 1;
+  if (mode === "sentence") return 3;
   return 3;
 }
 
@@ -45,7 +45,7 @@ function lineClassForMode(mode: TypingMode): string {
   return "font-sans text-xl font-medium leading-9 sm:text-2xl sm:leading-10";
 }
 
-export function MultilineTypingSurface({
+export const MultilineTypingSurface = memo(function MultilineTypingSurface({
   target,
   typed,
   isComposing,
@@ -56,7 +56,11 @@ export function MultilineTypingSurface({
   onKeyDownCapture,
   disabled,
 }: MultilineTypingSurfaceProps) {
-  const { parts, cursorIndex, totalChars } = useMemo(() => buildTypingSurfaceParts(target, typed, isComposing), [target, typed, isComposing]);
+  const cache = useMemo(() => buildTypingSurfaceCache(target), [target]);
+  const { parts, cursorIndex, totalChars } = useMemo(
+    () => buildTypingSurfaceParts(target, typed, isComposing, cache),
+    [target, typed, isComposing, cache],
+  );
   const progress = totalChars > 0 ? Math.min(100, Math.round((cursorIndex / totalChars) * 100)) : 0;
   const refIndex = parts.findIndex((part) => part.isCursor);
   const visibleLines = visibleLinesForMode(mode);
@@ -122,7 +126,7 @@ export function MultilineTypingSurface({
         <div
           ref={innerRef}
           className={[
-            "transition-transform duration-200 ease-out will-change-transform",
+            "transform-gpu",
             "break-words [overflow-wrap:anywhere] [word-break:keep-all]",
             lineClassForMode(mode),
           ].join(" ")}
@@ -161,4 +165,4 @@ export function MultilineTypingSurface({
       />
     </section>
   );
-}
+});

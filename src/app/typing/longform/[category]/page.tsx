@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createPageMetadata } from '@/lib/seo';
-import { ModeShell } from '@/components/typing/organisms/ModeShell';
-import { LONGFORM_CATEGORIES } from '@/lib/typing/packs-staged';
+import { LONGFORM_CATEGORIES, getPassagesForCategory } from '@/lib/typing/packs-staged';
+import { LongformCategoryClient } from '@/components/typing/LongformCategoryClient';
 import type { LongformCategory } from '@/lib/typing/types';
 
 type Params = Promise<{ category: string }>;
@@ -23,6 +23,9 @@ export default async function LongformCategoryPage({ params }: { params: Params 
   const decoded = decodeURIComponent(category) as LongformCategory;
   if (!LONGFORM_CATEGORIES.includes(decoded)) notFound();
 
+  const passages = getPassagesForCategory(decoded, 'ko');
+  if (!passages.length) notFound();
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <header className="mb-6">
@@ -37,7 +40,7 @@ export default async function LongformCategoryPage({ params }: { params: Params 
         </p>
       </header>
 
-      <ModeShell lockedMode="longform" lockedLessonId={decoded} />
+      <LongformCategoryClient category={decoded} passages={passages} />
     </div>
   );
 }
