@@ -4,7 +4,7 @@
  * 랜덤 1개 반환 방식은 같은 지문 반복/리셋 체감을 만들기 쉬워서,
  * 모드·단계·언어별 풀을 섞은 뒤 커서로 다음 항목을 꺼낸다.
  */
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   buildWordStreamFromStage,
   getSentencesForStage,
@@ -12,7 +12,7 @@ import {
   pickRandom,
   LONGFORM_CATEGORIES,
 } from '@/lib/typing/packs-staged';
-import { buildWordStream, englishPassages, englishSentences, koreanPassages, zoneLessons } from '@/lib/typing/packs';
+import { buildWordStream, englishPassages, englishSentences, getCombinedZoneDrill, koreanPassages, zoneLessons } from '@/lib/typing/packs';
 import type { TypingMode, StageLevel, LongformCategory } from '@/lib/typing/types';
 import type { ZoneLessonId } from '@/lib/typing/packs';
 
@@ -47,6 +47,8 @@ function seededShuffle<T>(items: T[], seedText: string): T[] {
 export function useStageContent(opts: Options) {
   const key = `${opts.mode}:${opts.stage}:${opts.language}:${opts.lessonId ?? ''}:${opts.category ?? ''}`;
   const cursorByKey = useRef<Record<string, number>>({});
+  const [sessionSeed] = useState(() => `${Date.now()}:${Math.random()}`);
+  const shuffleSeed = `${key}:${sessionSeed}`;
 
   const sequence = useMemo((): string[] => {
     const { mode, stage, language, lessonId, category } = opts;
@@ -54,7 +56,7 @@ export function useStageContent(opts: Options) {
     if (mode === 'keyboard-zone') {
       const lesson =
         zoneLessons.find(l => l.id === (lessonId as ZoneLessonId)) ?? zoneLessons[0];
-      return [lesson.drill];
+      return [getCombinedZoneDrill(lesson, shuffleSeed)];
     }
 
     if (language === 'en') {
@@ -71,7 +73,7 @@ export function useStageContent(opts: Options) {
     }
 
     if (mode === 'word') return Array.from({ length: 12 }, (_, idx) => buildWordStreamFromStage(stage, 25 + (idx % 3) * 5));
-    if (mode === 'sentence') return seededShuffle(getSentencesForStage(stage), key);
+    if (mode === 'sentence') return seededShuffle(getSentencesForStage(stage), shuffleSeed);
     if (mode === 'speed-test') return Array.from({ length: 12 }, (_, idx) => buildWordStreamFromStage(stage, 80 + (idx % 3) * 10));
 
     if (mode === 'longform') {
@@ -84,7 +86,7 @@ export function useStageContent(opts: Options) {
     }
 
     return seededShuffle(koreanPassages, key);
-  }, [key, opts]);
+  }, [key, opts, shuffleSeed]);
 
   const next = useCallback((): string => {
     if (!sequence.length) return '';

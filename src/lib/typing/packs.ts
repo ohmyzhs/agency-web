@@ -105,6 +105,31 @@ export const zoneLessons: ZoneLesson[] = [
   },
 ];
 
+
+function shuffleString(source: string, seedText: string): string {
+  const arr = Array.from(source);
+  let seed = 2166136261;
+  for (let i = 0; i < seedText.length; i += 1) {
+    seed ^= seedText.charCodeAt(i);
+    seed = Math.imul(seed, 16777619);
+  }
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    const j = seed % (i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.join("");
+}
+
+export function getCombinedZoneDrill(lesson: ZoneLesson, seedText: string): string {
+  const rounds = lesson.id === "number" ? 4 : lesson.id === "all" ? 3 : 6;
+  const source = lesson.drill.length > 0 ? lesson.drill : lesson.subtitleKo;
+  const base = lesson.id === "all"
+    ? `${homeDrill}${rightTopDrill}${leftTopDrill}${rightBottomDrill}${leftBottomDrill}${middleDrill}${numberDrill}`
+    : lesson.subtitleKo;
+  return Array.from({ length: rounds }, (_, idx) => shuffleString(base || source, `${seedText}:${lesson.id}:${idx}`)).join("");
+}
+
 // Word packs are short, common, and original.
 export const koreanWords = [
   "사랑", "친구", "가족", "행복", "오늘", "내일", "어제", "시간", "마음", "이야기",
