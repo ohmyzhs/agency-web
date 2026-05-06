@@ -24,6 +24,23 @@ type Options = {
   category?: LongformCategory;
 };
 
+type LongformSelection = {
+  category: LongformCategory;
+  passageIndex?: number;
+};
+
+function parseLongformSelection(category: LongformCategory | undefined, lessonId: string | undefined): LongformSelection | undefined {
+  if (category && LONGFORM_CATEGORIES.includes(category)) return { category };
+  if (!lessonId) return undefined;
+  const [rawCategory, rawIndex] = lessonId.split('::');
+  if (!LONGFORM_CATEGORIES.includes(rawCategory as LongformCategory)) return undefined;
+  const parsedIndex = rawIndex === undefined ? Number.NaN : Number(rawIndex);
+  return {
+    category: rawCategory as LongformCategory,
+    passageIndex: Number.isInteger(parsedIndex) && parsedIndex >= 0 ? parsedIndex : undefined,
+  };
+}
+
 function hashString(input: string): number {
   let hash = 2166136261;
   for (let i = 0; i < input.length; i += 1) {
@@ -64,9 +81,12 @@ export function useStageContent(opts: Options) {
       if (mode === 'sentence') return seededShuffle(englishSentences, key);
       if (mode === 'speed-test') return Array.from({ length: 12 }, () => buildWordStream('en', 80));
       if (mode === 'longform') {
-        const requested = category as LongformCategory | undefined;
-        const cat = requested && LONGFORM_CATEGORIES.includes(requested) ? requested : undefined;
+        const selection = parseLongformSelection(category as LongformCategory | undefined, lessonId);
+        const cat = selection?.category;
         const passages = cat ? getPassagesForCategory(cat, 'en').map(p => p.text) : englishPassages;
+        if (selection?.passageIndex !== undefined && passages[selection.passageIndex]) {
+          return [passages[selection.passageIndex]];
+        }
         return seededShuffle(passages.length ? passages : englishPassages, key);
       }
       return seededShuffle(englishPassages, key);
@@ -77,11 +97,12 @@ export function useStageContent(opts: Options) {
     if (mode === 'speed-test') return Array.from({ length: 12 }, (_, idx) => buildWordStreamFromStage(stage, 80 + (idx % 3) * 10));
 
     if (mode === 'longform') {
-      const requested = category as LongformCategory | undefined;
-      const cat = requested && LONGFORM_CATEGORIES.includes(requested)
-        ? requested
-        : pickRandom(LONGFORM_CATEGORIES);
+      const selection = parseLongformSelection(category as LongformCategory | undefined, lessonId);
+      const cat = selection?.category ?? pickRandom(LONGFORM_CATEGORIES);
       const passages = getPassagesForCategory(cat, language).map(p => p.text);
+      if (selection?.passageIndex !== undefined && passages[selection.passageIndex]) {
+        return [passages[selection.passageIndex]];
+      }
       return seededShuffle(passages, key);
     }
 

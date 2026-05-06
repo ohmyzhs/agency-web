@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useCallback } from "react";
+import { forwardRef, memo, useCallback } from "react";
 import type { ChangeEvent, CompositionEvent, KeyboardEvent } from "react";
 
 type TypingInputProps = {
@@ -16,7 +16,7 @@ type TypingInputProps = {
   rows?: number;
 };
 
-const TypingInput = forwardRef<HTMLTextAreaElement, TypingInputProps>(function TypingInput(
+const TypingInput = memo(forwardRef<HTMLTextAreaElement, TypingInputProps>(function TypingInput(
   {
     value,
     onValueChange,
@@ -75,6 +75,6 @@ const TypingInput = forwardRef<HTMLTextAreaElement, TypingInputProps>(function T
       className={className}
     />
   );
-});
+}));
 
 export default TypingInput;
