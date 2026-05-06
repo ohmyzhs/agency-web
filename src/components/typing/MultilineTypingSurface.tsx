@@ -27,12 +27,15 @@ const colorByStatus: Record<CharStatus, string> = {
   untyped: "text-foreground/80",
 };
 
-
-
 function visibleLinesForMode(mode: TypingMode): number {
-  if (mode === "longform") return 5;
+  if (mode === "longform") return 8;
   if (mode === "sentence") return 3;
   return 3;
+}
+
+function anchorLineForMode(mode: TypingMode, visibleLines: number): number {
+  if (mode === "longform") return 6;
+  return Math.max(0, Math.floor(visibleLines / 2));
 }
 
 function lineClassForMode(mode: TypingMode): string {
@@ -64,10 +67,12 @@ export const MultilineTypingSurface = memo(function MultilineTypingSurface({
   const progress = totalChars > 0 ? Math.min(100, Math.round((cursorIndex / totalChars) * 100)) : 0;
   const refIndex = parts.findIndex((part) => part.isCursor);
   const visibleLines = visibleLinesForMode(mode);
+  const anchorLine = anchorLineForMode(mode, visibleLines);
 
   const windowRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLSpanElement>(null);
+  const offsetRef = useRef(0);
 
   const focusInput = useCallback(() => {
     const el = inputRef.current;
@@ -87,19 +92,27 @@ export const MultilineTypingSurface = memo(function MultilineTypingSurface({
     const parsed = parseFloat(cs.lineHeight);
     const fallback = mode === "longform" ? 40 : 38;
     const lineHeight = Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
-    const maxOffset = Math.max(0, inner.scrollHeight - lineHeight * visibleLines);
+    const windowHeight = lineHeight * visibleLines;
+    const maxOffset = Math.max(0, inner.scrollHeight - windowHeight);
 
-    win.style.height = `${lineHeight * visibleLines}px`;
+    win.style.height = `${windowHeight}px`;
 
     const cursor = cursorRef.current;
-    let offset = 0;
+    let offset = Math.min(offsetRef.current, maxOffset);
     if (cursor) {
-      const lineIdx = Math.max(0, Math.round(cursor.offsetTop / lineHeight));
-      const anchorLine = Math.max(0, Math.floor(visibleLines / 2));
-      offset = Math.min(maxOffset, Math.max(0, (lineIdx - anchorLine) * lineHeight));
+      const cursorLine = Math.max(0, Math.round(cursor.offsetTop / lineHeight));
+      const firstVisibleLine = Math.floor(offset / lineHeight);
+      const lastComfortLine = firstVisibleLine + anchorLine;
+      const isAboveViewport = cursorLine < firstVisibleLine;
+      const isPastComfortLine = cursorLine >= lastComfortLine;
+
+      if (isAboveViewport || isPastComfortLine) {
+        offset = Math.min(maxOffset, Math.max(0, (cursorLine - anchorLine) * lineHeight));
+      }
     }
+    offsetRef.current = offset;
     inner.style.transform = `translateY(-${offset}px)`;
-  }, [typed, target, mode, visibleLines, isComposing]);
+  }, [cursorIndex, target, mode, visibleLines, anchorLine, isComposing]);
 
   return (
     <section
@@ -121,7 +134,7 @@ export const MultilineTypingSurface = memo(function MultilineTypingSurface({
 
       <div
         ref={windowRef}
-        className="relative overflow-hidden px-4 py-4 sm:px-6 [mask-image:linear-gradient(to_bottom,black_0%,black_78%,rgba(0,0,0,0.45)_100%)]"
+        className="relative overflow-hidden px-4 py-4 sm:px-6 [mask-image:linear-gradient(to_bottom,black_0%,black_92%,rgba(0,0,0,0.45)_100%)]"
       >
         <div
           ref={innerRef}

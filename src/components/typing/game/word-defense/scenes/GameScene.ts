@@ -40,8 +40,9 @@ const FLOOR_Y_OFFSET = 80;
 const WIDTH = 800;
 const HEIGHT = 600;
 const SHIP_BASE_Y = HEIGHT - 56;
-const INPUT_OFFSET_Y = -56; // input overlay above ship sprite
+const INPUT_OFFSET_Y = -82; // input overlay above ship sprite
 const SHIP_LERP = 8;        // ship glide speed (units / sec)
+const SHIP_IDLE_RETURN_MS = 3000;
 
 const ASSET_BASE = '/typing/game/word-defense/sprites/keyed';
 const BG_PATH = '/typing/illustrations/space-bg.png';
@@ -60,6 +61,7 @@ export class GameScene extends Phaser.Scene {
   private particles?: Phaser.GameObjects.Particles.ParticleEmitter;
   private ship!: Phaser.GameObjects.Image;
   private shipTargetX = WIDTH / 2;
+  private lastInputAt = 0;
   private activeTargetId: number | null = null;
   private pendingInput = '';
   private lastAim: AimState = { x: WIDTH / 2, y: SHIP_BASE_Y + INPUT_OFFSET_Y, typed: '', active: false };
@@ -208,9 +210,15 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    // Ship glide toward active target x (or center).
+    // Ship glides toward a locked target, but does not snap back immediately
+    // after a hit/miss. Keep the last position while the player is actively
+    // typing, then return to center only after 3s of keypress inactivity.
     const active = this.getActiveMeteor();
-    this.shipTargetX = active ? active.container.x : WIDTH / 2;
+    if (active) {
+      this.shipTargetX = active.container.x;
+    } else if (!this.lastInputAt || this.time.now - this.lastInputAt >= SHIP_IDLE_RETURN_MS) {
+      this.shipTargetX = WIDTH / 2;
+    }
     const t = Math.min(1, dt * SHIP_LERP);
     this.ship.x = Phaser.Math.Linear(this.ship.x, this.shipTargetX, t);
 
@@ -280,6 +288,7 @@ export class GameScene extends Phaser.Scene {
   private onJamoInput(jamo: string) {
     if (this.hp <= 0) return;
     if (!jamo) return;
+    this.lastInputAt = this.time.now;
 
     let matched: Meteor | null = null;
 
@@ -320,7 +329,10 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    if (this.activeTargetId !== matched.id) this.pendingInput = '';
+    if (this.activeTargetId !== matched.id) {
+      this.pendingInput = '';
+      this.shipTargetX = matched.container.x;
+    }
     matched.matched += 1;
     this.pendingInput = '';
     matched.bgObj.fillAlpha = 0.85;

@@ -282,23 +282,23 @@ export function WordDefenseGame() {
           </div>
         )}
 
-        {/* Aim overlay — small input box that follows the active meteor.
+        {/* Aim overlay — large, visible input guide that follows the ship/target.
             transform-positioned via aim events; not part of React render path. */}
         <div
           ref={overlayRef}
           aria-hidden={phase !== 'playing'}
-          className="pointer-events-none absolute left-0 top-0 z-10 flex flex-col items-center gap-1 transition-opacity duration-150 data-[active=0]:opacity-80 data-[active=1]:opacity-100"
+          className="pointer-events-none absolute left-0 top-0 z-10 flex flex-col items-center gap-1 transition-opacity duration-150 data-[active=0]:opacity-90 data-[active=1]:opacity-100"
           style={{ transform: 'translate3d(-9999px, -9999px, 0)' }}
         >
-          <div className="rounded-md border border-primary/70 bg-black/70 px-2.5 py-1 font-mono text-base font-bold text-white shadow-[0_0_12px_rgba(255,91,31,0.55)] backdrop-blur-sm">
-            <span ref={typedDisplayRef} className="block min-w-[3.5ch] text-center tracking-[0.05em]">
+          <div className="min-w-[9rem] rounded-xl border-2 border-primary/80 bg-black/80 px-4 py-2.5 text-center font-mono text-2xl font-black text-white shadow-[0_0_22px_rgba(255,91,31,0.7)] backdrop-blur-sm data-[active=0]:border-white/55">
+            <span ref={typedDisplayRef} className="block min-h-[1.4em] min-w-[5ch] tracking-[0.08em]">
               &nbsp;
             </span>
           </div>
         </div>
 
         {/* Hidden capture input — focusable for IME, visually hidden so the
-            visible 5-char box (scene-driven) is the only typed UI. */}
+            large scene-driven guide is the only typed UI. */}
         <input
           ref={inputRef}
           type="text"
@@ -315,7 +315,7 @@ export function WordDefenseGame() {
 
       {phase === 'playing' && (
         <p className="text-center text-xs text-muted">
-          입력 박스는 우주선 위에 있습니다. 화면을 클릭하면 키 입력이 다시 활성화됩니다.
+          커다란 입력 가이드가 우주선 위를 따라다닙니다. 화면 아무 곳이나 클릭하면 키 입력이 다시 활성화됩니다.
         </p>
       )}
     </div>
