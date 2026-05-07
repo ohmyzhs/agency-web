@@ -74,10 +74,22 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:contact@ohmyzhs.com"
+                  href="https://github.com/ohmyzhs/agency-web"
+                  target="_blank"
+                  rel="noreferrer"
                   className="text-muted hover:text-foreground"
                 >
-                  contact@ohmyzhs.com
+                  GitHub
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/ohmyzhs/agency-web/issues"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-muted hover:text-foreground"
+                >
+                  Issues
                 </a>
               </li>
             </ul>

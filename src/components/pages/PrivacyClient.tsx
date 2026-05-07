@@ -27,12 +27,12 @@ export function PrivacyClient() {
           server operated by ZHS.
         </p>
 
-        <h2>3. Contact form</h2>
+        <h2>3. Feedback and request forms</h2>
         <p>
-          The contact form collects the name, email, topic, and message that you provide.
-          That information is used only to respond to your request — for example to fix a
-          bug you reported, evaluate a tool suggestion, or answer a privacy question. It
-          is not sold, shared with advertisers, or used for marketing.
+          The public request flow is being connected to GitHub Issues and email receipts.
+          When enabled, the site will collect only the fields you submit for a report or
+          request. Optional reply email addresses will be used for receipt and progress
+          messages, and will not be placed in public GitHub Issue bodies.
         </p>
 
         <h2>4. Cookies and local storage</h2>
@@ -73,8 +73,8 @@ export function PrivacyClient() {
 
         <h2>9. Contact</h2>
         <p>
-          For questions about this privacy policy, write to{" "}
-          <a href="mailto:contact@ohmyzhs.com">contact@ohmyzhs.com</a>.
+          Questions about this privacy policy can be sent through the site request page or
+          the public GitHub Issues tracker. Do not include private data in public issues.
         </p>
       </div>
     );
@@ -100,11 +100,12 @@ export function PrivacyClient() {
         입력한 값은 ZHS가 운영하는 어떤 서버로도 전송되지 않습니다.
       </p>
 
-      <h2>3. 연락 양식</h2>
+      <h2>3. 피드백 및 요청 양식</h2>
       <p>
-        연락 양식은 입력하신 이름, 이메일, 문의 유형, 메시지를 수집합니다. 해당 정보는
-        오직 답변 — 오류 수정, 도구 요청 검토, 개인정보 관련 답변 — 을 위한
-        목적으로만 사용되며, 제3자에게 판매하거나 광고 목적으로 활용하지 않습니다.
+        공개 요청 흐름은 GitHub Issue와 접수 메일로 연결하는 중입니다. 연결 후에는
+        오류 제보와 도구 요청에 필요한 입력 항목만 수집합니다. 회신 이메일은 선택
+        입력이며, 접수 및 진행 안내에만 사용되고 공개 GitHub Issue 본문에는 포함하지
+        않습니다.
       </p>
 
       <h2>4. 쿠키 및 로컬 스토리지</h2>
@@ -144,8 +145,8 @@ export function PrivacyClient() {
 
       <h2>9. 문의</h2>
       <p>
-        본 개인정보 처리방침 관련 문의는{" "}
-        <a href="mailto:contact@ohmyzhs.com">contact@ohmyzhs.com</a> 으로 보내주세요.
+        본 개인정보 처리방침 관련 문의는 사이트 요청/오류 제보 페이지 또는 공개
+        GitHub Issue를 통해 보내주세요. 공개 이슈에는 개인정보를 직접 적지 마세요.
       </p>
     </div>
   );

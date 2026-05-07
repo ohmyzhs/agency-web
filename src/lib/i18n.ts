@@ -197,7 +197,7 @@ const dictionaries = {
           title: "6. 약관 변경 및 문의",
           body: [
             "본 약관은 사이트 운영 변경에 따라 갱신될 수 있으며, 변경 시 본 페이지에 갱신일과 함께 표시됩니다.",
-            "약관 관련 문의는 contact@ohmyzhs.com 또는 사이트 내 연락 페이지로 보내주세요.",
+            "약관 관련 문의와 도구 요청은 사이트의 요청/오류 제보 페이지 또는 공개 GitHub Issue를 통해 보내주세요.",
           ],
         },
       ],
@@ -504,7 +504,7 @@ const dictionaries = {
           title: "6. Changes and contact",
           body: [
             "These terms may be updated as the site evolves. Updates appear on this page with a new \"last updated\" date.",
-            "Questions about these terms can be sent to contact@ohmyzhs.com or through the site's contact page.",
+            "Questions about these terms can be sent through the request / bug report page or the public GitHub Issues tracker.",
           ],
         },
       ],
