@@ -9,7 +9,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import { type Locale, type Dictionary, getDictionary, defaultLocale } from "@/lib/i18n";
+import { type Locale, type Dictionary, getDictionary, defaultLocale, isLocale } from "@/lib/i18n";
 
 type Theme = "light" | "dark" | "system";
 
@@ -49,6 +49,16 @@ export function useLocale() {
   return { locale, setLocale, t };
 }
 
+function detectInitialLocale(): Locale {
+  if (typeof window === "undefined") return defaultLocale;
+  const urlLocale = new URLSearchParams(window.location.search).get("lang");
+  if (isLocale(urlLocale)) return urlLocale;
+  const stored = localStorage.getItem("locale");
+  if (isLocale(stored)) return stored;
+  const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
+  return languages.some((lang) => lang.toLowerCase().startsWith("ko")) ? "ko" : "en";
+}
+
 const subscribeNoop = () => () => {};
 const getMountedClient = () => true;
 const getMountedServer = () => false;
@@ -77,10 +87,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (typeof window === "undefined") return "system";
     return (localStorage.getItem("theme") as Theme | null) ?? "system";
   });
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof window === "undefined") return defaultLocale;
-    return (localStorage.getItem("locale") as Locale | null) ?? defaultLocale;
-  });
+  const [locale, setLocaleState] = useState<Locale>(() => detectInitialLocale());
 
   const resolvedTheme: "light" | "dark" = theme === "system" ? systemTheme : theme;
 
@@ -88,6 +95,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
     document.documentElement.classList.toggle("light", resolvedTheme === "light");
   }, [resolvedTheme]);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);

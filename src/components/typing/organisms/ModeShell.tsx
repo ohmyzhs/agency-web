@@ -33,17 +33,26 @@ import TargetText from '../TargetText';
 import TypingInput from '../TypingInput';
 import { MultilineTypingSurface } from '../MultilineTypingSurface';
 import SegmentedTabs from '@/components/tools/shared/SegmentedTabs';
+import { useLocale } from '@/components/providers';
 import { ZoneLessonSelector } from '../atoms/ZoneLessonSelector';
 import { zoneLessons, type ZoneLessonId } from '@/lib/typing/packs';
 import type { TypingMode, TypingLanguage, StageLevel, LongformCategory } from '@/lib/typing/types';
 import { strokeForCode, decomposeForKeystrokes, type ZoneId } from '@/lib/typing/korean-keyboard';
 
-const MODE_OPTIONS: { value: TypingMode; label: string }[] = [
+const MODE_OPTIONS_KO: { value: TypingMode; label: string }[] = [
   { value: 'keyboard-zone', label: '자리연습' },
   { value: 'word',          label: '낱말연습' },
   { value: 'sentence',      label: '단문연습' },
   { value: 'longform',      label: '장문/필사' },
   { value: 'speed-test',    label: '속도측정' },
+];
+
+const MODE_OPTIONS_EN: { value: TypingMode; label: string }[] = [
+  { value: 'keyboard-zone', label: 'Key zones' },
+  { value: 'word',          label: 'Words' },
+  { value: 'sentence',      label: 'Sentences' },
+  { value: 'longform',      label: 'Long-form' },
+  { value: 'speed-test',    label: 'Speed test' },
 ];
 
 type SpeedDuration = 15 | 30 | 60 | 120;
@@ -109,6 +118,26 @@ type ModeShellProps = {
 };
 
 export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
+  const { locale } = useLocale();
+  const uiLang = locale;
+  const modeOptions = uiLang === 'ko' ? MODE_OPTIONS_KO : MODE_OPTIONS_EN;
+  const labels = uiLang === 'ko'
+    ? {
+        practiceMode: '연습 모드', language: '언어', korean: '한국어', english: '영어', duration: '시간',
+        nextPrompt: '다음 지문 (Ctrl+Enter)', currentResult: '현재 지문 결과', thisPractice: '이번 연습 결과',
+        tpm: '타/분', peak: '순간최고타수', correct: '정타수', incorrect: '오타수', accuracy: '정확도', time: '시간',
+        promptCount: '문장수', avgTpm: '평균타수', bestTpm: '최고타수', worstTpm: '최저타수', zoneInput: '입력할 자리',
+        zoneInputAria: '현재 자리 입력', typingInputAria: '타자 입력', passed: '목표 통과', done: '완료',
+        correctShort: '정타', incorrectShort: '오타', continueNext: '다음 지문으로 이어갑니다.', countSuffix: '개',
+      }
+    : {
+        practiceMode: 'Practice mode', language: 'Language', korean: 'Korean', english: 'English', duration: 'Duration',
+        nextPrompt: 'Next prompt (Ctrl+Enter)', currentResult: 'Current prompt', thisPractice: 'This practice',
+        tpm: 'TPM', peak: 'Peak TPM', correct: 'Correct', incorrect: 'Errors', accuracy: 'Accuracy', time: 'Time',
+        promptCount: 'Prompts', avgTpm: 'Average', bestTpm: 'Best', worstTpm: 'Worst', zoneInput: 'Key to type',
+        zoneInputAria: 'Current key input', typingInputAria: 'Typing input', passed: 'Goal passed', done: 'Done',
+        correctShort: 'Correct', incorrectShort: 'Errors', continueNext: 'Continuing to the next prompt.', countSuffix: '',
+      };
   const db = useDB();
   const { playKey, play } = useSoundFx();
 
@@ -136,6 +165,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   const [lastResult, setLastResult] = useState<LastResult | null>(null);
   const [practiceStats, setPracticeStats] = useState<PracticeStats>(EMPTY_PRACTICE_STATS);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const lastLocaleSyncRef = useRef<typeof uiLang | null>(null);
   const finishScheduledRef = useRef(false);
   const intentionalFocusExitRef = useRef(false);
   const applyZoneStrokeRef = useRef<((stroke: string) => void) | null>(null);
@@ -158,6 +188,12 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   const focusTypingInputSoon = useCallback(() => {
     window.requestAnimationFrame(() => focusTypingInput());
   }, [focusTypingInput]);
+
+  useEffect(() => {
+    if (lastLocaleSyncRef.current === uiLang) return;
+    lastLocaleSyncRef.current = uiLang;
+    if (language !== uiLang) setLanguage(uiLang);
+  }, [uiLang, language, setLanguage]);
 
   // ── content ──
   const { next: nextContent } = useStageContent({
@@ -592,30 +628,30 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       {/* Mode tabs — hidden when route locks the mode */}
       {!lockedMode && (
         <SegmentedTabs<TypingMode>
-          ariaLabel="연습 모드"
+          ariaLabel={labels.practiceMode}
           value={mode}
           onChange={m => { setMode(m); }}
-          options={MODE_OPTIONS}
+          options={modeOptions}
         />
       )}
 
       {/* Config row */}
       <div className="flex flex-wrap items-end gap-3">
         <div>
-          <p className="mb-1 text-xs font-medium uppercase tracking-wider text-muted">언어</p>
+          <p className="mb-1 text-xs font-medium uppercase tracking-wider text-muted">{labels.language}</p>
           <SegmentedTabs<TypingLanguage>
-            ariaLabel="언어"
+            ariaLabel={labels.language}
             value={language as TypingLanguage}
             onChange={l => setLanguage(l)}
-            options={[{ value: 'ko', label: '한국어' }, { value: 'en', label: '영어' }]}
+            options={[{ value: 'ko', label: labels.korean }, { value: 'en', label: labels.english }]}
             size="sm"
           />
         </div>
         {mode === 'speed-test' && (
           <div>
-            <p className="mb-1 text-xs font-medium uppercase tracking-wider text-muted">시간</p>
+            <p className="mb-1 text-xs font-medium uppercase tracking-wider text-muted">{labels.duration}</p>
             <SegmentedTabs<string>
-              ariaLabel="시간"
+              ariaLabel={labels.duration}
               value={String(speedDuration)}
               onChange={v => setSpeedDuration(Number(v) as SpeedDuration)}
               options={[
@@ -633,35 +669,35 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
           onClick={handleNext}
           className="ml-auto rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-card"
         >
-          다음 지문 (Ctrl+Enter)
+          {labels.nextPrompt}
         </button>
       </div>
 
       {/* Current passage metrics */}
       <div className="space-y-2 rounded-lg border border-border bg-card p-3">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted">현재 지문 결과</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted">{labels.currentResult}</p>
         <div className="grid grid-cols-3 gap-2 text-center sm:grid-cols-6">
-          <StatChip label="타/분" value={Math.round(metrics.타분당)} />
-          <StatChip label="순간최고타수" value={Math.round(metrics.타분당Raw)} />
-          <StatChip label="정타수" value={metrics.jamoCorrect} />
-          <StatChip label="오타수" value={metrics.jamoIncorrect} />
-          <StatChip label="정확도" value={`${Math.round(metrics.정확도 * 100)}%`} />
-          <StatChip label="시간" value={elapsedDisplay} />
+          <StatChip label={labels.tpm} value={Math.round(metrics.타분당)} />
+          <StatChip label={labels.peak} value={Math.round(metrics.타분당Raw)} />
+          <StatChip label={labels.correct} value={metrics.jamoCorrect} />
+          <StatChip label={labels.incorrect} value={metrics.jamoIncorrect} />
+          <StatChip label={labels.accuracy} value={`${Math.round(metrics.정확도 * 100)}%`} />
+          <StatChip label={labels.time} value={elapsedDisplay} />
         </div>
       </div>
 
       {shouldShowPracticeStats && (
         <div className="space-y-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted">이번 연습 결과</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted">{labels.thisPractice}</p>
           <div className="grid grid-cols-4 gap-2 text-center sm:grid-cols-8">
-            <StatChip label="문장수" value={`${practiceStats.count}개`} />
-            <StatChip label="평균타수" value={formatTpm(practiceAverageTpm)} />
-            <StatChip label="최고타수" value={formatTpm(practiceStats.bestTpm)} />
-            <StatChip label="최저타수" value={formatTpm(practiceStats.worstTpm)} />
-            <StatChip label="정타수" value={practiceStats.correct} />
-            <StatChip label="오타수" value={practiceStats.incorrect} />
-            <StatChip label="정확도" value={`${Math.round(practiceAccuracy * 100)}%`} />
-            <StatChip label="시간" value={`${Math.round(practiceStats.seconds)}s`} />
+            <StatChip label={labels.promptCount} value={`${practiceStats.count}${labels.countSuffix}`} />
+            <StatChip label={labels.avgTpm} value={formatTpm(practiceAverageTpm)} />
+            <StatChip label={labels.bestTpm} value={formatTpm(practiceStats.bestTpm)} />
+            <StatChip label={labels.worstTpm} value={formatTpm(practiceStats.worstTpm)} />
+            <StatChip label={labels.correct} value={practiceStats.correct} />
+            <StatChip label={labels.incorrect} value={practiceStats.incorrect} />
+            <StatChip label={labels.accuracy} value={`${Math.round(practiceAccuracy * 100)}%`} />
+            <StatChip label={labels.time} value={`${Math.round(practiceStats.seconds)}s`} />
           </div>
         </div>
       )}
@@ -681,6 +717,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
           value={(lessonId as ZoneLessonId) || zoneLessons[0].id}
           onSelect={handleLessonSelect}
           onInteractionStart={() => { intentionalFocusExitRef.current = true; }}
+          locale={uiLang}
         />
       )}
 
@@ -688,7 +725,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
         <>
           <TargetText target={target} typed={typed} isComposing={isComposing} mode={mode} />
           <div className="rounded-2xl border border-border bg-card p-3">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">입력할 자리</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">{labels.zoneInput}</p>
             <TypingInput
               ref={inputRef}
               value={currentZoneInput(target, typed)}
@@ -696,7 +733,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
               onCompositionChange={handleCompositionChange}
               onKeyDownCapture={typingKeyDownCapture}
               disabled={false}
-              ariaLabel="현재 자리 입력"
+              ariaLabel={labels.zoneInputAria}
               rows={1}
             />
           </div>
@@ -724,7 +761,7 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
             onCompositionChange={handleCompositionChange}
             onKeyDownCapture={typingKeyDownCapture}
             disabled={false}
-            ariaLabel="타자 입력"
+            ariaLabel={labels.typingInputAria}
             placeholder={typingPlaceholder}
           />
         </>
@@ -733,12 +770,12 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
       {showInlineResult && lastResult && (
         <div className="flex flex-wrap items-center gap-2 rounded-xl border border-primary/25 bg-primary/5 px-4 py-3 text-sm">
           <span className="font-semibold text-foreground">
-            {lastResult.passed ? '목표 통과' : '완료'} · {Math.round(lastResult.tpm)}타/분
+            {lastResult.passed ? labels.passed : labels.done} · {Math.round(lastResult.tpm)} {labels.tpm}
           </span>
-          <span className="text-muted">정확도 {Math.round(lastResult.accuracy * 100)}%</span>
-          <span className="text-muted">정타 {lastResult.correct} · 오타 {lastResult.incorrect} · 시간 {Math.round(lastResult.seconds)}s</span>
+          <span className="text-muted">{labels.accuracy} {Math.round(lastResult.accuracy * 100)}%</span>
+          <span className="text-muted">{labels.correctShort} {lastResult.correct} · {labels.incorrectShort} {lastResult.incorrect} · {labels.time} {Math.round(lastResult.seconds)}s</span>
           {shouldAutoAdvance && !isFinished && (
-            <span className="ml-auto text-xs text-muted">다음 지문으로 이어갑니다.</span>
+            <span className="ml-auto text-xs text-muted">{labels.continueNext}</span>
           )}
         </div>
       )}

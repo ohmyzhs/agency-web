@@ -7,7 +7,7 @@ import * as Phaser from 'phaser';
 import { disassemble } from 'es-hangul';
 import type { StageLevel } from '@/lib/typing/types';
 import { getWordsForStage } from '@/lib/typing/packs-staged';
-import { displayTypedProgress } from '../word-defense-input';
+import { displayTypedProgress, resolveWordDefenseInput } from '../word-defense-input';
 import {
   STAGE_CONFIG,
   WAVES_TO_CLEAR,
@@ -159,7 +159,7 @@ export class GameScene extends Phaser.Scene {
       emitting: false,
     });
 
-    this.bus.on('jamo', this.onJamoInput, this);
+    this.bus.on('inputText', this.onTextInput, this);
     this.bus.on('reset', this.scene.restart, this.scene);
 
     this.bus.emit('hud', { wave: 1, hp: 100, score: 0, combo: 1 });
@@ -286,69 +286,62 @@ export class GameScene extends Phaser.Scene {
   }
 
   // ─── Input ─────────────────────────────────────────────────────────────────
-  private onJamoInput(jamo: string) {
+  private onTextInput(input: string) {
     if (this.hp <= 0) return;
-    if (!jamo) return;
     this.lastInputAt = this.time.now;
 
-    let matched: Meteor | null = null;
+    const previousActiveId = this.activeTargetId;
+    const previousMatched = new Map(this.meteors.map((meteor) => [meteor.id, meteor.matched]));
+    const state = resolveWordDefenseInput({
+      input,
+      meteors: this.meteors.map((meteor) => ({
+        id: meteor.id,
+        word: meteor.word,
+        matched: meteor.matched,
+      })),
+      activeTargetId: this.activeTargetId,
+    });
 
-    // Lock-on: prefer the active target if its next jamo matches.
-    if (this.activeTargetId !== null) {
-      const cur = this.meteors.find(m => m.id === this.activeTargetId);
-      if (cur && cur.jamoSeq[cur.matched] === jamo) {
-        matched = cur;
+    this.activeTargetId = state.activeTargetId;
+    this.pendingInput = state.pendingInput;
+
+    for (const meteor of this.meteors) {
+      const nextMatched = state.matchedById.get(meteor.id) ?? 0;
+      const prev = previousMatched.get(meteor.id) ?? 0;
+      meteor.matched = nextMatched;
+      meteor.bgObj.fillAlpha = nextMatched > 0 ? 0.85 : 0.55;
+      meteor.textObj.setColor(nextMatched > 0 ? '#ff5b1f' : '#ffffff');
+      if (nextMatched > prev) {
+        this.bus.emit('hit', { input, special: meteor.special });
+        this.tweens.add({
+          targets: meteor.container,
+          scale: { from: 1.06, to: 1 },
+          duration: 120,
+        });
       }
     }
-    // Strict miss when locked: if active target exists but didn't match, treat as miss
-    // and release the lock. Otherwise look for a fresh meteor to acquire.
-    if (!matched && this.activeTargetId === null) {
-      for (const m of this.meteors) {
-        if (m.jamoSeq[m.matched] === jamo) {
-          matched = m;
-          break;
-        }
-      }
-    }
 
-    if (!matched) {
-      this.combo = Math.max(1, this.combo * 0.5);
-      // Reset progress on the released meteor so its visual matches.
-      if (this.activeTargetId !== null) {
-        const released = this.meteors.find(m => m.id === this.activeTargetId);
-        if (released) {
-          released.matched = 0;
-          released.bgObj.fillAlpha = 0.55;
-          released.textObj.setColor('#ffffff');
-        }
-        this.activeTargetId = null;
-      }
-      this.pendingInput = displayTypedProgress((this.pendingInput + jamo).slice(-5).split(''));
-      this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
-      this.bus.emit('miss', { jamo });
+    if (state.completeTargetId !== null) {
+      const completed = this.meteors.find((meteor) => meteor.id === state.completeTargetId);
+      if (completed) this.destroyMeteor(completed, true);
       this.emitAim();
       return;
     }
 
-    if (this.activeTargetId !== matched.id) {
-      this.pendingInput = '';
-      this.shipTargetX = matched.container.x;
+    const activeMeteor = this.getActiveMeteor();
+    if (activeMeteor) {
+      this.shipTargetX = activeMeteor.container.x;
     }
-    matched.matched += 1;
-    this.pendingInput = '';
-    matched.bgObj.fillAlpha = 0.85;
-    matched.textObj.setColor('#ff5b1f');
-    this.activeTargetId = matched.id;
-    this.bus.emit('hit', { jamo, special: matched.special });
-    this.tweens.add({
-      targets: matched.container,
-      scale: { from: 1.06, to: 1 },
-      duration: 120,
-    });
 
-    if (matched.matched >= matched.jamoSeq.length) {
-      this.destroyMeteor(matched, true);
+    const hadProgress = Array.from(previousMatched.values()).some((matched) => matched > 0);
+    const hasProgress = this.meteors.some((meteor) => meteor.matched > 0);
+    const wrongWhileLocked = previousActiveId !== null && state.activeTargetId === previousActiveId && input.length > 0 && !hasProgress;
+    if (input.length > 0 && !hasProgress && (hadProgress || wrongWhileLocked)) {
+      this.combo = Math.max(1, this.combo * 0.5);
+      this.bus.emit('miss', { input });
+      this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
     }
+
     this.emitAim();
   }
 
@@ -423,21 +416,17 @@ export class GameScene extends Phaser.Scene {
 
   private emitAim() {
     const active = this.getActiveMeteor();
-    const x = this.ship?.x ?? WIDTH / 2;
-    const y = SHIP_BASE_Y + INPUT_OFFSET_Y;
     const typed = active ? displayTypedProgress(active.jamoSeq.slice(0, active.matched).split('')) : this.pendingInput;
     const isActive = !!active;
 
     if (
-      this.lastAim.x === x &&
-      this.lastAim.y === y &&
       this.lastAim.typed === typed &&
       this.lastAim.active === isActive
     ) {
       return;
     }
-    this.lastAim = { x, y, typed, active: isActive };
-    this.bus.emit('aim', this.lastAim);
+    this.lastAim = { x: WIDTH / 2, y: SHIP_BASE_Y + INPUT_OFFSET_Y, typed, active: isActive };
+    this.bus.emit('aim', { typed, active: isActive });
   }
 
   private specialColor(s: SpecialKind): number {

@@ -1,6 +1,10 @@
 export type Locale = "ko" | "en";
 
-export const defaultLocale: Locale = "ko";
+export const defaultLocale: Locale = "en";
+
+export function isLocale(value: string | null | undefined): value is Locale {
+  return value === "ko" || value === "en";
+}
 
 const dictionaries = {
   ko: {

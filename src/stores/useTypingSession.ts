@@ -59,7 +59,7 @@ type TypingSessionActions = {
 const defaultState: TypingSessionState = {
   phase: 'idle',
   mode: 'sentence',
-  language: 'ko',
+  language: 'en',
   stage: 400,
   lessonId: 'default',
   contentSeed: '',

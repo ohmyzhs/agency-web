@@ -5,13 +5,11 @@
  * small overlay that tracks the active target via aim events from the scene.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { disassemble } from 'es-hangul';
 import { useDB } from '@/lib/typing/db/provider';
-import { diffCaptureJamo } from './word-defense-input';
 import { useSoundFx } from '@/hooks/useSoundFx';
 import type { StageLevel } from '@/lib/typing/types';
 import { STAGE_LIST } from '@/lib/typing/metrics-jamo';
-import type { AimState } from './scenes/GameScene';
+type AimState = { typed: string; active: boolean };
 
 type HudState = { wave: number; hp: number; score: number; combo: number };
 
@@ -42,12 +40,9 @@ export function WordDefenseGame() {
   const { playKey, play, playBgm, stopBgm } = useSoundFx();
   const hostRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const overlayRef = useRef<HTMLDivElement | null>(null);
-  const typedDisplayRef = useRef<HTMLSpanElement | null>(null);
   const gameRef = useRef<import('phaser').Game | null>(null);
   const busRef = useRef<import('phaser').Events.EventEmitter | null>(null);
-  const prevJamoRef = useRef<string>('');
-  const aimRef = useRef<AimState>({ x: SCENE_WIDTH / 2, y: SCENE_HEIGHT - 110, typed: '', active: false });
+  const aimRef = useRef<AimState>({ typed: '', active: false });
 
   const [stage, setStage] = useState<StageLevel>(400);
   const [phase, setPhase] = useState<'idle' | 'playing' | 'gameover' | 'clear'>('idle');
@@ -55,26 +50,11 @@ export function WordDefenseGame() {
   const [final, setFinal] = useState<{ score: number; wave: number; comboMax: number } | null>(null);
   const submittedRef = useRef(false);
 
-  // Position the overlay relative to the actual canvas rect inside the host
-  // (Phaser FIT mode can letterbox even with matching aspect ratios).
-  const applyAimToOverlay = useCallback(() => {
-    const host = hostRef.current;
-    const overlay = overlayRef.current;
-    if (!host || !overlay) return;
-    const canvas = gameRef.current?.canvas ?? host.querySelector('canvas');
-    if (!canvas) return;
-    const hostRect = host.getBoundingClientRect();
-    const canvasRect = canvas.getBoundingClientRect();
-    const offsetLeft = canvasRect.left - hostRect.left;
-    const offsetTop = canvasRect.top - hostRect.top;
-    const aim = aimRef.current;
-    const px = offsetLeft + (aim.x / SCENE_WIDTH) * canvasRect.width;
-    const py = offsetTop + (aim.y / SCENE_HEIGHT) * canvasRect.height;
-    overlay.style.transform = `translate3d(${px}px, ${py}px, 0) translate(-50%, -50%)`;
-    overlay.dataset.active = aim.active ? '1' : '0';
-    if (typedDisplayRef.current) {
-      typedDisplayRef.current.textContent = aim.typed;
-    }
+  const syncInputFromAim = useCallback((a: AimState) => {
+    aimRef.current = a;
+    const input = inputRef.current;
+    if (!input) return;
+    if (!a.active && input.value !== '') input.value = '';
   }, []);
 
   const start = useCallback(async () => {
@@ -92,8 +72,7 @@ export function WordDefenseGame() {
     bus.on('miss', () => { play('miss').catch(() => {}); });
     bus.on('boom', () => { play('game-boom').catch(() => {}); });
     bus.on('aim', (a: AimState) => {
-      aimRef.current = a;
-      applyAimToOverlay();
+      syncInputFromAim(a);
     });
     bus.on('gameover', (f: { score: number; wave: number; comboMax: number }) => {
       setFinal(f); setPhase('gameover');
@@ -117,28 +96,18 @@ export function WordDefenseGame() {
     });
     gameRef.current = game;
 
-    game.scale.on('resize', applyAimToOverlay);
+    game.scale.on('resize', () => {});
 
     game.scene.start('GameScene', { stage, bus });
     submittedRef.current = false;
-    aimRef.current = { x: SCENE_WIDTH / 2, y: SCENE_HEIGHT - 110, typed: '', active: false };
-    applyAimToOverlay();
+    aimRef.current = { typed: '', active: false };
     setFinal(null);
     setPhase('playing');
     setHud({ wave: 1, hp: 100, score: 0, combo: 1 });
     if (inputRef.current) inputRef.current.value = '';
-    prevJamoRef.current = '';
     playBgm().catch(() => {});
     setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 50);
-    requestAnimationFrame(applyAimToOverlay);
-  }, [stage, play, playBgm, stopBgm, applyAimToOverlay]);
-
-  // Keep overlay positioning fresh on host resize (e.g., orientation change).
-  useEffect(() => {
-    const onResize = () => applyAimToOverlay();
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, [applyAimToOverlay]);
+  }, [stage, play, playBgm, stopBgm, syncInputFromAim]);
 
   useEffect(() => () => {
     gameRef.current?.destroy(true);
@@ -160,46 +129,10 @@ export function WordDefenseGame() {
     }).catch(() => {});
   }, [final, db, stage]);
 
-  // IME-safe incremental jamo emission. The visible text box uses scene-owned
-  // `aim.typed` (assembled progress), so the raw input element can stay
-  // invisible while still capturing keystrokes / IME composition.
   const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const cur = disassemble(e.target.value);
-    const diff = diffCaptureJamo(prevJamoRef.current, cur);
-
-    for (const jamo of diff.emitted) {
-      busRef.current?.emit('jamo', jamo);
-      playKey().catch(() => {});
-    }
-
-    prevJamoRef.current = diff.nextPrevious;
-    if (diff.shouldClearInput) {
-      e.target.value = '';
-    }
+    busRef.current?.emit('inputText', e.target.value);
+    playKey().catch(() => {});
   }, [playKey]);
-
-  // The scene clears `aim` to `{ active: false, typed: '' }` whenever a
-  // meteor is destroyed by the player or a miss releases the lock. Mirror
-  // that by flushing the hidden capture input so jamo diffing stays in sync.
-  useEffect(() => {
-    if (phase !== 'playing') return;
-    const bus = busRef.current;
-    if (!bus) return;
-    let lastActive = false;
-    const onAim = (a: AimState) => {
-      const releasedLock = lastActive && !a.active;
-      const movedToAnotherTarget = lastActive && a.active && a.typed.length === 0;
-      if (releasedLock || movedToAnotherTarget) {
-        if (inputRef.current) inputRef.current.value = '';
-        prevJamoRef.current = '';
-      }
-      lastActive = a.active;
-    };
-    bus.on('aim', onAim);
-    return () => {
-      bus.off('aim', onAim);
-    };
-  }, [phase]);
 
   return (
     <div className="space-y-3">
@@ -289,41 +222,30 @@ export function WordDefenseGame() {
           </div>
         )}
 
-        {/* Aim overlay — large, visible input guide that follows the ship/target.
-            transform-positioned via aim events; not part of React render path. */}
-        <div
-          ref={overlayRef}
-          aria-hidden={phase !== 'playing'}
-          className="pointer-events-none absolute left-0 top-0 z-10 flex flex-col items-center gap-1 data-[active=0]:opacity-90 data-[active=1]:opacity-100"
-          style={{ transform: 'translate3d(-9999px, -9999px, 0)' }}
-        >
-          <div className="min-w-[9rem] rounded-xl border-2 border-primary/80 bg-black/80 px-4 py-2.5 text-center font-mono text-2xl font-black text-white shadow-[0_0_22px_rgba(255,91,31,0.7)] backdrop-blur-sm data-[active=0]:border-white/55">
-            <span ref={typedDisplayRef} className="block min-h-[1.4em] min-w-[5ch] tracking-[0.08em]">
-              &nbsp;
-            </span>
-          </div>
-        </div>
-
-        {/* Hidden capture input — focusable for IME, visually hidden so the
-            large scene-driven guide is the only typed UI. */}
-        <input
-          ref={inputRef}
-          type="text"
-          autoComplete="off"
-          autoCapitalize="off"
-          spellCheck={false}
-          onChange={onInputChange}
-          disabled={phase !== 'playing'}
-          aria-label="단어 입력"
-          className="absolute h-px w-px overflow-hidden border-0 p-0 opacity-0"
-          style={{ left: 0, top: 0, clipPath: 'inset(50%)' }}
-        />
       </div>
 
       {phase === 'playing' && (
-        <p className="text-center text-xs text-muted">
-          커다란 입력 가이드가 우주선 위를 따라다닙니다. 화면 아무 곳이나 클릭하면 키 입력이 다시 활성화됩니다.
-        </p>
+        <div className="mx-auto max-w-sm rounded-xl border border-primary/50 bg-card p-3 text-center shadow-sm">
+          <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-muted" htmlFor="word-defense-input">
+            단어 입력
+          </label>
+          <input
+            id="word-defense-input"
+            ref={inputRef}
+            type="text"
+            autoComplete="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            onChange={onInputChange}
+            disabled={phase !== 'playing'}
+            aria-label="단어 입력"
+            placeholder="보이는 단어를 그대로 입력하세요"
+            className="block w-full rounded-lg border border-border bg-background px-4 py-3 text-center font-mono text-xl font-semibold outline-none ring-primary/30 focus:border-primary focus:ring-4"
+          />
+          <p className="mt-2 text-xs text-muted">
+            일반 텍스트상자처럼 입력하고 Backspace로 고칠 수 있습니다. 단어를 완성하면 자동으로 다음 목표로 넘어갑니다.
+          </p>
+        </div>
       )}
     </div>
   );

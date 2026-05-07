@@ -6,12 +6,13 @@ type Props = {
   value: ZoneLessonId;
   onSelect: (id: ZoneLessonId) => void;
   onInteractionStart?: () => void;
+  locale?: 'ko' | 'en';
 };
 
-export function ZoneLessonSelector({ value, onSelect, onInteractionStart }: Props) {
+export function ZoneLessonSelector({ value, onSelect, onInteractionStart, locale = 'ko' }: Props) {
   return (
     <nav
-      aria-label="자리연습 단계"
+      aria-label={locale === 'ko' ? '자리연습 단계' : 'Key-zone lessons'}
       className="rounded-xl border border-border bg-card/70 p-2"
     >
       <ul className="grid grid-cols-4 gap-1.5 sm:grid-cols-8">
@@ -34,7 +35,7 @@ export function ZoneLessonSelector({ value, onSelect, onInteractionStart }: Prop
               >
                 {active && (
                   <span className="absolute right-1.5 top-1.5 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-bold leading-none text-primary-foreground">
-                    선택
+                    {locale === 'ko' ? '선택' : 'ON'}
                   </span>
                 )}
                 <span
@@ -43,10 +44,10 @@ export function ZoneLessonSelector({ value, onSelect, onInteractionStart }: Prop
                     active ? 'text-primary' : 'text-muted',
                   ].join(' ')}
                 >
-                  {lesson.step}단계
+                  {locale === 'ko' ? `${lesson.step}단계` : `Step ${lesson.step}`}
                 </span>
                 <span className="text-xs font-semibold leading-tight sm:text-sm">
-                  {lesson.titleKo}
+                  {locale === 'ko' ? lesson.titleKo : lesson.titleEn}
                 </span>
                 <span className="hidden text-[10px] text-muted sm:block">
                   {lesson.subtitleKo}
