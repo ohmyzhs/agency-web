@@ -4,9 +4,10 @@
  * aim state to React so the input overlay and ship can track the active word.
  */
 import * as Phaser from 'phaser';
-import { disassemble, assemble } from 'es-hangul';
+import { disassemble } from 'es-hangul';
 import type { StageLevel } from '@/lib/typing/types';
 import { getWordsForStage } from '@/lib/typing/packs-staged';
+import { displayTypedProgress } from '../word-defense-input';
 import {
   STAGE_CONFIG,
   WAVES_TO_CLEAR,
@@ -322,7 +323,7 @@ export class GameScene extends Phaser.Scene {
         }
         this.activeTargetId = null;
       }
-      this.pendingInput = assemble((this.pendingInput + jamo).slice(-5).split(''));
+      this.pendingInput = displayTypedProgress((this.pendingInput + jamo).slice(-5).split(''));
       this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
       this.bus.emit('miss', { jamo });
       this.emitAim();
@@ -422,9 +423,9 @@ export class GameScene extends Phaser.Scene {
 
   private emitAim() {
     const active = this.getActiveMeteor();
-    const x = active ? active.container.x : WIDTH / 2;
+    const x = this.ship?.x ?? WIDTH / 2;
     const y = SHIP_BASE_Y + INPUT_OFFSET_Y;
-    const typed = active ? assemble(active.jamoSeq.slice(0, active.matched).split('')) : this.pendingInput;
+    const typed = active ? displayTypedProgress(active.jamoSeq.slice(0, active.matched).split('')) : this.pendingInput;
     const isActive = !!active;
 
     if (

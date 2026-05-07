@@ -7,6 +7,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { disassemble } from 'es-hangul';
 import { useDB } from '@/lib/typing/db/provider';
+import { diffCaptureJamo } from './word-defense-input';
 import { useSoundFx } from '@/hooks/useSoundFx';
 import type { StageLevel } from '@/lib/typing/types';
 import { STAGE_LIST } from '@/lib/typing/metrics-jamo';
@@ -120,13 +121,15 @@ export function WordDefenseGame() {
 
     game.scene.start('GameScene', { stage, bus });
     submittedRef.current = false;
+    aimRef.current = { x: SCENE_WIDTH / 2, y: SCENE_HEIGHT - 110, typed: '', active: false };
+    applyAimToOverlay();
     setFinal(null);
     setPhase('playing');
     setHud({ wave: 1, hp: 100, score: 0, combo: 1 });
     if (inputRef.current) inputRef.current.value = '';
     prevJamoRef.current = '';
     playBgm().catch(() => {});
-    setTimeout(() => inputRef.current?.focus(), 50);
+    setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 50);
     requestAnimationFrame(applyAimToOverlay);
   }, [stage, play, playBgm, stopBgm, applyAimToOverlay]);
 
@@ -161,16 +164,18 @@ export function WordDefenseGame() {
   // `aim.typed` (assembled progress), so the raw input element can stay
   // invisible while still capturing keystrokes / IME composition.
   const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = e.target.value;
-    const cur = disassemble(v);
-    const prev = prevJamoRef.current;
-    let i = 0;
-    while (i < prev.length && i < cur.length && prev[i] === cur[i]) i++;
-    for (let k = i; k < cur.length; k++) {
-      busRef.current?.emit('jamo', cur[k]);
+    const cur = disassemble(e.target.value);
+    const diff = diffCaptureJamo(prevJamoRef.current, cur);
+
+    for (const jamo of diff.emitted) {
+      busRef.current?.emit('jamo', jamo);
       playKey().catch(() => {});
     }
-    prevJamoRef.current = cur;
+
+    prevJamoRef.current = diff.nextPrevious;
+    if (diff.shouldClearInput) {
+      e.target.value = '';
+    }
   }, [playKey]);
 
   // The scene clears `aim` to `{ active: false, typed: '' }` whenever a
@@ -182,7 +187,9 @@ export function WordDefenseGame() {
     if (!bus) return;
     let lastActive = false;
     const onAim = (a: AimState) => {
-      if (lastActive && !a.active) {
+      const releasedLock = lastActive && !a.active;
+      const movedToAnotherTarget = lastActive && a.active && a.typed.length === 0;
+      if (releasedLock || movedToAnotherTarget) {
         if (inputRef.current) inputRef.current.value = '';
         prevJamoRef.current = '';
       }
@@ -287,7 +294,7 @@ export function WordDefenseGame() {
         <div
           ref={overlayRef}
           aria-hidden={phase !== 'playing'}
-          className="pointer-events-none absolute left-0 top-0 z-10 flex flex-col items-center gap-1 transition-opacity duration-150 data-[active=0]:opacity-90 data-[active=1]:opacity-100"
+          className="pointer-events-none absolute left-0 top-0 z-10 flex flex-col items-center gap-1 data-[active=0]:opacity-90 data-[active=1]:opacity-100"
           style={{ transform: 'translate3d(-9999px, -9999px, 0)' }}
         >
           <div className="min-w-[9rem] rounded-xl border-2 border-primary/80 bg-black/80 px-4 py-2.5 text-center font-mono text-2xl font-black text-white shadow-[0_0_22px_rgba(255,91,31,0.7)] backdrop-blur-sm data-[active=0]:border-white/55">
