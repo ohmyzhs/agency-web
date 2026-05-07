@@ -23,7 +23,7 @@ related_tools:
   - json-yaml-validator
   - webhook-payload-formatter
 sourceLinks: []
-canonical: https://ohmyzhs.com/posts/json-yaml-xml-formatting
+canonical: https://oh-my-zhs.com/posts/json-yaml-xml-formatting
 quality_gate: passed
 share_url:
 telegram_handoff: false

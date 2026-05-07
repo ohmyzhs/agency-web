@@ -100,7 +100,7 @@ export function Footer() {
           <span className="font-mono">
             &copy; {new Date().getFullYear()} Zero Human Studio. {t.footer.rights}
           </span>
-          <span className="font-mono text-fg-3">ohmyzhs.com</span>
+          <span className="font-mono text-fg-3">oh-my-zhs.com</span>
         </div>
       </div>
     </footer>

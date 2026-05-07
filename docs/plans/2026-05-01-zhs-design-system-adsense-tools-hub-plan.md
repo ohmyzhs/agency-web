@@ -14,7 +14,7 @@
 
 ### Target repo
 - Writable repo: `/Users/gabriel.k/Documents/Workspace/ohmyzhs/agency-web`
-- Target domain: `https://ohmyzhs.com`
+- Target domain: `https://oh-my-zhs.com`
 - Current branch: `restructure/adsense-tools-hub`
 - Current baseline commit: `a6caeda feat: restructure site around practical tools hub`
 
@@ -493,7 +493,7 @@ export function getToolContent(tool: Tool, locale: Locale): LocalizedToolContent
 
 ### Task 16: Rewrite Privacy Policy for web tools hub
 
-**Objective:** Current privacy page is app-listing oriented. Make it fit `ohmyzhs.com` web tools.
+**Objective:** Current privacy page is app-listing oriented. Make it fit `oh-my-zhs.com` web tools.
 
 **Files:**
 - Modify: `src/app/privacy/page.tsx`
@@ -555,7 +555,7 @@ curl -s http://127.0.0.1:3008/robots.txt
 Expected:
 - `/tools` and all tool URLs exist.
 - `/privacy`, `/terms`, `/disclaimer`, `/about`, `/contact` exist.
-- robots allows crawling and points to `https://ohmyzhs.com/sitemap.xml`.
+- robots allows crawling and points to `https://oh-my-zhs.com/sitemap.xml`.
 
 Stop the server after verification.
 

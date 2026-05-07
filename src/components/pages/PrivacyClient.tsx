@@ -13,7 +13,7 @@ export function PrivacyClient() {
 
         <h2>1. About this site</h2>
         <p>
-          ohmyzhs.com (Zero Human Studio, &ldquo;ZHS&rdquo;) publishes practical web tools:
+          oh-my-zhs.com (Zero Human Studio, &ldquo;ZHS&rdquo;) publishes practical web tools:
           calculators, converters, validators, and small automation utilities. This policy
           explains what data the site handles when you use those tools and the contact form.
         </p>
@@ -87,7 +87,7 @@ export function PrivacyClient() {
 
       <h2>1. 사이트 개요</h2>
       <p>
-        ohmyzhs.com(Zero Human Studio, 이하 “ZHS”)은 일상에서 쓸 만한 웹 도구
+        oh-my-zhs.com(Zero Human Studio, 이하 “ZHS”)은 일상에서 쓸 만한 웹 도구
         — 계산기, 변환기, 검증기, 작은 자동화 유틸리티 — 를 공개하는 사이트입니다.
         본 방침은 도구 이용과 연락 양식 사용 시 처리되는 데이터에 대해 설명합니다.
       </p>

@@ -1,11 +1,11 @@
 # Feedback automation environment
 
-The public request flow will use GitHub Issues as the canonical record and Resend for receipt/progress email.
+The public request flow uses GitHub Issues as the canonical record and Resend for receipt/progress email.
 
-## Required for Phase 1
+## Required for GitHub Issue creation
 
 ```env
-GITHUB_TOKEN=
+GITHUB_TOKEN=[REDACTED]
 GITHUB_OWNER=ohmyzhs
 GITHUB_REPO=agency-web
 NEXT_PUBLIC_GITHUB_REPO_URL=https://github.com/ohmyzhs/agency-web
@@ -16,15 +16,15 @@ Recommended token for v1: fine-grained GitHub PAT scoped only to `ohmyzhs/agency
 - Metadata: read
 - Issues: read/write
 
-## Required for Phase 2
+## Required for receipt email
 
 ```env
-RESEND_API_KEY=
-FEEDBACK_FROM_EMAIL="Zero Human Studio <support@ohmyzhs.com>"
-FEEDBACK_REPLY_TO=support@ohmyzhs.com
+RESEND_API_KEY=[REDACTED]
+FEEDBACK_FROM_EMAIL="Zero Human Studio <no-reply@oh-my-zhs.com>"
+FEEDBACK_REPLY_TO=no-reply@oh-my-zhs.com
 ```
 
-Before enabling email, verify `ohmyzhs.com` in Resend and add the DNS records Resend provides.
+Before enabling email, verify `oh-my-zhs.com` in Resend and add the DNS records Resend provides.
 
 ## Privacy rule
 

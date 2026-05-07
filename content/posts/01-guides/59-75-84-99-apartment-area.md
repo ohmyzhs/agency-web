@@ -23,7 +23,7 @@ related_tools:
   - pyeong-converter
   - unit-converter
 sourceLinks: []
-canonical: https://ohmyzhs.com/posts/pyeong-to-square-meter-korea-apartment
+canonical: https://oh-my-zhs.com/posts/pyeong-to-square-meter-korea-apartment
 quality_gate: passed
 share_url:
 telegram_handoff: false

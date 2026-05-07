@@ -162,7 +162,7 @@ const dictionaries = {
         {
           title: "1. 사이트 개요",
           body: [
-            "ohmyzhs.com은 Zero Human Studio(이하 “ZHS”)가 운영하는 실용 도구 모음 사이트입니다. 본 약관은 사이트 이용 조건을 정합니다.",
+            "oh-my-zhs.com은 Zero Human Studio(이하 “ZHS”)가 운영하는 실용 도구 모음 사이트입니다. 본 약관은 사이트 이용 조건을 정합니다.",
           ],
         },
         {
@@ -209,7 +209,7 @@ const dictionaries = {
         {
           title: "도구 결과의 성격",
           body: [
-            "ohmyzhs.com의 도구는 일상적인 계산과 변환을 빠르게 도와주는 추정 도구입니다. 모든 결과는 정보 제공·참고 목적이며, 법률·세무·금융·의료 자문을 제공하지 않습니다.",
+            "oh-my-zhs.com의 도구는 일상적인 계산과 변환을 빠르게 도와주는 추정 도구입니다. 모든 결과는 정보 제공·참고 목적이며, 법률·세무·금융·의료 자문을 제공하지 않습니다.",
           ],
         },
         {
@@ -469,7 +469,7 @@ const dictionaries = {
         {
           title: "1. About this site",
           body: [
-            "ohmyzhs.com is a practical tools site operated by Zero Human Studio (\"ZHS\"). These terms describe the conditions for using the site.",
+            "oh-my-zhs.com is a practical tools site operated by Zero Human Studio (\"ZHS\"). These terms describe the conditions for using the site.",
           ],
         },
         {
@@ -516,7 +516,7 @@ const dictionaries = {
         {
           title: "Nature of the results",
           body: [
-            "The tools on ohmyzhs.com are estimation aids for everyday calculations and conversions. All output is informational and does not constitute legal, tax, financial, or medical advice.",
+            "The tools on oh-my-zhs.com are estimation aids for everyday calculations and conversions. All output is informational and does not constitute legal, tax, financial, or medical advice.",
           ],
         },
         {

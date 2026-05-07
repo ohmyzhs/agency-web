@@ -17,7 +17,7 @@ function appendUtm(baseUrl: string, params: Record<string, string>) {
 const inputClass = "mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none";
 
 export default function UtmBuilder() {
-  const [baseUrl, setBaseUrl] = useState("https://ohmyzhs.com/tools");
+  const [baseUrl, setBaseUrl] = useState("https://oh-my-zhs.com/tools");
   const [source, setSource] = useState("newsletter");
   const [medium, setMedium] = useState("email");
   const [campaign, setCampaign] = useState("launch-tools");

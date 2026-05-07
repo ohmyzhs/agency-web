@@ -23,7 +23,7 @@ related_tools:
   - cron-explainer
   - timestamp-converter
 sourceLinks: []
-canonical: https://ohmyzhs.com/posts/kst-global-meeting-time
+canonical: https://oh-my-zhs.com/posts/kst-global-meeting-time
 quality_gate: passed
 share_url:
 telegram_handoff: false

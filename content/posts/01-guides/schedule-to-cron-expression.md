@@ -22,7 +22,7 @@ related_tools:
   - cron-explainer
   - kst-timezone-converter
 sourceLinks: []
-canonical: https://ohmyzhs.com/posts/cron-expression-from-schedule
+canonical: https://oh-my-zhs.com/posts/cron-expression-from-schedule
 quality_gate: passed
 share_url:
 telegram_handoff: false

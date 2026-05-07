@@ -4,7 +4,7 @@
 
 **Goal:** Address Gabriel's QA feedback by making the tools genuinely useful, reducing the over-emphasis on “tools only” in the site narrative, and restructuring guides into a scalable blog/knowledge architecture.
 
-**Architecture:** Keep the current Next.js App Router + static tool registry. Refactor the tool registry so hidden/removed tools do not appear in navigation, sitemap, or related links. Upgrade high-priority tools with richer controls, live data where appropriate, and cross-tool navigation. Reframe the homepage and guide/blog IA so `ohmyzhs.com` reads as a balanced information blog + practical tools hub, not a pure utility directory or generic agency site.
+**Architecture:** Keep the current Next.js App Router + static tool registry. Refactor the tool registry so hidden/removed tools do not appear in navigation, sitemap, or related links. Upgrade high-priority tools with richer controls, live data where appropriate, and cross-tool navigation. Reframe the homepage and guide/blog IA so `oh-my-zhs.com` reads as a balanced information blog + practical tools hub, not a pure utility directory or generic agency site.
 
 **Tech Stack:** Next.js 16.2.2, React 19.2.4, TypeScript, Tailwind v4 CSS tokens, browser-local tools, static routes, minimal server route for exchange-rate proxy if needed.
 
