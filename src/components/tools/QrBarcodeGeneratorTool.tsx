@@ -306,9 +306,12 @@ export default function QrBarcodeGeneratorTool() {
       {result?.kind === "error" && <output className="block rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{result.error}</output>}
       {result?.kind === "qr" && (
         <div className="rounded-xl border border-border p-4 text-center">
-          <div className="mx-auto max-w-[260px]" dangerouslySetInnerHTML={{ __html: result.svg }} />
+          <div
+            className="mx-auto max-w-[260px] [&_svg]:h-auto [&_svg]:max-h-[260px] [&_svg]:w-full [&_svg]:max-w-full"
+            dangerouslySetInnerHTML={{ __html: result.svg }}
+          />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={result.png} alt="QR code with selected options" className="mx-auto mt-4 max-w-[260px] rounded bg-white p-3" />
+          <img src={result.png} alt="QR code with selected options" className="mx-auto mt-4 h-auto max-h-[260px] w-full max-w-[260px] rounded bg-white p-3" />
           <canvas ref={qrCanvasRef} className="hidden" />
           <div className="mt-3 flex flex-wrap justify-center gap-3">
             <button type="button" onClick={() => downloadBlob(textToBlob(result.svg, "image/svg+xml"), "qr-code.svg")} className="text-sm font-semibold text-primary hover:underline">{t.qrSvgDownload}</button>
