@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLocale } from "@/components/providers";
 import { getPostContent, type Post } from "@/lib/post-types";
+import { PostThumbnail } from "@/components/ui/post-thumbnail";
 
 const kindLabelKo: Record<Post["kind"], string> = {
   guide: "가이드",
@@ -26,25 +27,41 @@ export function PostCard({ post }: { post: Post }) {
   const { locale } = useLocale();
   const content = getPostContent(post, locale);
   const kindLabel = locale === "ko" ? kindLabelKo[post.kind] : kindLabelEn[post.kind];
-  const minutesLabel = locale === "ko" ? `약 ${post.readingMinutes}분` : `${post.readingMinutes} min read`;
+  const minutesLabel = locale === "ko" ? `${post.readingMinutes}분 분량` : `${post.readingMinutes} min`;
 
   return (
-    <Link
-      href={`/posts/${post.slug}`}
-      className="group block rounded-md border border-border bg-background p-6 transition-colors hover:border-foreground"
-    >
-      <div className="flex items-center gap-2 text-xs text-muted">
-        <span className="rounded-full bg-accent px-2 py-0.5 font-mono uppercase tracking-wider">
-          {kindLabel}
-        </span>
-        <span className="font-mono">{post.publishedAt}</span>
-        <span className="font-mono text-fg-3">·</span>
-        <span className="font-mono">{minutesLabel}</span>
+    <article className="zhs-card zhs-card-hover group relative overflow-hidden flex flex-col h-full">
+      <Link href={`/posts/${post.slug}`} className="absolute inset-0 z-20" />
+      
+      <PostThumbnail 
+        title={content.title} 
+        category={post.category} 
+        className="aspect-[16/10] z-10 transition-transform duration-700 group-hover:scale-105"
+      />
+
+      <div className="p-6 flex flex-col flex-1 relative z-10 bg-card">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary/60 group-hover:text-primary transition-colors">
+            {kindLabel}
+          </span>
+          <div className="flex items-center gap-2 text-[11px] font-bold text-muted/40 uppercase">
+            <span>{post.publishedAt}</span>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors leading-tight">
+          {content.title}
+        </h3>
+        
+        <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-muted/80">
+          {content.description}
+        </p>
+
+        <div className="mt-auto pt-6 flex items-center justify-between">
+          <span className="text-[11px] font-mono font-bold text-muted/40">{minutesLabel}</span>
+          <div className="h-1 w-12 bg-border group-hover:bg-primary group-hover:w-16 transition-all rounded-full" />
+        </div>
       </div>
-      <h3 className="mt-3 font-mono text-lg font-semibold tracking-tight text-foreground group-hover:text-primary">
-        {content.title}
-      </h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted">{content.description}</p>
-    </Link>
+    </article>
   );
 }

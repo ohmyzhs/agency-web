@@ -17,72 +17,85 @@ export function PostsIndex({ posts }: { posts: Post[] }) {
     [posts, filter],
   );
 
-  const eyebrow = locale === "ko" ? "// 글" : "// posts";
-  const title = locale === "ko" ? "글" : "Posts";
+  const eyebrow = locale === "ko" ? "// 지식 저장소" : "// intelligence archive";
+  const title = locale === "ko" ? "글과 기록" : "Studio Archive";
   const lead =
     locale === "ko"
-      ? "도구 사용 노트, IT 소식, 일상에서 정리한 메모를 모아두는 곳입니다. 새 글이 추가되면 가장 위로 올라옵니다."
-      : "Tool notes, IT news, and short field notes from working between Korea and global contexts. Newest posts appear first.";
+      ? "프로페셔널 빌드 로그, 기술 가이드, 그리고 자동화 시대의 통찰을 기록합니다."
+      : "Technical build logs, practical guides, and insights for the automated intelligence era.";
 
   const filterLabels = locale === "ko"
-    ? { all: "전체", guide: "가이드", news: "IT 소식", daily: "일상", tool: "도구 노트", experiment: "실험", site: "사이트 노트" }
-    : { all: "All", guide: "Guide", news: "IT news", daily: "Daily", tool: "Tool note", experiment: "Experiment", site: "Site note" };
+    ? { all: "전체", guide: "가이드", "it-news": "소식", daily: "일상", "tool-note": "도구", experiment: "실험", "site-note": "기록" }
+    : { all: "All Archive", guide: "Guide", "it-news": "News", daily: "Daily", "tool-note": "Tool", experiment: "Experiment", "site-note": "Note" };
 
   const availableKinds = new Set(posts.map((post) => post.kind));
   const options: { value: Filter; label: string }[] = [
     { value: "all", label: filterLabels.all },
     ...(availableKinds.has("guide") ? [{ value: "guide" as const, label: filterLabels.guide }] : []),
-    ...(availableKinds.has("it-news") ? [{ value: "it-news" as const, label: filterLabels.news }] : []),
+    ...(availableKinds.has("it-news") ? [{ value: "it-news" as const, label: filterLabels["it-news"] }] : []),
     ...(availableKinds.has("daily") ? [{ value: "daily" as const, label: filterLabels.daily }] : []),
-    ...(availableKinds.has("tool-note") ? [{ value: "tool-note" as const, label: filterLabels.tool }] : []),
+    ...(availableKinds.has("tool-note") ? [{ value: "tool-note" as const, label: filterLabels["tool-note"] }] : []),
     ...(availableKinds.has("experiment") ? [{ value: "experiment" as const, label: filterLabels.experiment }] : []),
-    ...(availableKinds.has("site-note") ? [{ value: "site-note" as const, label: filterLabels.site }] : []),
+    ...(availableKinds.has("site-note") ? [{ value: "site-note" as const, label: filterLabels["site-note"] }] : []),
   ];
 
-  const empty = locale === "ko" ? "아직 글이 없습니다." : "No posts yet.";
-
   return (
-    <div className="mx-auto max-w-5xl px-6 py-24">
-      <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted">{eyebrow}</p>
-      <h1 className="mt-4 text-4xl font-bold tracking-tight">{title}</h1>
-      <p className="mt-4 max-w-3xl text-lg text-muted">{lead}</p>
+    <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
+      <section className="mb-20">
+        <p className="zhs-eyebrow text-primary/60">{eyebrow}</p>
+        <h1 className="mt-6 text-5xl font-black tracking-tight md:text-7xl text-gradient">{title}</h1>
+        <p className="mt-8 max-w-2xl text-xl text-muted leading-relaxed">{lead}</p>
+      </section>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
-        <div>
-          <SegmentedTabs<Filter>
-            ariaLabel={locale === "ko" ? "글 종류 필터" : "Post kind filter"}
-            value={filter}
-            onChange={setFilter}
-            options={options}
-            size="sm"
-          />
+      <div className="flex flex-col lg:flex-row gap-16 lg:items-start">
+        <div className="flex-1">
+          <div className="mb-12">
+            <SegmentedTabs<Filter>
+              ariaLabel={locale === "ko" ? "카테고리 필터" : "Archive filter"}
+              value={filter}
+              onChange={setFilter}
+              options={options}
+              size="sm"
+            />
+          </div>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
+          <div className="grid gap-8 sm:grid-cols-2">
             {visiblePosts.length > 0 ? (
               visiblePosts.map((post) => <PostCard key={post.slug} post={post} />)
             ) : (
-              <p className="text-muted">{empty}</p>
+              <div className="col-span-full py-20 text-center zhs-card border-dashed">
+                 <p className="text-muted font-bold uppercase tracking-widest italic">No matching records found.</p>
+              </div>
             )}
           </div>
         </div>
 
-        <aside className="rounded-xl border border-border bg-card p-4 lg:sticky lg:top-24">
-          <p className="zhs-eyebrow">{locale === "ko" ? "빠른 이동" : "Quick nav"}</p>
-          <div className="mt-4 space-y-2">
-            {posts.slice(0, 6).map((post) => {
-              const postContent = getPostContent(post, locale);
-              return (
-                <a
-                  key={post.slug}
-                  href={`/posts/${post.slug}`}
-                  className="block rounded-lg border border-border bg-background p-3 text-sm leading-snug transition-colors hover:border-foreground hover:text-primary"
-                >
-                  <span className="line-clamp-2 font-semibold">{postContent.title}</span>
-                  <span className="mt-1 block font-mono text-[11px] text-muted">{post.publishedAt}</span>
-                </a>
-              );
-            })}
-          </div>
+        <aside className="lg:w-80 space-y-12">
+           <div className="zhs-card p-8 bg-card/50 backdrop-blur-xl">
+              <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted/60 mb-8">Latest Insights</h3>
+              <div className="space-y-8">
+                {posts.slice(0, 5).map((post) => {
+                  const content = getPostContent(post, locale);
+                  return (
+                    <a
+                      key={post.slug}
+                      href={`/posts/${post.slug}`}
+                      className="group block"
+                    >
+                      <div className="text-[10px] font-black uppercase text-primary/40 mb-1 group-hover:text-primary transition-colors">{post.category}</div>
+                      <span className="text-sm font-extrabold leading-tight block group-hover:text-primary transition-colors">{content.title}</span>
+                      <span className="mt-2 block font-mono text-[10px] text-muted/40 uppercase tracking-tighter">{post.publishedAt}</span>
+                    </a>
+                  );
+                })}
+              </div>
+           </div>
+
+           <div className="px-4">
+              <p className="text-[10px] font-bold text-muted/30 leading-relaxed uppercase tracking-widest">
+                The archive is updated weekly with new research, build logs, and technical trends.
+              </p>
+           </div>
         </aside>
       </div>
     </div>

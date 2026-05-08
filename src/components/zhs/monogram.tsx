@@ -21,19 +21,24 @@ export function Monogram({
       aria-hidden="true"
       {...rest}
     >
-      {withBackground ? <rect width="64" height="64" fill="var(--bg-card)" /> : null}
+      {withBackground && (
+        <rect width="64" height="64" rx="16" fill="var(--zhs-ink)" />
+      )}
       <g
         stroke="currentColor"
-        strokeWidth={4}
-        strokeLinecap="square"
-        strokeLinejoin="miter"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
         fill="none"
       >
-        {/* Z Path */}
-        <path d="M12 12 H52 L12 52 H52" />
-        {/* Core Dot (Blue) */}
-        <circle cx="32" cy="32" r="5" fill="#3b82f6" stroke="none" />
+        {/* Precise Studio Monogram */}
+        <path d="M16 16 H48 L16 48 H48" className="opacity-90" />
+        {/* Core Intelligent Point */}
+        <circle cx="32" cy="32" r="3.5" fill="var(--primary)" stroke="none" />
       </g>
+      {/* Decorative corners for "Studio" feel */}
+      <path d="M8 24 V8 H24" stroke="currentColor" strokeWidth={1} fill="none" className="opacity-20" />
+      <path d="M40 56 H56 V40" stroke="currentColor" strokeWidth={1} fill="none" className="opacity-20" />
     </svg>
   );
 }
