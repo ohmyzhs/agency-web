@@ -8,6 +8,7 @@ import IconFaviconGenerator from "@/components/tools/IconFaviconGenerator";
 import DeveloperTextToolkit from "@/components/tools/DeveloperTextToolkit";
 import ImageEditingToolkit from "@/components/tools/ImageEditingToolkit";
 import ImageFormatConverter from "@/components/tools/ImageFormatConverter";
+import ImageToAsciiArtTool from "@/components/tools/ImageToAsciiArtTool";
 import JsonYamlValidator from "@/components/tools/JsonYamlValidator";
 import LifeCalculatorSuite from "@/components/tools/LifeCalculatorSuite";
 import NetworkDiagnosticsTool from "@/components/tools/NetworkDiagnosticsTool";
@@ -59,6 +60,7 @@ const widgetMap: Record<string, React.ReactNode> = {
   "pdf-toolkit": <PdfToolkitTool />,
   "og-image-generator": <OgImageGeneratorTool />,
   "qr-barcode-generator": <QrBarcodeGeneratorTool />,
+  "image-to-ascii-art": <ImageToAsciiArtTool />,
   "webhook-request-simulator": <WebhookRequestSimulatorTool />,
   "two-factor-code-generator": <TwoFactorCodeGenerator />,
   "network-diagnostics": <NetworkDiagnosticsTool />,

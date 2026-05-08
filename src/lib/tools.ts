@@ -201,6 +201,66 @@ export const tools: Tool[] = [
     slug: "qr-barcode-generator", title: "QR & Barcode Generator", shortTitle: "QR/Barcode", description: "Generate QR codes and common barcodes locally in the browser.", category: "file-media", tier: 1, seoTitle: "QR Code and Barcode Generator | SVG PNG Download", seoDescription: "Create URL, text, Wi-Fi, vCard QR codes and Code128/EAN/UPC barcodes locally with SVG or PNG download.", inputs: [{ label: "Content", description: "Choose QR content type and barcode value." }], outputs: [{ label: "QR SVG and barcode PNG", description: "Download generated codes." }], examples: [{ label: "Wi-Fi QR", input: "SSID and password", output: "Scannable QR code" }], explanation: ["QR codes are generated as SVG and barcodes as PNG in the browser.", "For product labels or payments, verify the result with a real scanner."], faqs: [{ question: "Are values uploaded?", answer: "No. Generation is local." }], relatedToolSlugs: ["og-image-generator", "icon-favicon-generator", "image-format-converter"], ko: { title: "QR / Barcode 생성기", shortTitle: "QR/Barcode", description: "URL, 텍스트, Wi-Fi, vCard QR과 주요 바코드를 브라우저에서 생성합니다.", seoTitle: "QR코드 바코드 생성기 | SVG PNG 다운로드", seoDescription: "URL, 텍스트, Wi-Fi, vCard QR 코드와 Code128/EAN/UPC 바코드를 로컬에서 생성합니다.", inputs: [{ label: "내용", description: "QR 유형과 바코드 값을 입력합니다." }], outputs: [{ label: "QR SVG와 바코드 PNG", description: "생성된 코드를 다운로드합니다." }], examples: [{ label: "Wi-Fi QR", input: "SSID와 비밀번호", output: "스캔 가능한 QR 코드" }], explanation: ["QR은 SVG, 바코드는 PNG로 브라우저에서 생성합니다.", "상품 라벨이나 결제 용도는 실제 스캐너로 검증하세요."], faqs: [{ question: "입력값이 업로드되나요?", answer: "아닙니다. 생성은 로컬에서 수행됩니다." }] },
   },
   {
+    slug: "image-to-ascii-art",
+    title: "Image to ASCII Art Converter",
+    shortTitle: "Image ASCII",
+    description: "Convert photos, logos, and small images into copyable plain-text ASCII art locally in the browser.",
+    category: "file-media",
+    tier: 1,
+    seoTitle: "Image to ASCII Art Converter | Photo to Text Art",
+    seoDescription: "Upload an image and convert it to copyable ASCII text art with adjustable width, character palettes, inversion, and TXT download. Browser-local processing.",
+    inputs: [
+      { label: "Image file", description: "Upload a browser-readable PNG, JPG, WebP, GIF, SVG, or similar image up to 12MB." },
+      { label: "ASCII settings", description: "Choose output width, character palette, tone adjustment, and brightness inversion." },
+    ],
+    outputs: [
+      { label: "ASCII text", description: "Copy the generated text art or download it as a .txt file." },
+    ],
+    examples: [
+      { label: "Profile photo", input: "Small portrait image", output: "Monospace ASCII portrait for README or chat" },
+      { label: "Logo sketch", input: "High-contrast logo", output: "Text-only logo approximation" },
+    ],
+    explanation: [
+      "The converter follows the same basic idea as CLI tools such as ascii-image-converter: resize the source image, calculate pixel brightness, then map tones to characters.",
+      "Processing runs in the browser with Canvas, so uploaded images are not sent to a server. Very large photos are intentionally capped to avoid mobile memory issues.",
+      "ASCII art looks best in a monospace font. Narrow widths paste well into messengers; wider widths preserve more image detail for documents and text files.",
+    ],
+    faqs: [
+      { question: "Are images uploaded?", answer: "No. The file is decoded and converted locally in your browser." },
+      { question: "Why does the result look stretched?", answer: "Text characters are taller than they are wide, so the tool compensates with an aspect-ratio adjustment. Some fonts may still render slightly differently." },
+      { question: "Does it generate colored ANSI ASCII?", answer: "This browser tool outputs plain text first for copy/paste reliability. Colored terminal output can be added later as a separate mode." },
+    ],
+    relatedToolSlugs: ["image-format-converter", "image-editing-toolkit", "og-image-generator"],
+    ko: {
+      title: "이미지 → ASCII 아트 변환기",
+      shortTitle: "이미지 ASCII",
+      description: "사진, 로고, 작은 이미지를 복사 가능한 ASCII 텍스트 아트로 브라우저에서 변환합니다.",
+      seoTitle: "이미지 ASCII 아트 변환기 | 사진을 텍스트 아트로",
+      seoDescription: "이미지를 업로드해 문자 너비, 팔레트, 밝기 반전, 명암 보정을 조정하고 복사 가능한 ASCII 텍스트 또는 TXT 파일로 변환합니다.",
+      inputs: [
+        { label: "이미지 파일", description: "12MB 이하의 PNG, JPG, WebP, GIF, SVG 등 브라우저가 읽을 수 있는 이미지를 업로드합니다." },
+        { label: "ASCII 설정", description: "출력 너비, 문자 팔레트, 명암 보정, 밝기 반전을 조정합니다." },
+      ],
+      outputs: [
+        { label: "ASCII 텍스트", description: "생성된 텍스트 아트를 복사하거나 .txt 파일로 다운로드합니다." },
+      ],
+      examples: [
+        { label: "프로필 사진", input: "작은 인물 이미지", output: "README나 메신저에 붙여넣기 좋은 모노스페이스 ASCII 초상" },
+        { label: "로고 스케치", input: "대비가 강한 로고", output: "텍스트만으로 근사한 로고 형태" },
+      ],
+      explanation: [
+        "이 도구는 ascii-image-converter 같은 CLI 도구와 유사한 원리로 동작합니다. 이미지를 작게 리사이즈하고 픽셀 밝기를 계산한 뒤 문자 팔레트에 매핑합니다.",
+        "변환은 브라우저 Canvas에서 실행되며 이미지는 서버로 업로드되지 않습니다. 모바일 메모리 문제를 줄이기 위해 큰 사진은 크기 제한을 둡니다.",
+        "ASCII 아트는 모노스페이스 글꼴에서 가장 잘 보입니다. 좁은 폭은 메신저에 붙여넣기 좋고, 넓은 폭은 문서나 텍스트 파일에서 디테일이 살아납니다.",
+      ],
+      faqs: [
+        { question: "이미지가 서버로 업로드되나요?", answer: "아닙니다. 파일은 브라우저 안에서 디코딩되고 변환됩니다." },
+        { question: "결과가 조금 늘어나 보이는 이유는?", answer: "문자는 보통 세로가 가로보다 길어 보이므로 도구에서 비율을 보정합니다. 다만 사용하는 글꼴에 따라 약간 다르게 보일 수 있습니다." },
+        { question: "컬러 ANSI ASCII도 만들 수 있나요?", answer: "현재는 복사/붙여넣기 안정성을 위해 일반 텍스트를 우선 제공합니다. 컬러 터미널 출력은 이후 별도 모드로 추가할 수 있습니다." },
+      ],
+    },
+  },
+  {
     slug: "two-factor-code-generator",
     title: "2FA Verification Code Generator",
     shortTitle: "2FA Code",

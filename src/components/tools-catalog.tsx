@@ -114,7 +114,7 @@ const copy = {
     quickBody: "검색, 카테고리, 즐겨찾기를 한 화면에서 처리하도록 바꿨습니다. 도구가 더 늘어나도 긴 티어 목록을 훑지 않아도 됩니다.",
     integrationTitle: "기능 통합 검토",
     integrationBody:
-      "현재 22개 도구 기준으로 인접 기능은 통합 검토했습니다. PDF 3종은 PDF 도구 모음으로 이미 통합했고, 이미지 계열은 변환·아이콘·OG가 목적이 달라 유지, 웹훅은 요청 테스트와 페이로드 포맷팅으로 분리, 단위 변환은 범용 변환기와 한국 생활 특화 도구를 병행하는 구조가 낫습니다. 네트워크는 사용자 결정대로 내 IP 확인 단일 기능만 유지합니다.",
+      "현재 23개 도구 기준으로 인접 기능은 통합 검토했습니다. PDF 3종은 PDF 도구 모음으로 이미 통합했고, 이미지 계열은 변환·ASCII·아이콘·OG가 목적이 달라 유지, 웹훅은 요청 테스트와 페이로드 포맷팅으로 분리, 단위 변환은 범용 변환기와 한국 생활 특화 도구를 병행하는 구조가 낫습니다. 네트워크는 사용자 결정대로 내 IP 확인 단일 기능만 유지합니다.",
     open: "열기",
     favoriteAdd: "즐겨찾기 추가",
     favoriteRemove: "즐겨찾기 해제",
@@ -137,7 +137,7 @@ const copy = {
     quickBody: "Search, categories, and favorites now live in one simple picker so the catalog can grow without forcing users through long tier lists.",
     integrationTitle: "Functional consolidation review",
     integrationBody:
-      "The current 22 tools have been reviewed for adjacent workflows. The three PDF operations are already consolidated into PDF Toolkit. Image conversion, icon/favicon, and OG image generation stay separate because their intent differs. Webhook request testing and payload formatting stay separate. The generic unit converter works alongside Korea-specific living tools. Network remains a single Check My IP tool by prior product decision.",
+      "The current 23 tools have been reviewed for adjacent workflows. The three PDF operations are already consolidated into PDF Toolkit. Image conversion, image-to-ASCII, icon/favicon, and OG image generation stay separate because their intent differs. Webhook request testing and payload formatting stay separate. The generic unit converter works alongside Korea-specific living tools. Network remains a single Check My IP tool by prior product decision.",
     open: "Open",
     favoriteAdd: "Add favorite",
     favoriteRemove: "Remove favorite",
