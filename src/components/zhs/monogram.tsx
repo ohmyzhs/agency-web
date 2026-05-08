@@ -24,13 +24,15 @@ export function Monogram({
       {withBackground ? <rect width="64" height="64" fill="var(--bg-card)" /> : null}
       <g
         stroke="currentColor"
-        strokeWidth={3}
+        strokeWidth={4}
         strokeLinecap="square"
         strokeLinejoin="miter"
         fill="none"
       >
-        <path d="M8 8 H32 L8 32 H32" />
-        <path d="M32 32 V56 M32 44 H56 M56 32 V56" />
+        {/* Z Path */}
+        <path d="M12 12 H52 L12 52 H52" />
+        {/* Core Dot (Blue) */}
+        <circle cx="32" cy="32" r="5" fill="#3b82f6" stroke="none" />
       </g>
     </svg>
   );

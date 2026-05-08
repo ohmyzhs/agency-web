@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { createPageMetadata } from "@/lib/seo";
 import { HomeClient } from "@/components/pages/HomeClient";
+import { getAllPosts } from "@/lib/posts";
+import { getAllTools } from "@/lib/tools";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Zero Human Studio — practical tools and posts",
@@ -8,4 +10,25 @@ export const metadata: Metadata = createPageMetadata({
   path: "/",
 });
 
-export default HomeClient;
+export default function HomePage() {
+  const latestPosts = getAllPosts().slice(0, 6);
+  const allTools = getAllTools();
+  
+  // Choose featured tools based on specific slugs for high marketing impact
+  const featuredSlugs = [
+    "pyeong-converter",
+    "kst-timezone-converter",
+    "image-to-ascii-art",
+    "qr-barcode-generator",
+    "json-yaml-validator"
+  ];
+  const featuredTools = allTools.filter(t => featuredSlugs.includes(t.slug));
+
+  return (
+    <HomeClient 
+      latestPosts={latestPosts} 
+      featuredTools={featuredTools}
+      totalToolCount={allTools.length}
+    />
+  );
+}

@@ -20,11 +20,20 @@ const dictionaries = {
     },
     home: {
       eyebrow: "est. 2025 · seoul / global",
-      headline: "조용히 작동하는 작은 도구들.",
+      headline: "자동화 시대의 실용적 지능.",
       lead:
-        "평 변환, KST 시간, 원화 계산, JSON 검증, 크론 해설까지. 바로 쓰고, 근거를 확인하고, 다음 일로 넘어갑니다.",
+        "단순한 도구 모음을 넘어, 지능적인 작업 방식을 제안합니다. 평 변환부터 AI 자동화 도구까지, 당신의 워크플로우를 완성하세요.",
       ctaPrimary: "도구 보기",
       ctaSecondary: "스튜디오 소개",
+      sections: {
+        featuredTools: "주요 도구",
+        latestPosts: "최근 지식",
+        typingSpotlight: {
+          title: "타자연습: 한글/영어 입력의 기초",
+          description: "단순한 속도 측정을 넘어, 정확한 리듬과 IME 최적화 경험을 제공합니다.",
+          button: "지금 연습하기",
+        },
+      },
       catalog: {
         title: "지금 사용할 수 있는 도구",
         subtitleTemplate:
@@ -327,11 +336,20 @@ const dictionaries = {
     },
     home: {
       eyebrow: "est. 2025 · seoul / global",
-      headline: "Small tools that quietly work.",
+      headline: "Practical Intelligence for the Automated Age.",
       lead:
-        "Pyeong conversion, KST time, KRW estimates, JSON validation, cron explanations. Use the tool, check the assumptions, move on.",
+        "Beyond a simple directory of utilities. We provide the tools and the wisdom to navigate your daily workflow with precision.",
       ctaPrimary: "Browse tools",
       ctaSecondary: "About the studio",
+      sections: {
+        featuredTools: "Essential Tools",
+        latestPosts: "Latest Insights",
+        typingSpotlight: {
+          title: "Typing Practice: Master the Rhythm",
+          description: "A precision-engineered practice layer for Hangul and English, designed for accuracy and focus.",
+          button: "Start Practice",
+        },
+      },
       catalog: {
         title: "Tools available now",
         subtitleTemplate:
