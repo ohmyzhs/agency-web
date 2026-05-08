@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "@/components/providers";
 import TypingContent from "@/components/typing/TypingContent";
@@ -8,66 +7,47 @@ import { TypingLobbyDashboard } from "@/components/typing/organisms/TypingLobbyD
 
 const STAGE_CARDS = {
   ko: [
-    { href: "/typing/zone", label: "자리연습", desc: "두벌식 기본 자리부터 Shift 조합까지 손이 외우게 만듭니다.", src: "/typing/illustrations/stage-zone.png", cta: "기본기 잡기" },
-    { href: "/typing/word", label: "낱말연습", desc: "짧은 단어를 끊기지 않게 넘기며 속도감을 끌어올립니다.", src: "/typing/illustrations/stage-word.png", cta: "리듬 만들기" },
-    { href: "/typing/sentence", label: "단문연습", desc: "생활 문장으로 오타 습관을 줄이고 문장 끝까지 흐름을 지킵니다.", src: "/typing/illustrations/stage-sentence.png", cta: "문장 입력" },
-    { href: "/typing/longform", label: "장문 / 필사", desc: "긴 글을 직접 고르고 끝까지 입력하며 집중력과 호흡을 훈련합니다.", src: "/typing/illustrations/stage-longform.png", cta: "글 고르기" },
-    { href: "/typing/game/word-defense", label: "워드 디펜스", desc: "떨어지는 단어를 입력해 격파하는 타자 게임입니다.", src: "/typing/illustrations/stage-game.png", cta: "게임 시작" },
+    { href: "/typing/zone", label: "자리연습", desc: "기본 자리부터 시작하는 정밀한 기초 훈련.", icon: "⌨️", cta: "기본기 잡기" },
+    { href: "/typing/word", label: "낱말연습", desc: "단어 단위의 리듬과 반응 속도 향상.", icon: "🔤", cta: "리듬 만들기" },
+    { href: "/typing/sentence", label: "단문연습", desc: "실전 문장을 통한 정확도와 집중력 강화.", icon: "📝", cta: "문장 입력" },
+    { href: "/typing/longform", label: "장문 / 필사", desc: "긴 글을 통한 지구력과 호흡 조절.", icon: "📖", cta: "글 고르기" },
+    { href: "/typing/game/word-defense", label: "워드 디펜스", desc: "긴박한 상황에서의 순발력 테스트.", icon: "🎯", cta: "게임 시작" },
   ],
   en: [
-    { href: "/typing/zone", label: "Key zones", desc: "Build muscle memory from the home row through Shift combinations.", src: "/typing/illustrations/stage-zone.png", cta: "Start basics" },
-    { href: "/typing/word", label: "Word practice", desc: "Move through short words continuously to build rhythm and speed.", src: "/typing/illustrations/stage-word.png", cta: "Build rhythm" },
-    { href: "/typing/sentence", label: "Sentence practice", desc: "Practice practical sentences while keeping accuracy through the end.", src: "/typing/illustrations/stage-sentence.png", cta: "Type sentences" },
-    { href: "/typing/longform", label: "Long-form copy", desc: "Choose longer passages and train focus, pacing, and accuracy.", src: "/typing/illustrations/stage-longform.png", cta: "Pick a passage" },
-    { href: "/typing/game/word-defense", label: "Word Defense", desc: "Destroy falling words by typing them before they land.", src: "/typing/illustrations/stage-game.png", cta: "Start game" },
-  ],
-};
-
-const SEO_LINKS = {
-  ko: [
-    { href: "/typing#guide", label: "추천 연습 루틴" },
-    { href: "/typing#metrics", label: "타수 계산법" },
-    { href: "/typing/result", label: "내 기록 보기" },
-    { href: "/typing/game/word-defense", label: "워드 디펜스" },
-  ],
-  en: [
-    { href: "/typing#guide", label: "Practice routine" },
-    { href: "/typing#metrics", label: "Typing metrics" },
-    { href: "/typing/result", label: "My records" },
-    { href: "/typing/game/word-defense", label: "Word Defense" },
+    { href: "/typing/zone", label: "Key zones", desc: "Precision drills for fundamental positioning.", icon: "⌨️", cta: "Start basics" },
+    { href: "/typing/word", label: "Word practice", desc: "Build rhythm and speed with short words.", icon: "🔤", cta: "Build rhythm" },
+    { href: "/typing/sentence", label: "Sentence practice", desc: "Focus on accuracy with practical sentences.", icon: "📝", cta: "Type sentences" },
+    { href: "/typing/longform", label: "Long-form copy", desc: "Train focus and pacing with longer passages.", icon: "📖", cta: "Pick a passage" },
+    { href: "/typing/game/word-defense", label: "Word Defense", desc: "Test your reflexes under pressure.", icon: "🎯", cta: "Start game" },
   ],
 };
 
 const COPY = {
   ko: {
-    eyebrow: "oh-my-zhs typing lab",
-    title: "타자가 빨라지는 순서를 다시 설계했습니다",
-    lead: "무작정 60초 기록만 반복하면 손은 빨라지기보다 급해집니다. oh-my-zhs 타자연습은 자리, 낱말 리듬, 문장 정확도, 장문 호흡, 게임형 순발력을 단계별로 나눠 매일 조금씩 실력이 쌓이도록 만든 타자 연습 서비스입니다.",
-    points: ["자모 기준 타수", "문단형 입력면", "로컬 기록 저장", "자리·낱말·문장·필사·게임"],
-    primary: "낱말부터 바로 시작",
-    secondary: "기본 자리부터 잡기",
-    imageAlt: "타자연습 낱말 입력 화면 일러스트",
-    cardNote: "연습 화면은 입력에만 집중하고, 기록·약점 키·모드 선택은 로비에서 확인합니다. 훈련과 대시보드를 분리해 짧게 들어와도 바로 시작할 수 있습니다.",
-    tracks: "Training tracks",
-    choose: "오늘 필요한 연습을 고르세요",
-    chooseLead: "기본기, 속도, 정확도, 긴 글 집중, 게임형 순발력을 각각 다른 화면에서 훈련합니다.",
+    eyebrow: "OH-MY-ZHS TYPING LAB",
+    title: "본능적인 입력, 그 이상의 정교함.",
+    lead: "단순히 빠른 타자를 넘어, 정확한 리듬과 IME 최적화 경험을 제공합니다. 자리연습부터 고난도 필사까지, 지능적인 훈련 코스를 경험하세요.",
+    points: ["자모 단위 정밀 측정", "프로페셔널 대시보드", "로컬 데이터 보안", "5가지 훈련 모드"],
+    primary: "라이브러리 시작",
+    secondary: "기초부터 다지기",
+    imageAlt: "Typing Lab Visual",
+    tracks: "Training Tracks",
+    choose: "성장을 위한 오늘의 트랙",
+    chooseLead: "당신의 현재 상태에 최적화된 연습 모드를 선택하세요.",
     sectionAria: "타자연습 모드 선택",
-    navAria: "타자연습 주요 정보",
   },
   en: {
-    eyebrow: "oh-my-zhs typing lab",
-    title: "A cleaner path to faster typing",
-    lead: "Repeating a 60-second test is not the only way to improve. oh-my-zhs splits typing practice into key zones, word rhythm, sentence accuracy, long-form pacing, and game-like reflex drills so progress compounds a little every day.",
-    points: ["Character-level metrics", "Paragraph input surface", "Local records", "Zones·words·sentences·long-form·games"],
-    primary: "Start with words",
-    secondary: "Train key zones",
-    imageAlt: "Typing practice word input illustration",
-    cardNote: "The practice surface stays focused on input, while records, weak keys, and mode choices live in the lobby. You can jump in quickly without rebuilding context every time.",
-    tracks: "Training tracks",
-    choose: "Choose the practice you need today",
-    chooseLead: "Train fundamentals, speed, accuracy, long-form focus, and reflexes in separate focused screens.",
-    sectionAria: "Typing practice mode selection",
-    navAria: "Typing practice information",
+    eyebrow: "OH-MY-ZHS TYPING LAB",
+    title: "Beyond Speed. Precision in Every Stroke.",
+    lead: "Master the rhythm of Hangul and English with precision-engineered drills. From home-row basics to professional long-form transcription.",
+    points: ["Character-level Metrics", "Professional Dashboard", "Local Data Sovereignty", "5 Specialized Modes"],
+    primary: "Start Library",
+    secondary: "Base Training",
+    imageAlt: "Typing Lab Visual",
+    tracks: "Training Tracks",
+    choose: "Select Your Track",
+    chooseLead: "Choose the mode that matches your current training goal.",
+    sectionAria: "Typing mode selection",
   },
 };
 
@@ -78,61 +58,115 @@ export default function TypingLandingContent() {
   const cards = STAGE_CARDS[lang];
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
-      <header className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-muted">{copy.eyebrow}</p>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">{copy.title}</h1>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted md:text-lg">{copy.lead}</p>
-          <div className="mt-5 flex flex-wrap gap-2 text-xs text-muted">
-            {copy.points.map((point) => <span key={point} className="rounded-full border border-border bg-background px-3 py-1.5">{point}</span>)}
-          </div>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/typing/word" className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90">{copy.primary}</Link>
-            <Link href="/typing/zone" className="rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold transition-colors hover:border-primary/60 hover:text-primary">{copy.secondary}</Link>
-          </div>
-          <nav aria-label={copy.navAria} className="mt-5 flex flex-wrap gap-2 text-xs text-muted">
-            {SEO_LINKS[lang].map((item) => <Link key={item.href} href={item.href} className="rounded-full border border-border bg-background px-3 py-1.5 hover:border-primary/60 hover:text-foreground">{item.label}</Link>)}
-          </nav>
+    <div className="flex flex-col gap-24 pb-32">
+      {/* 1. Hero Section */}
+      <section className="relative pt-20 pb-24 md:pt-32 md:pb-40 bg-zinc-950 overflow-hidden border-b border-white/5">
+        <div className="absolute inset-0 -z-10">
+           <div className="absolute top-0 right-0 h-[500px] w-[500px] bg-primary/20 rounded-full blur-[120px] -mr-32 -mt-32" />
+           <div className="absolute bottom-0 left-0 h-[400px] w-[400px] bg-indigo-500/10 rounded-full blur-[100px] -ml-20 -mb-20" />
         </div>
 
-        <div className="rounded-3xl border border-border bg-card p-4 shadow-sm">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-background">
-            <Image src="/typing/illustrations/stage-word.png" alt={copy.imageAlt} fill priority sizes="(max-width: 1024px) 100vw, 22rem" className="object-cover" />
-          </div>
-          <p className="mt-3 text-sm leading-relaxed text-muted">{copy.cardNote}</p>
-        </div>
-      </header>
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="grid gap-16 lg:grid-cols-[1fr_400px] lg:items-center">
+            <div>
+              <span className="zhs-eyebrow text-primary">{copy.eyebrow}</span>
+              <h1 className="mt-8 text-5xl font-black tracking-tight text-white md:text-8xl leading-[1.05] animate-fade-in-up">
+                {copy.title}
+              </h1>
+              <p className="mt-10 max-w-2xl text-xl leading-relaxed text-zinc-400 md:text-2xl animate-fade-in-up animate-delay-100">
+                {copy.lead}
+              </p>
 
-      <section aria-label={copy.sectionAria} className="mt-10">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-muted">{copy.tracks}</p>
-            <h2 className="mt-1 text-2xl font-semibold tracking-tight">{copy.choose}</h2>
+              <div className="mt-12 flex flex-wrap gap-3 animate-fade-in-up animate-delay-200">
+                {copy.points.map((p) => (
+                  <span key={p} className="px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-[11px] font-bold text-zinc-500 uppercase tracking-widest">
+                    {p}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-12 flex flex-wrap gap-5 animate-fade-in-up animate-delay-300">
+                <Link href="/typing/word" className="rounded-2xl bg-primary px-10 py-4 text-base font-bold text-white shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                  {copy.primary}
+                </Link>
+                <Link href="/typing/zone" className="rounded-2xl border border-zinc-800 bg-zinc-900/50 px-10 py-4 text-base font-bold text-zinc-300 hover:text-white hover:border-zinc-600 transition-all">
+                  {copy.secondary}
+                </Link>
+              </div>
+            </div>
+
+            <div className="hidden lg:block">
+              <div className="zhs-card bg-[#0c0c0e] border-white/5 p-8 shadow-2xl relative">
+                <div className="flex items-center justify-between mb-12">
+                   <div className="h-3 w-3 rounded-full bg-red-500/20" />
+                   <div className="h-1 w-20 bg-zinc-800 rounded-full" />
+                   <div className="flex gap-2">
+                     <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                     <div className="h-1.5 w-1.5 rounded-full bg-zinc-800" />
+                   </div>
+                </div>
+                <div className="space-y-6">
+                   <div className="h-2 w-3/4 bg-zinc-800 rounded" />
+                   <div className="h-2 w-full bg-zinc-900 rounded" />
+                   <div className="h-2 w-5/6 bg-zinc-900 rounded" />
+                </div>
+                <div className="mt-16 flex justify-between items-end">
+                   <div className="text-4xl font-black text-white italic">540</div>
+                   <div className="text-[10px] font-bold text-primary uppercase tracking-widest">Speed Core</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="max-w-xl text-sm text-muted">{copy.chooseLead}</p>
         </div>
-        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {cards.map((card) => (
-            <li key={card.href}>
-              <Link href={card.href} className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/60">
-                <div className="relative aspect-[4/3] w-full bg-background">
-                  <Image src={card.src} alt={card.label} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw" className="object-cover transition-transform group-hover:scale-[1.03]" />
-                </div>
-                <div className="flex flex-1 flex-col px-4 py-3">
-                  <h3 className="font-semibold">{card.label}</h3>
-                  <p className="mt-1 flex-1 text-sm leading-relaxed text-muted">{card.desc}</p>
-                  <span className="mt-3 text-xs font-medium text-muted group-hover:text-primary">{card.cta} →</span>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
       </section>
 
-      <div className="mt-10"><TypingLobbyDashboard /></div>
-      <hr className="my-12 border-border" />
-      <TypingContent />
+      {/* 2. Tracks Selection */}
+      <section className="mx-auto max-w-6xl px-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+          <div>
+            <span className="zhs-eyebrow text-primary/40">{copy.tracks}</span>
+            <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl text-gradient">
+              {copy.choose}
+            </h2>
+          </div>
+          <p className="max-w-md text-muted font-medium italic">{copy.chooseLead}</p>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+          {cards.map((card, idx) => (
+            <Link
+              key={card.href}
+              href={card.href}
+              className="zhs-card zhs-card-hover group p-8 flex flex-col justify-between h-full bg-card"
+            >
+              <div>
+                <div className="text-3xl mb-8 group-hover:scale-125 transition-transform origin-left">{card.icon}</div>
+                <h3 className="text-xl font-extrabold mb-3 group-hover:text-primary transition-colors">{card.label}</h3>
+                <p className="text-xs leading-relaxed text-muted/80">{card.desc}</p>
+              </div>
+              <div className="mt-12 flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary/40 group-hover:text-primary">Step 0{idx+1}</span>
+                <svg className="h-4 w-4 text-muted group-hover:text-primary group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* 3. Dashboard Integration */}
+      <section className="mx-auto max-w-6xl px-6">
+        <div className="zhs-card bg-accent/10 border-transparent p-1">
+          <div className="bg-background rounded-[1.4rem] p-8 md:p-12 border border-white/5 shadow-inner">
+            <TypingLobbyDashboard />
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Knowledge Support */}
+      <section className="mx-auto max-w-6xl px-6 pt-12">
+        <div className="h-px w-full bg-border mb-20" />
+        <TypingContent />
+      </section>
     </div>
   );
 }

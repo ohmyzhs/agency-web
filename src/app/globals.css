@@ -16,8 +16,8 @@
   /* ---------- BASE PALETTE (Deep Slate/Indigo) ---------- */
   --zhs-ink:           #0f172a;
   --zhs-ink-soft:      #1e293b;
-  --zhs-paper:         #f8fafc;
-  --zhs-paper-soft:    #f1f5f9;
+  --zhs-paper:         #f3f6fb;
+  --zhs-paper-soft:    #e9eef7;
 
   /* ---------- NEUTRAL GRAYS ---------- */
   --zhs-gray-50:  #f8fafc;
@@ -37,8 +37,8 @@
   --bg-card:    #ffffff;
   --bg-inset:   var(--zhs-gray-50);
   --fg:         var(--zhs-ink);
-  --fg-2:       var(--zhs-gray-600);
-  --fg-3:       var(--zhs-gray-400);
+  --fg-2:       #334155;
+  --fg-3:       #64748b;
   --line:       var(--zhs-gray-200);
   --line-soft:  var(--zhs-gray-100);
   --selection:  rgba(59, 130, 246, 0.2);
@@ -145,14 +145,14 @@ html {
 
 /* Premium Card / Bento Utility */
 .zhs-card {
-  @apply rounded-3xl border border-border bg-card transition-all duration-300;
+  @apply rounded-2xl border border-border bg-card transition-all duration-200;
 }
 .zhs-card-hover:hover {
-  @apply border-primary/50 shadow-2xl shadow-primary/5 -translate-y-1;
+  @apply border-primary/50 shadow-lg shadow-primary/5 -translate-y-0.5;
 }
 
 .zhs-glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.86);
   backdrop-filter: var(--backdrop-blur-zhs);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }

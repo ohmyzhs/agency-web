@@ -1,4 +1,5 @@
-'use client';
+"use client";
+
 import { motion } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { StatChip } from '../atoms/StatChip';
@@ -34,78 +35,91 @@ export function ResultPanel({
 
   return (
     <motion.div
-      initial={reduced ? false : { opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.28, ease: [0.2, 0, 0, 1] }}
-      className="rounded-xl border border-border bg-card p-6 space-y-5"
+      initial={reduced ? false : { opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.2, 0, 0, 1] }}
+      className="zhs-card p-1 bg-primary/5 shadow-2xl shadow-primary/10 overflow-hidden"
     >
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-muted">결과</p>
-          <h3 className="mt-0.5 text-2xl font-bold">
-            {result === 'pass' ? '통과! 🎉' : '완료'}
-          </h3>
+      <div className="bg-card rounded-[1.4rem] p-6 md:p-8 space-y-8 border border-white/10 relative overflow-hidden">
+        {/* Abstract Flare */}
+        <div className="absolute top-0 right-0 h-40 w-40 bg-primary/10 rounded-full blur-[60px] -mr-20 -mt-20" />
+
+        <div className="flex items-center justify-between relative z-10">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted/60">Practice Complete</p>
+            <h3 className="mt-2 text-3xl font-black text-foreground italic">
+              {result === 'pass' ? 'TARGET PASSED! 🎉' : 'MISSION COMPLETE'}
+            </h3>
+          </div>
+          <StageBadge stage={stage} passed={result === 'pass'} />
         </div>
-        <StageBadge stage={stage} passed={result === 'pass'} />
-      </div>
 
-      <BestRibbon show={isNewBest} previousTpm={previousTpm ?? undefined} />
+        <BestRibbon show={isNewBest} previousTpm={previousTpm ?? undefined} />
 
-      {/* 4지표 비교 표 */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatChip
-          label="이번"
-          value={`${tpm} 타/분`}
-          highlight={isNewBest}
-          size="md"
-        />
-        <StatChip
-          label="직전"
-          value={previousTpm !== null ? `${Math.round(previousTpm)} 타/분` : '—'}
-          size="md"
-        />
-        <StatChip
-          label="최고"
-          value={bestTpm !== null ? `${Math.round(bestTpm)} 타/분` : '—'}
-          size="md"
-        />
-        <StatChip
-          label="목표"
-          value={target ? `${target.tpm} 타/분` : '—'}
-          size="md"
-        />
-      </div>
+        {/* High Impact Metrics */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 relative z-10">
+          <StatChip
+            label="Current"
+            value={`${tpm}`}
+            highlight={isNewBest}
+            size="md"
+          />
+          <StatChip
+            label="Previous"
+            value={previousTpm !== null ? `${Math.round(previousTpm)}` : '—'}
+            size="md"
+          />
+          <StatChip
+            label="Personal Best"
+            value={bestTpm !== null ? `${Math.round(bestTpm)}` : '—'}
+            size="md"
+          />
+          <StatChip
+            label="Target Goal"
+            value={target ? `${target.tpm}` : '—'}
+            size="md"
+          />
+        </div>
 
-      {/* 정확도 */}
-      <div className="flex items-center gap-4 rounded-lg border border-border bg-background px-4 py-3">
-        <span className="text-sm text-muted">정확도</span>
-        <span className="text-xl font-semibold tabular-nums">{accuracy}%</span>
-        {target && (
-          <span className="ml-auto text-xs text-muted">
-            목표 {(target.accuracy * 100).toFixed(0)}%
-            {metrics.정확도 >= target.accuracy
-              ? ' ✓'
-              : ` — ${(target.accuracy * 100 - accuracy).toFixed(0)}% 부족`}
-          </span>
-        )}
-      </div>
+        {/* Accuracy Bar */}
+        <div className="relative z-10">
+          <div className="flex justify-between items-end mb-2">
+            <span className="text-[10px] font-black text-muted/60 uppercase tracking-widest">Precision Level</span>
+            <span className="text-2xl font-black text-foreground italic">{accuracy}%</span>
+          </div>
+          <div className="h-2 w-full bg-accent/30 rounded-full overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${accuracy}%` }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className={`h-full ${accuracy >= (target?.accuracy ?? 0.9) * 100 ? 'bg-primary' : 'bg-orange-500'}`}
+            />
+          </div>
+          {target && (
+            <p className="mt-3 text-[10px] font-bold text-muted/40 uppercase tracking-tighter">
+              Minimum Requirement: {(target.accuracy * 100).toFixed(0)}%
+              {metrics.정확도 < target.accuracy && ` — Needs ${(target.accuracy * 100 - accuracy).toFixed(0)}% improvement`}
+            </p>
+          )}
+        </div>
 
-      {/* 버튼 */}
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={onNext}
-          className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
-        >
-          다음 지문
-        </button>
-        <button
-          type="button"
-          onClick={onRetry}
-          className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium transition-colors hover:bg-card"
-        >
-          다시 시도
-        </button>
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-4 pt-4 relative z-10">
+          <button
+            type="button"
+            onClick={onNext}
+            className="flex-1 rounded-2xl bg-foreground py-4 text-sm font-black uppercase tracking-widest text-background transition-all hover:bg-primary hover:text-white hover:scale-[1.02] active:scale-95 shadow-lg"
+          >
+            Advance to Next
+          </button>
+          <button
+            type="button"
+            onClick={onRetry}
+            className="rounded-2xl border-2 border-border bg-card px-8 py-4 text-sm font-bold text-foreground transition-all hover:border-foreground hover:bg-accent active:scale-95"
+          >
+            Retry Track
+          </button>
+        </div>
       </div>
     </motion.div>
   );

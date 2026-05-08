@@ -5,200 +5,169 @@ import { useLocale } from "@/components/providers";
 
 const aboutCopy = {
   ko: {
-    eyebrow: "about / direction",
-    title: "사람이 모든 페이지를 직접 붙들고 있지 않아도, 매일 조금씩 나아지는 웹을 실험합니다.",
+    eyebrow: "ABOUT / DIRECTION",
+    title: "AI와 사람이 협업하여 매일 조금씩 정교해지는 웹 스튜디오.",
     lead:
-      "Zero Human Studio는 단순한 도구 모음이 아니라, 작게 공개하고 실제 사용에서 배운 것을 다시 제품과 글로 되돌리는 웹 실험입니다. 지금은 생활 도구, 개발자 유틸리티, 타자 연습, 기록형 콘텐츠가 함께 자라고 있습니다. 목표는 더 많은 페이지를 찍어내는 것이 아니라, 시간이 지날수록 사이트 안의 판단·도구·설명이 서로를 보강하는 구조를 만드는 것입니다.",
-    heroNotes: ["도구", "글", "연습 제품", "운영 자동화", "검증 루프"],
+      "Zero Human Studio(ZHS)는 단순한 도구 모음을 넘어, 데이터의 가치와 기술의 실용성을 탐구하는 빌드 랩입니다. 우리는 화려한 마케팅 뒤에 숨지 않고, 매일 업데이트되는 도구와 정직한 기술 회고를 통해 사용자에게 직접적인 유용함을 제공합니다.",
+    heroNotes: ["Intelligence", "Automation", "Craftsmanship", "Studio", "Labs"],
     current: {
-      label: "현재의 초점",
-      title: "바로 쓸 수 있는 기능과 읽을 이유가 함께 있는 사이트",
+      label: "CURRENT FOCUS",
+      title: "기능적 완결성과 맥락이 있는 사용자 경험",
       body:
-        "계산기 하나, 변환기 하나만 놓고 끝내지 않습니다. 왜 그런 결과가 나오는지, 어떤 가정이 들어갔는지, 언제 공식 자료를 우선해야 하는지를 같은 흐름 안에서 설명합니다. 사용자는 결과만 가져가도 되고, 필요하면 배경까지 확인할 수 있어야 합니다.",
+        "우리는 결과값만 던져주는 '블랙박스' 도구를 거부합니다. 모든 변환기와 계산기는 그 근거와 한계를 명확히 설명하며, 사용자가 스스로 판단할 수 있는 지능을 보충합니다.",
     },
     vision: {
-      label: "비전",
-      title: "AI가 만든 페이지가 아니라, AI가 계속 돌보는 웹",
+      label: "VISION",
+      title: "생성된 웹이 아닌, 지속적으로 관리되는 지능형 시스템",
       body: [
-        "많은 AI 웹사이트는 한 번 생성된 뒤 멈춥니다. ZHS가 가고 싶은 방향은 다릅니다. 사이트의 각 영역을 관찰하고, 고장 난 부분을 찾고, 더 나은 설명과 도구 후보를 제안하고, 검증을 통과한 변화만 배포하는 반복 시스템을 만들고 있습니다.",
-        "이 구조가 충분히 성숙하면 운영자는 매 순간 지시자가 아니라 방향을 정하는 편집자에 가까워집니다. 정기적으로 돌아오는 역할별 에이전트들이 품질, 콘텐츠, 도구, 접근성, 오류 제보를 점검하고 서로의 결과를 교차 검토합니다. 사이트는 방치되지 않고, 과장 없이, 조금씩 밀도를 높입니다.",
+        "많은 AI 사이트들이 한 번의 생성 후 방치됩니다. ZHS는 다릅니다. 우리는 사이트의 결함을 스스로 발견하고, 더 나은 해결책을 제안하며, 사람의 최종 검토를 거쳐 배포되는 '살아있는 시스템'을 구축하고 있습니다.",
+        "운영자는 단순 작업자가 아니라 시스템의 방향을 조율하는 오케스트레이터가 됩니다. 에이전트들은 품질, 데이터 정합성, 사용성 피드백을 실시간으로 반영하며 사이트의 밀도를 조용히 높여갑니다.",
       ],
     },
-    pillarsTitle: "ZHS가 제공하려는 가치",
+    pillarsTitle: "Studio Value",
     pillars: [
       {
-        title: "작지만 끝까지 닿는 도구",
-        body:
-          "평수, 시간, 파일, 텍스트, 인증 코드처럼 작아 보이는 문제도 실제 상황에서는 시간을 빼앗습니다. ZHS의 도구는 빠른 결과와 함께 한계, 근거, 다음 행동을 보여주는 쪽으로 설계합니다.",
+        title: "작지만 끝까지 해결하는 도구",
+        body: "사소해 보이지만 작업의 흐름을 끊는 평수 계산, 시간대 환산 등의 문제를 정교하게 해결합니다.",
       },
       {
-        title: "검색을 위한 글이 아니라 도구를 이해시키는 글",
-        body:
-          "콘텐츠는 빈 페이지를 채우기 위한 장식이 아닙니다. 사용자가 결과를 해석하거나 더 나은 작업 방식을 선택하는 데 필요한 맥락을 쌓습니다. 도구와 글이 서로 이어져야 합니다.",
+        title: "도구를 이해시키는 고품질 기록",
+        body: "글은 단순한 텍스트가 아닙니다. 사용자가 도구의 결과값을 신뢰하고 활용하는 데 필요한 전문적 맥락을 제공합니다.",
       },
       {
-        title: "사람의 기준을 남기는 자동화",
-        body:
-          "AI가 만든 결과를 그대로 믿지 않습니다. 무엇을 공개할지, 어디까지 자동화할지, 어떤 표현을 피할지에 대한 기준을 명시하고 그 기준을 에이전트의 반복 작업에 심습니다.",
+        title: "인간의 감각을 담은 자동화",
+        body: "AI의 속도에 인간의 품질 기준을 결합합니다. 무엇을 자동화할지, 어떤 표현이 부적절한지 사람이 결정하고 AI가 반복합니다.",
       },
       {
-        title: "조용한 개선의 누적",
-        body:
-          "큰 출시보다 중요한 것은 작은 결함을 계속 줄이는 일입니다. 틀린 IP 결과를 고친 것처럼, 사용자가 발견한 불일치는 다음 품질 규칙이 됩니다.",
+        title: "조용한 품질의 누적",
+        body: "우리는 거창한 로드맵보다 오늘 발견한 작은 오차를 수정하는 일을 더 가치 있게 여깁니다. 모든 수정은 기록되고 다음 품질 규칙이 됩니다.",
       },
     ],
-    systemTitle: "앞으로의 운영 설계",
+    systemTitle: "Studio Model",
     systemLead:
-      "ZHS의 다음 단계는 페이지를 더 만드는 것만이 아닙니다. 사이트를 관찰하고 개선하는 고정 루프를 제품의 일부로 만드는 것입니다.",
+      "우리의 핵심 제품은 페이지가 아니라, 페이지를 개선하는 '시스템' 그 자체입니다.",
     loops: [
-      {
-        name: "Scout",
-        body: "사용자 흐름, 검색 수요, 반복 문의, 깨진 링크, 얇은 설명을 찾아 다음 작업 후보로 정리합니다.",
-      },
-      {
-        name: "Builder",
-        body: "후보 중 실용성이 검증된 항목을 도구, 글, UI 개선, 데이터 보강으로 구체화합니다.",
-      },
-      {
-        name: "Reviewer",
-        body: "수치 계산, 개인정보 안내, 브라우저 로컬 처리, 접근성, 모바일 레이아웃, 빌드 결과를 점검합니다.",
-      },
-      {
-        name: "Editor",
-        body: "AI 문체를 걷어내고 ZHS다운 설명으로 다듬습니다. 기능 설명보다 사용자가 얻는 판단과 행동을 우선합니다.",
-      },
-      {
-        name: "Archivist",
-        body: "변경 이유, 한계, 앞으로의 개선점을 기록해 다음 에이전트와 독자가 같은 맥락에서 이어갈 수 있게 합니다.",
-      },
+      { name: "Scout", body: "흐름의 결함과 사용자 니즈를 탐색합니다." },
+      { name: "Builder", body: "검증된 아이디어를 도구와 코드로 구현합니다." },
+      { name: "Reviewer", body: "수치와 접근성, 보안을 엄격히 검토합니다." },
+      { name: "Editor", body: "AI의 흔적을 지우고 스튜디오의 목소리를 입힙니다." },
+      { name: "Archivist", body: "모든 지식과 결정을 기록하여 맥락을 보존합니다." },
     ],
-    roadmapTitle: "도전 방향",
+    roadmapTitle: "Challenge",
     roadmap: [
       {
-        title: "1. 신뢰 가능한 작은 도구의 기반",
-        body:
-          "브라우저 안에서 처리되는 도구는 최대한 로컬로 유지하고, 서버 호출이 필요한 기능은 이유와 처리 방식을 명확히 밝힙니다. 계산 결과에는 가정과 기준을 함께 둡니다.",
+        title: "신뢰 가능한 데이터 인프라",
+        body: "모든 연산의 근거를 공개하고, 데이터 주권을 사용자에게 돌려주기 위해 브라우저 로컬 처리를 원칙으로 합니다.",
       },
       {
-        title: "2. 콘텐츠와 도구의 연결",
-        body:
-          "가이드, 회고, 사용 노트가 도구 페이지와 연결되어 사용자가 결과의 의미를 이해하도록 돕습니다. 글은 독립된 읽을거리이면서 도구 사용의 맥락이 됩니다.",
+        title: "유기적 콘텐츠 통합",
+        body: "도구와 가이드, 회고록이 서로 연결되어 하나의 거대한 지식 지도를 형성하는 사용자 환경을 구축합니다.",
       },
       {
-        title: "3. 실험 제품의 품질 상승",
-        body:
-          "타자 연습처럼 단순 유틸리티보다 큰 제품은 실제 사용 흐름을 기준으로 다듬습니다. 기록, 약점 피드백, 콘텐츠 선택, 모바일 사용성을 단계적으로 개선합니다.",
+        title: "경험 중심의 제품 레이어",
+        body: "단순 유틸리티를 넘어 타자연습과 같은 복합적인 인터랙션 제품의 품질을 프로페셔널 수준으로 끌어올립니다.",
       },
       {
-        title: "4. 자기 점검하는 웹 운영",
-        body:
-          "정기 에이전트가 사이트 상태를 확인하고, 문제를 발견하고, 수정안을 만들고, 검증 결과를 남기는 운영 방식을 실험합니다. 자동화는 속도를 위한 장치가 아니라 품질 기준을 반복하기 위한 장치입니다.",
+        title: "자기 자율적 웹 운영",
+        body: "에이전트가 스스로 문제를 보고하고 해결책을 배포하는, 운영 리소스 제로에 수렴하는 미래형 웹을 실험합니다.",
       },
     ],
-    principlesTitle: "지키려는 기준",
+    principlesTitle: "Principles",
     principles: [
-      "없는 숫자를 만들지 않습니다. 사용량, 순위, 성과는 실제 근거가 있을 때만 표시합니다.",
-      "도구가 참고용이면 참고용이라고 말합니다. 법률·의료·금융 판단을 대신하는 것처럼 보이게 만들지 않습니다.",
-      "사용자 입력은 가능한 한 브라우저 안에서 처리합니다. 서버 처리가 필요하면 페이지에서 분명히 알립니다.",
-      "AI가 만든 흔적을 숨기기보다, 사람이 세운 기준과 검증 루프가 어떻게 작동하는지 드러냅니다.",
+      "실제 근거가 없는 숫자는 절대 기록하지 않습니다.",
+      "도구의 한계를 숨기지 않고 명확히 공지합니다.",
+      "사용자 프라이버시를 위해 데이터 전송을 최소화합니다.",
+      "AI의 도움을 받되, 최종 책임은 항상 스튜디오에 있습니다.",
     ],
     finalCta: {
-      title: "완성된 사이트보다, 발전하는 방식을 지켜봐 주세요.",
+      title: "결과보다 발전하는 과정을 공유합니다.",
       body:
-        "ZHS는 한 번에 거대한 서비스를 약속하지 않습니다. 대신 실제로 쓸 수 있는 작은 기능을 공개하고, 잘못된 부분을 고치고, 다음 가치로 이어지는 구조를 계속 쌓겠습니다.",
-      primary: "도구 둘러보기",
-      secondary: "글 읽기",
+        "우리는 완성된 조각상이 아닌, 매일 깎여 나가는 돌을 보여드리고자 합니다. ZHS가 쌓아가는 기술의 밀도를 함께 지켜봐 주세요.",
+      primary: "라이브러리",
+      secondary: "아카이브",
     },
   },
   en: {
-    eyebrow: "about / direction",
-    title: "An experiment in a web that keeps improving without every page being hand-held.",
+    eyebrow: "ABOUT / DIRECTION",
+    title: "A Technical Studio Evolving Daily through AI-Human Collaboration.",
     lead:
-      "Zero Human Studio is not only a directory of small tools. It is an experiment in publishing useful pieces early, learning from real use, and feeding that learning back into products and writing. Utilities, developer helpers, typing practice, and editorial notes are growing together. The goal is not to mass-produce pages, but to build a site where tools, explanations, and operating judgment reinforce each other over time.",
-    heroNotes: ["tools", "posts", "practice products", "automation", "review loops"],
+      "Zero Human Studio (ZHS) is more than a utility collection; it's a build lab exploring the intersection of data value and practical engineering. We skip the marketing fluff and deliver direct utility through daily updated tools and honest technical retrospectives.",
+    heroNotes: ["Intelligence", "Automation", "Craftsmanship", "Studio", "Labs"],
     current: {
-      label: "Current focus",
-      title: "A site with working functions and reasons to read",
+      label: "CURRENT FOCUS",
+      title: "Functional Integrity and Contextual UX",
       body:
-        "A calculator or converter should not end at the output box. It should explain why the result appears, what assumptions it uses, and when official sources should take priority. Visitors should be able to grab the result quickly, but also inspect the context when it matters.",
+        "We reject 'black-box' tools that only spit out results. Every converter and calculator clearly explains its basis and limits, supplementing the user's own intelligence to make informed decisions.",
     },
     vision: {
-      label: "Vision",
-      title: "Not pages generated by AI, but a web maintained by AI systems",
+      label: "VISION",
+      title: "A Living System, Not a Static Website",
       body: [
-        "Many AI-built websites are generated once and then left alone. ZHS is aiming elsewhere: a recurring system that observes each area of the site, finds broken or thin spots, proposes better explanations and tool candidates, and ships only changes that pass review.",
-        "As that structure matures, the operator becomes less of a constant task dispatcher and more of an editor who sets direction. Role-specific recurring agents can inspect quality, content, tools, accessibility, and user reports, then cross-check each other. The site should not be abandoned; it should quietly become denser and more useful.",
+        "Most AI-built sites are abandoned after generation. ZHS is different. We are building a 'living system' that detects its own flaws, proposes solutions, and deploys changes after human review.",
+        "The operator becomes an orchestrator of the system's direction. Agents reflect quality, data integrity, and usability feedback in real-time, quietly increasing the site's density and value.",
       ],
     },
-    pillarsTitle: "The value ZHS wants to provide",
+    pillarsTitle: "Studio Value",
     pillars: [
       {
-        title: "Small tools that reach the end of the task",
-        body:
-          "Pyeong conversion, time, files, text, and authentication codes look small until they interrupt real work. ZHS tools are designed to provide a fast answer plus the limits, basis, and next action around it.",
+        title: "Small but Decisive Tools",
+        body: "We solve seemingly trivial but workflow-breaking problems like Pyeong conversion and timezone shifts with precision.",
       },
       {
-        title: "Writing that helps tools make sense",
-        body:
-          "Content is not filler for search pages. It should help users interpret results or choose a better workflow. Tools and posts should point into each other.",
+        title: "High-Fidelity Documentation",
+        body: "Our content isn't just text; it provides the professional context users need to trust and utilize tool outputs.",
       },
       {
-        title: "Automation that preserves human standards",
-        body:
-          "AI output is not accepted blindly. Standards for what gets published, how far automation should go, and which claims to avoid are made explicit and fed back into recurring agent work.",
+        title: "Human-Centered Automation",
+        body: "We combine human quality standards with AI speed. Humans decide the boundaries; AI executes the repetition.",
       },
       {
-        title: "Quiet accumulation of fixes",
-        body:
-          "Large launches matter less than steadily removing small defects. A wrong IP result, a confusing label, or a weak explanation becomes the next quality rule.",
+        title: "Accumulation of Quiet Fixes",
+        body: "We value fixing a small error discovered today more than a grand roadmap. Every fix becomes the next quality rule.",
       },
     ],
-    systemTitle: "The operating design ahead",
+    systemTitle: "Studio Model",
     systemLead:
-      "The next step for ZHS is not just adding more pages. It is making the improvement loop part of the product itself.",
+      "Our core product is not the pages, but the 'system' that improves them.",
     loops: [
-      { name: "Scout", body: "Find weak flows, search demand, recurring questions, broken links, and thin explanations." },
-      { name: "Builder", body: "Turn validated candidates into tools, posts, UI improvements, or supporting data." },
-      { name: "Reviewer", body: "Check calculations, privacy copy, browser-local behavior, accessibility, mobile layout, and build output." },
-      { name: "Editor", body: "Remove generic AI phrasing and rewrite around user judgment and action, not feature lists." },
-      { name: "Archivist", body: "Record why changes were made, what limits remain, and what the next agent should know." },
+      { name: "Scout", body: "Explores workflow flaws and user needs." },
+      { name: "Builder", body: "Implements validated ideas into tools and code." },
+      { name: "Reviewer", body: "Strictly audits logic, accessibility, and security." },
+      { name: "Editor", body: "Refines the studio's voice and removes AI artifacts." },
+      { name: "Archivist", body: "Records decisions to preserve technical context." },
     ],
-    roadmapTitle: "Challenge directions",
+    roadmapTitle: "Challenge",
     roadmap: [
       {
-        title: "1. A trustworthy base of small tools",
-        body:
-          "Keep browser-local tools local where possible. When server processing is necessary, explain why and how. Pair calculation output with assumptions and limits.",
+        title: "Reliable Data Infrastructure",
+        body: "We disclose all calculation logic and prioritize browser-local processing to return data sovereignty to users.",
       },
       {
-        title: "2. Connect content and utilities",
-        body:
-          "Guides, retrospectives, and notes should connect back to tools so users understand what a result means. Writing should be worth reading on its own while improving tool use.",
+        title: "Organic Content Integration",
+        body: "We build an environment where tools, guides, and logs interconnect to form a vast technical knowledge map.",
       },
       {
-        title: "3. Raise the quality of product experiments",
-        body:
-          "Larger layers such as typing practice should be improved through real interaction quality: records, weak-point feedback, content choice, and mobile usability.",
+        title: "Experience-Driven Products",
+        body: "We elevate complex interaction layers like typing practice to professional-grade product quality.",
       },
       {
-        title: "4. Operate as a self-checking website",
-        body:
-          "Recurring agents should inspect the site, detect problems, propose fixes, and leave verification evidence. Automation is not only for speed; it is for repeating standards.",
+        title: "Autonomous Web Operations",
+        body: "We experiment with a future where agents report issues and deploy solutions with zero human overhead.",
       },
     ],
-    principlesTitle: "Standards we intend to keep",
+    principlesTitle: "Principles",
     principles: [
-      "Do not invent numbers. Usage, ranking, and performance claims appear only with real evidence.",
-      "Say when a tool is only a reference point. Do not make legal, medical, or financial decisions look delegated to a widget.",
-      "Process user input in the browser whenever possible. If server processing is needed, say so on the page.",
-      "Do not hide that AI is involved; show the standards and review loops that keep it accountable.",
+      "Never display numbers without verifiable evidence.",
+      "Clearly state tool limitations without hiding them.",
+      "Minimize data transmission for user privacy.",
+      "Final responsibility always lies with the studio.",
     ],
     finalCta: {
-      title: "Watch the way this site evolves, not just what it is today.",
+      title: "Sharing the Process of Evolution.",
       body:
-        "ZHS is not promising a giant service all at once. It will publish useful small pieces, fix what proves wrong, and keep building the structure that turns each correction into the next layer of value.",
-      primary: "Browse tools",
-      secondary: "Read posts",
+        "We are not showing a finished statue, but the stone being carved every day. Watch the density of technology ZHS builds over time.",
+      primary: "Library",
+      secondary: "Archive",
     },
   },
 } as const;
@@ -208,130 +177,168 @@ export function AboutClient() {
   const about = aboutCopy[locale];
 
   return (
-    <>
-      <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-        <div className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+    <div className="flex flex-col gap-24 pb-32">
+      {/* 1. Impact Hero */}
+      <section className="mx-auto max-w-6xl px-6 pt-24 md:pt-32">
+        <div className="grid gap-16 lg:grid-cols-[1fr_360px] lg:items-end">
           <div>
-            <p className="zhs-eyebrow">{about.eyebrow}</p>
-            <h1 className="mt-4 font-mono text-4xl font-bold leading-tight tracking-tight md:text-6xl">
+            <span className="zhs-eyebrow text-primary/60">{about.eyebrow}</span>
+            <h1 className="mt-8 text-4xl font-black tracking-tight text-foreground md:text-7xl lg:leading-[1.1] animate-fade-in-up">
               {about.title}
             </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted">
+            <p className="mt-10 max-w-3xl text-xl leading-relaxed text-muted/80 md:text-2xl animate-fade-in-up animate-delay-100">
               {about.lead}
             </p>
           </div>
-          <aside className="rounded-md border border-border bg-card p-6">
-            <p className="zhs-eyebrow">studio map</p>
-            <div className="mt-4 flex flex-wrap gap-2">
+
+          <aside className="zhs-card p-8 bg-card shadow-2xl shadow-primary/5 animate-fade-in-up animate-delay-200">
+            <div className="flex flex-wrap gap-2 mb-8">
               {about.heroNotes.map((note) => (
-                <span key={note} className="rounded-full border border-border bg-background px-3 py-1 font-mono text-xs text-muted">
+                <span key={note} className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md bg-accent/50 text-primary border border-primary/10">
                   {note}
                 </span>
               ))}
             </div>
-            <div className="mt-6 border-t border-border pt-6">
-              <p className="font-mono text-xs uppercase tracking-wider text-primary">{about.current.label}</p>
-              <h2 className="mt-2 font-mono text-lg font-semibold tracking-tight">{about.current.title}</h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted">{about.current.body}</p>
+            <div className="pt-8 border-t border-border">
+              <span className="text-[10px] font-black text-primary/40 uppercase tracking-widest">{about.current.label}</span>
+              <h2 className="mt-3 text-xl font-extrabold tracking-tight">{about.current.title}</h2>
+              <p className="mt-4 text-sm leading-relaxed text-muted/80">{about.current.body}</p>
             </div>
           </aside>
         </div>
       </section>
 
-      <section className="border-y border-border bg-card">
-        <div className="mx-auto grid max-w-6xl gap-8 px-6 py-16 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <p className="zhs-eyebrow">{about.vision.label}</p>
-            <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight md:text-3xl">
-              {about.vision.title}
-            </h2>
-          </div>
-          <div className="space-y-4 text-base leading-relaxed text-muted">
-            {about.vision.body.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+      {/* 2. Vision & Philosophy — High Contrast Bento */}
+      <section className="bg-zinc-950 py-24 md:py-32">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
+             <div>
+                <span className="zhs-eyebrow text-zinc-600">{about.vision.label}</span>
+                <h2 className="mt-6 text-3xl font-black text-white md:text-5xl leading-tight">
+                  {about.vision.title}
+                </h2>
+                <div className="mt-10 space-y-6 text-lg text-zinc-400 leading-relaxed">
+                  {about.vision.body.map((p) => <p key={p}>{p}</p>)}
+                </div>
+             </div>
+
+             <div className="grid gap-4 grid-cols-2">
+                <div className="zhs-card bg-zinc-900 border-zinc-800 p-6 flex flex-col justify-between aspect-square">
+                   <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary font-black italic">S</div>
+                   <p className="text-zinc-300 font-bold leading-tight">Self-Correction System</p>
+                </div>
+                <div className="zhs-card bg-zinc-900 border-zinc-800 p-6 flex flex-col justify-between aspect-square translate-y-8">
+                   <div className="h-8 w-8 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-500 font-black italic">O</div>
+                   <p className="text-zinc-300 font-bold leading-tight">Orchestrated Intelligence</p>
+                </div>
+             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-20">
-        <h2 className="font-mono text-2xl font-bold tracking-tight md:text-3xl">{about.pillarsTitle}</h2>
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
+      {/* 3. Studio Values */}
+      <section className="mx-auto max-w-6xl px-6">
+        <h2 className="text-2xl font-black uppercase tracking-tight md:text-4xl text-gradient">{about.pillarsTitle}</h2>
+        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {about.pillars.map((pillar) => (
-            <article key={pillar.title} className="rounded-md border border-border bg-background p-6">
-              <h3 className="font-mono text-lg font-semibold tracking-tight">{pillar.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted">{pillar.body}</p>
+            <article key={pillar.title} className="zhs-card p-8 group">
+              <h3 className="text-lg font-black leading-tight group-hover:text-primary transition-colors">{pillar.title}</h3>
+              <p className="mt-4 text-sm leading-relaxed text-muted/80">{pillar.body}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="border-y border-border bg-card">
-        <div className="mx-auto max-w-6xl px-6 py-20">
-          <div className="max-w-3xl">
-            <p className="zhs-eyebrow">operating model</p>
-            <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight md:text-3xl">{about.systemTitle}</h2>
-            <p className="mt-4 text-muted">{about.systemLead}</p>
+      {/* 4. Operating Model — Horizontal Flow */}
+      <section className="bg-accent/20 py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="max-w-2xl">
+            <span className="zhs-eyebrow text-primary/40">OPERATING MODEL</span>
+            <h2 className="mt-6 text-3xl font-black tracking-tight md:text-5xl">{about.systemTitle}</h2>
+            <p className="mt-6 text-lg text-muted leading-relaxed">{about.systemLead}</p>
           </div>
-          <div className="mt-10 grid gap-4 lg:grid-cols-5">
-            {about.loops.map((loop) => (
-              <article key={loop.name} className="rounded-md border border-border bg-background p-5">
-                <p className="font-mono text-sm font-semibold text-primary">{loop.name}</p>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{loop.body}</p>
+
+          <div className="mt-16 grid gap-4 md:grid-cols-5">
+            {about.loops.map((loop, idx) => (
+              <div key={loop.name} className="relative">
+                <article className="zhs-card p-6 bg-card h-full">
+                  <span className="text-[10px] font-black text-primary/30 uppercase mb-3 block">Step 0{idx+1}</span>
+                  <p className="text-base font-black text-foreground mb-3">{loop.name}</p>
+                  <p className="text-xs leading-relaxed text-muted">{loop.body}</p>
+                </article>
+                {idx < 4 && (
+                  <div className="hidden md:block absolute -right-2 top-1/2 -translate-y-1/2 z-10 text-border">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Roadmap & Challenge */}
+      <section className="mx-auto max-w-6xl px-6">
+        <div className="grid gap-16 lg:grid-cols-[400px_1fr]">
+          <div>
+            <span className="zhs-eyebrow text-primary/60">ROADMAP</span>
+            <h2 className="mt-6 text-3xl font-black tracking-tight md:text-5xl leading-tight">{about.roadmapTitle}</h2>
+            <div className="mt-10 p-6 rounded-2xl bg-zinc-950 text-zinc-500 font-mono text-[10px] leading-relaxed uppercase tracking-widest">
+               Status: Actively Building<br/>
+               Current Tier: 1 (Foundation)<br/>
+               Agents Active: 3 (Dev, Content, QA)
+            </div>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            {about.roadmap.map((item) => (
+              <article key={item.title} className="zhs-card p-8 bg-card flex flex-col justify-between">
+                <h3 className="text-xl font-extrabold tracking-tight">{item.title}</h3>
+                <p className="mt-4 text-sm leading-relaxed text-muted/80">{item.body}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-10 px-6 py-20 lg:grid-cols-[0.95fr_1.05fr]">
-        <div>
-          <p className="zhs-eyebrow">roadmap</p>
-          <h2 className="mt-3 font-mono text-2xl font-bold tracking-tight md:text-3xl">{about.roadmapTitle}</h2>
-        </div>
-        <div className="space-y-5">
-          {about.roadmap.map((item) => (
-            <article key={item.title} className="rounded-md border border-border bg-background p-6">
-              <h3 className="font-mono text-base font-semibold tracking-tight">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      {/* 6. Principles */}
+      <section className="mx-auto max-w-6xl px-6">
+        <div className="rounded-[3rem] bg-zinc-950 p-12 md:p-20 text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 h-64 w-64 bg-primary/10 rounded-full blur-[80px]" />
 
-      <section className="mx-auto max-w-6xl px-6 pb-20">
-        <div className="rounded-md border border-border bg-card p-8 md:p-10">
-          <h2 className="font-mono text-2xl font-bold tracking-tight">{about.principlesTitle}</h2>
-          <ul className="mt-6 grid gap-4 md:grid-cols-2">
+          <h2 className="text-3xl font-black md:text-5xl">{about.principlesTitle}</h2>
+          <ul className="mt-12 grid gap-10 md:grid-cols-2">
             {about.principles.map((principle) => (
-              <li key={principle} className="rounded-md border border-border bg-background p-4 text-sm leading-relaxed text-muted">
-                {principle}
+              <li key={principle} className="flex gap-6 items-start group">
+                <div className="h-6 w-6 shrink-0 rounded-full border border-zinc-700 flex items-center justify-center text-[10px] font-bold text-zinc-500 group-hover:border-primary group-hover:text-primary transition-all">
+                  ✓
+                </div>
+                <p className="text-lg font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">{principle}</p>
               </li>
             ))}
           </ul>
         </div>
       </section>
 
-      <section className="border-t border-border bg-card">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <h2 className="font-mono text-2xl font-bold tracking-tight md:text-3xl">{about.finalCta.title}</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-muted">{about.finalCta.body}</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/tools"
-              className="rounded-sm border border-foreground bg-foreground px-5 py-2.5 font-mono text-sm text-background transition-colors hover:border-primary hover:bg-primary"
-            >
-              {about.finalCta.primary}
-            </Link>
-            <Link
-              href="/posts"
-              className="rounded-sm border border-border px-5 py-2.5 font-mono text-sm text-foreground transition-colors hover:border-foreground"
-            >
-              {about.finalCta.secondary}
-            </Link>
-          </div>
+      {/* 7. Final CTA */}
+      <section className="mx-auto max-w-4xl px-6 text-center">
+        <h2 className="text-4xl font-black tracking-tight md:text-7xl leading-tight">{about.finalCta.title}</h2>
+        <p className="mt-10 text-xl text-muted leading-relaxed max-w-2xl mx-auto">{about.finalCta.body}</p>
+        <div className="mt-16 flex flex-col sm:flex-row justify-center gap-6">
+          <Link
+            href="/tools"
+            className="rounded-[2rem] bg-primary px-12 py-5 text-lg font-black text-white transition-all hover:bg-primary-dark hover:scale-110 active:scale-95 shadow-2xl"
+          >
+            {about.finalCta.primary}
+          </Link>
+          <Link
+            href="/posts"
+            className="rounded-[2rem] border-2 border-border px-12 py-5 text-lg font-bold text-foreground hover:border-foreground transition-all"
+          >
+            {about.finalCta.secondary}
+          </Link>
         </div>
       </section>
-    </>
+    </div>
   );
 }
