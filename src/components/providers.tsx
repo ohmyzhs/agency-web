@@ -60,7 +60,7 @@ function detectInitialLocale(): Locale {
 }
 
 const subscribeNoop = () => () => {};
-const getMountedClient = () => true;
+const getMountedClient = () => false;
 const getMountedServer = () => false;
 
 function subscribeMedia(callback: () => void) {
@@ -76,7 +76,8 @@ function getSystemThemeClient(): "light" | "dark" {
 const getSystemThemeServer = (): "light" | "dark" => "light";
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const mounted = useSyncExternalStore(subscribeNoop, getMountedClient, getMountedServer);
+  const mountedSnapshot = useSyncExternalStore(subscribeNoop, getMountedClient, getMountedServer);
+  const [mounted, setMounted] = useState(mountedSnapshot);
   const systemTheme = useSyncExternalStore(
     subscribeMedia,
     getSystemThemeClient,
@@ -90,6 +91,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => detectInitialLocale());
 
   const resolvedTheme: "light" | "dark" = theme === "system" ? systemTheme : theme;
+
+  useEffect(() => {
+    queueMicrotask(() => setMounted(true));
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
