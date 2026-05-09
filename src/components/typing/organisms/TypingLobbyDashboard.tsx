@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useDB } from '@/lib/typing/db/provider';
 import { useTypingProgress } from '@/stores/useTypingProgress';
+import { useLocale } from '@/components/providers';
 
 type RecentSession = {
   id: number;
@@ -25,13 +26,7 @@ type DashboardState = {
   weakKeys: WeakKey[];
 };
 
-const MODE_LABEL: Record<string, string> = {
-  'keyboard-zone': '자리',
-  word: '낱말',
-  sentence: '단문',
-  longform: '장문',
-  'speed-test': '속도',
-};
+type ModeLabelKey = keyof ReturnType<typeof useLocale>["t"]["typing"]["dashboard"]["modeLabels"];
 
 function todayKey(): string {
   const d = new Date();
@@ -40,6 +35,7 @@ function todayKey(): string {
 
 export function TypingLobbyDashboard() {
   const db = useDB();
+  const { t } = useLocale();
   const { recentTpm } = useTypingProgress();
   const [state, setState] = useState<DashboardState>({
     todaySeconds: 0,
@@ -48,6 +44,8 @@ export function TypingLobbyDashboard() {
     recent: [],
     weakKeys: [],
   });
+
+  const copy = t.typing.dashboard;
 
   useEffect(() => {
     if (!db) return;
@@ -98,45 +96,44 @@ export function TypingLobbyDashboard() {
     <section aria-labelledby="typing-dashboard-title" className="rounded-3xl border border-border bg-card p-5 shadow-sm md:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-muted">내 연습 대시보드</p>
+          <p className="text-xs font-medium uppercase tracking-wider text-muted">{copy.eyebrow}</p>
           <h2 id="typing-dashboard-title" className="mt-1 text-2xl font-semibold tracking-tight">
-            오늘의 손 상태를 먼저 확인하세요
+            {copy.title}
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-            타자연습은 매번 처음부터 다시 시작할 필요가 없습니다. 오늘 연습 시간, 최근 최고 타수,
-            평균 정확도와 약점 키를 보고 지금 필요한 모드로 바로 들어가세요.
+            {copy.description}
           </p>
         </div>
         <Link
           href="/typing/result"
           className="rounded-full border border-border bg-background px-4 py-2 text-sm font-medium transition-colors hover:border-primary/60 hover:text-primary"
         >
-          기록·랭킹 보기
+          {copy.viewAllRecords}
         </Link>
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <MetricCard label="오늘 연습" value={`${todayMinutes}분 ${todaySeconds}초`} hint="이 브라우저 기준" />
-        <MetricCard label="최근 최고" value={state.bestTpm ? `${Math.round(state.bestTpm)}타/분` : '—'} hint="최근 세션 기준" />
-        <MetricCard label="평균 정확도" value={avgAccuracy ? `${avgAccuracy}%` : '—'} hint="최근 5회 평균" />
-        <MetricCard label="완료 세션" value={`${state.totalSessions}회`} hint="최근 기록 표시" />
+        <MetricCard label={copy.metrics.todayPractice} value={`${todayMinutes}${copy.unitMinutes} ${todaySeconds}${copy.unitSeconds}`} hint={copy.metrics.hints.browser} />
+        <MetricCard label={copy.metrics.recentBest} value={state.bestTpm ? `${Math.round(state.bestTpm)}${copy.unitTpm}` : '—'} hint={copy.metrics.hints.session} />
+        <MetricCard label={copy.metrics.avgAccuracy} value={avgAccuracy ? `${avgAccuracy}%` : '—'} hint={copy.metrics.hints.average} />
+        <MetricCard label={copy.metrics.completedSessions} value={`${state.totalSessions}${copy.unitCount}`} hint={copy.metrics.hints.records} />
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="rounded-2xl border border-border bg-background p-4">
           <div className="flex items-center justify-between gap-3">
-            <h3 className="font-semibold">최근 기록</h3>
+            <h3 className="font-semibold">{copy.recentRecords.title}</h3>
             <Link href="/typing/result" className="text-xs text-muted underline-offset-4 hover:text-foreground hover:underline">
-              전체 보기
+              {copy.recentRecords.viewAll}
             </Link>
           </div>
           {state.recent.length === 0 ? (
-            <p className="mt-3 text-sm text-muted">아직 기록이 없습니다. 낱말연습으로 손을 풀거나 자리연습으로 기본기를 먼저 잡아보세요.</p>
+            <p className="mt-3 text-sm text-muted">{copy.recentRecords.empty}</p>
           ) : (
             <ul className="mt-3 divide-y divide-border text-sm">
               {state.recent.map((row) => (
                 <li key={row.id} className="flex items-center justify-between gap-3 py-2">
-                  <span className="text-muted">{MODE_LABEL[row.mode] ?? row.mode} · {row.stage}단계</span>
+                  <span className="text-muted">{row.mode in copy.modeLabels ? copy.modeLabels[row.mode as ModeLabelKey] : row.mode} · {row.stage}{copy.unitStage}</span>
                   <span className="tabular-nums">
                     <strong>{Math.round(row.tpm)}</strong>타 · {Math.round(row.accuracy * 100)}%
                   </span>
@@ -147,9 +144,9 @@ export function TypingLobbyDashboard() {
         </div>
 
         <div className="rounded-2xl border border-border bg-background p-4">
-          <h3 className="font-semibold">약점 키 힌트</h3>
+          <h3 className="font-semibold">{copy.weakKeys.title}</h3>
           {state.weakKeys.length === 0 ? (
-            <p className="mt-3 text-sm text-muted">연습 기록이 쌓이면 자주 흔들리는 자모를 골라 보여줍니다.</p>
+            <p className="mt-3 text-sm text-muted">{copy.weakKeys.empty}</p>
           ) : (
             <ul className="mt-3 flex flex-wrap gap-2">
               {state.weakKeys.map((key) => {
@@ -157,14 +154,14 @@ export function TypingLobbyDashboard() {
                 return (
                   <li key={key.jamo} className="rounded-xl border border-border bg-card px-3 py-2 text-sm">
                     <span className="font-mono text-lg">{key.jamo}</span>
-                    <span className="ml-2 text-xs text-muted">{accuracy}% · {key.attempts}회</span>
+                    <span className="ml-2 text-xs text-muted">{accuracy}% · {key.attempts}{copy.unitCount}</span>
                   </li>
                 );
               })}
             </ul>
           )}
           <p className="mt-3 text-xs leading-relaxed text-muted">
-            현재는 이 브라우저에 저장된 개인 기록만 사용합니다. 공개 랭킹은 검증 흐름이 준비된 뒤 붙일 예정입니다.
+            {copy.weakKeys.footer}
           </p>
         </div>
       </div>

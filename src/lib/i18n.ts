@@ -322,6 +322,48 @@ const dictionaries = {
       "business-automation": "비즈니스",
       "micro-utility": "마이크로",
     },
+    typing: {
+      dashboard: {
+        eyebrow: "내 연습 대시보드",
+        title: "오늘의 손 상태를 먼저 확인하세요",
+        description: "타자연습은 매번 처음부터 다시 시작할 필요가 없습니다. 오늘 연습 시간, 최근 최고 타수, 평균 정확도와 약점 키를 보고 지금 필요한 모드로 바로 들어가세요.",
+        viewAllRecords: "기록·랭킹 보기",
+        metrics: {
+          todayPractice: "오늘 연습",
+          recentBest: "최근 최고",
+          avgAccuracy: "평균 정확도",
+          completedSessions: "완료 세션",
+          hints: {
+            browser: "이 브라우저 기준",
+            session: "최근 세션 기준",
+            average: "최근 5회 평균",
+            records: "최근 기록 표시",
+          },
+        },
+        recentRecords: {
+          title: "최근 기록",
+          viewAll: "전체 보기",
+          empty: "아직 기록이 없습니다. 낱말연습으로 손을 풀거나 자리연습으로 기본기를 먼저 잡아보세요.",
+        },
+        weakKeys: {
+          title: "약점 키 힌트",
+          empty: "연습 기록이 쌓이면 자주 흔들리는 자모를 골라 보여줍니다.",
+          footer: "현재는 이 브라우저에 저장된 개인 기록만 사용합니다. 공개 랭킹은 검증 흐름이 준비된 뒤 붙일 예정입니다.",
+        },
+        modeLabels: {
+          "keyboard-zone": "자리",
+          word: "낱말",
+          sentence: "단문",
+          longform: "장문",
+          "speed-test": "속도",
+        },
+        unitTpm: "타/분",
+        unitMinutes: "분",
+        unitSeconds: "초",
+        unitCount: "회",
+        unitStage: "단계",
+      },
+    },
   },
   en: {
     nav: {
@@ -637,6 +679,48 @@ const dictionaries = {
       "developer-automation": "Developer",
       "business-automation": "Business",
       "micro-utility": "Utility",
+    },
+    typing: {
+      dashboard: {
+        eyebrow: "My Practice Dashboard",
+        title: "Check your hand condition for today",
+        description: "No need to start over every time. Review your practice time, recent best speed, average accuracy, and weak keys to jump straight into the mode you need.",
+        viewAllRecords: "View Records/Rankings",
+        metrics: {
+          todayPractice: "Today's Practice",
+          recentBest: "Recent Best",
+          avgAccuracy: "Avg. Accuracy",
+          completedSessions: "Sessions Done",
+          hints: {
+            browser: "Browser local",
+            session: "Based on recent sessions",
+            average: "Avg. of last 5",
+            records: "Recent records only",
+          },
+        },
+        recentRecords: {
+          title: "Recent Records",
+          viewAll: "View All",
+          empty: "No records yet. Warm up with word practice or master the basics with zone practice.",
+        },
+        weakKeys: {
+          title: "Weak Key Hints",
+          empty: "Your frequently missed keys will appear here as you practice.",
+          footer: "Currently using browser-local data only. Public rankings will be integrated after verification flows are ready.",
+        },
+        modeLabels: {
+          "keyboard-zone": "Zone",
+          word: "Word",
+          sentence: "Sentence",
+          longform: "Longform",
+          "speed-test": "Speed",
+        },
+        unitTpm: "TPM",
+        unitMinutes: "m",
+        unitSeconds: "s",
+        unitCount: "times",
+        unitStage: "Stage",
+      },
     },
   },
 };
