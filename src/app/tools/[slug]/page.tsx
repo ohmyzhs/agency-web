@@ -28,6 +28,7 @@ import UnitConverter from "@/components/tools/UnitConverter";
 import UtmBuilder from "@/components/tools/UtmBuilder";
 import WebhookPayloadFormatter from "@/components/tools/WebhookPayloadFormatter";
 import WebhookRequestSimulatorTool from "@/components/tools/WebhookRequestSimulatorTool";
+import { getPostsByRelatedTool } from "@/lib/posts";
 import { getAllTools, getToolBySlug } from "@/lib/tools";
 import { createPageMetadata } from "@/lib/seo";
 
@@ -89,5 +90,9 @@ export default async function ToolPage({ params }: ToolPageProps) {
 
   if (!tool) notFound();
 
-  return <ToolPageShell tool={tool}>{widgetMap[tool.slug]}</ToolPageShell>;
+  return (
+    <ToolPageShell tool={tool} guidePosts={getPostsByRelatedTool(tool.slug, 4)}>
+      {widgetMap[tool.slug]}
+    </ToolPageShell>
+  );
 }

@@ -4,7 +4,7 @@ status: published
 authoring_harness: zhs-rewrite
 created: 2026-05-01
 updated: 2026-05-10
-title: KST로 해외 회의 시간을 잡을 때 DST를 피하는 방법
+title: KST Timezone Converter 사용법: 해외 회의 시간과 DST 확인하기
 slug: kst-global-meeting-time
 kind: guide
 category: korea-living
@@ -29,7 +29,7 @@ quality_gate: rewritten
 share_url:
 telegram_handoff: false
 ---
-# KST로 해외 회의 시간을 잡을 때 DST를 피하는 방법
+# KST Timezone Converter 사용법: 해외 회의 시간과 DST 확인하기
 
 한국에서 해외 팀과 일할 때 시간 계산은 늘 사소해 보인다. 서울은 UTC+9다. 뉴욕은 대략 밤낮이 반대고, 런던은 한국보다 8시간 정도 느리고, 샌프란시스코는 더 멀다. 몇 번 하다 보면 감으로도 맞출 수 있을 것 같다.
 

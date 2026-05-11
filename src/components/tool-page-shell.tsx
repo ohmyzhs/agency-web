@@ -5,15 +5,17 @@ import type { ReactNode } from "react";
 import { useLocale } from "@/components/providers";
 import QuickToolSlots from "@/components/tools/shared/QuickToolSlots";
 import { getRelatedTools, getToolContent, type Tool } from "@/lib/tools";
+import { getPostContent, type Post } from "@/lib/post-types";
 
 const localOnlyCategories = new Set(["developer-automation", "micro-utility", "file-media"]);
 
 type ToolPageShellProps = {
   tool: Tool;
+  guidePosts?: Post[];
   children?: ReactNode;
 };
 
-export function ToolPageShell({ tool, children }: ToolPageShellProps) {
+export function ToolPageShell({ tool, guidePosts = [], children }: ToolPageShellProps) {
   const { locale, t } = useLocale();
   const content = getToolContent(tool, locale);
   const relatedTools = getRelatedTools(tool);
@@ -175,6 +177,32 @@ export function ToolPageShell({ tool, children }: ToolPageShellProps) {
                   </div>
                 </div>
              </div>
+
+             {/* Detailed guides */}
+             {guidePosts.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-black uppercase tracking-[0.16em] text-muted mb-3 px-2">
+                    {locale === "ko" ? "상세 가이드" : "Detailed guides"}
+                  </h3>
+                  <div className="space-y-3">
+                    {guidePosts.map((post) => {
+                      const postContent = getPostContent(post, locale);
+                      return (
+                        <Link
+                          key={post.slug}
+                          href={`/posts/${post.slug}`}
+                          className="zhs-card p-3 block text-sm font-bold text-muted hover:text-primary hover:border-primary/30 transition-all"
+                        >
+                          <span className="line-clamp-2">{postContent.title}</span>
+                          <span className="mt-1 block font-mono text-[10px] font-medium uppercase tracking-widest text-muted/40">
+                            {post.readingMinutes}m · {post.publishedAt}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+             )}
 
              {/* Related */}
              {relatedTools.length > 0 && (

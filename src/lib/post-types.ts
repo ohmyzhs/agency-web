@@ -16,7 +16,8 @@ export type PostCategory =
   | "it-news"
   | "daily"
   | "culture"
-  | "experiments";
+  | "experiments"
+  | "site-notes";
 
 export type PostBlock =
   | { type: "p"; text: string }

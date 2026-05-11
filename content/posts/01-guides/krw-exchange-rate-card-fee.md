@@ -4,7 +4,7 @@ status: published
 authoring_harness: zhs-rewrite
 created: 2026-05-01
 updated: 2026-05-10
-title: 환율 계산기 숫자와 실제 카드 청구액이 다른 이유
+title: KRW Currency Calculator 사용법: 환율·카드 수수료·해외결제 금액 읽기
 slug: krw-exchange-rate-calculator
 kind: guide
 category: korea-living
@@ -28,7 +28,7 @@ quality_gate: rewritten
 share_url:
 telegram_handoff: false
 ---
-# 환율 계산기 숫자와 실제 카드 청구액이 다른 이유
+# KRW Currency Calculator 사용법: 환율·카드 수수료·해외결제 금액 읽기
 
 해외 결제 전에 환율 계산기를 열어보면 마음이 조금 편해진다. 달러 금액을 넣고 원화로 바꾸면 대략 얼마를 쓰는지 바로 보인다. 여행 예산을 잡거나 해외 SaaS 결제 비용을 확인할 때도 같은 방식으로 계산한다.
 

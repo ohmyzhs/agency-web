@@ -4,34 +4,19 @@ import Link from "next/link";
 import { useLocale } from "@/components/providers";
 import { getPostContent, type Post } from "@/lib/post-types";
 import { PostThumbnail } from "@/components/ui/post-thumbnail";
-
-const kindLabelKo: Record<Post["kind"], string> = {
-  guide: "가이드",
-  "it-news": "IT 소식",
-  daily: "일상",
-  "tool-note": "도구 노트",
-  experiment: "실험",
-  "site-note": "사이트 노트",
-};
-
-const kindLabelEn: Record<Post["kind"], string> = {
-  guide: "Guide",
-  "it-news": "IT news",
-  daily: "Daily",
-  "tool-note": "Tool note",
-  experiment: "Experiment",
-  "site-note": "Site note",
-};
+import { getPostCategoryLabel, getPostTypeLabel, getRelatedToolLabels } from "@/components/posts/post-labels";
 
 export function PostCard({ post }: { post: Post }) {
   const { locale } = useLocale();
   const content = getPostContent(post, locale);
-  const kindLabel = locale === "ko" ? kindLabelKo[post.kind] : kindLabelEn[post.kind];
+  const typeLabel = getPostTypeLabel(post, locale);
+  const categoryLabel = getPostCategoryLabel(post.category, locale);
   const minutesLabel = locale === "ko" ? `${post.readingMinutes}분 분량` : `${post.readingMinutes} min`;
+  const relatedTools = getRelatedToolLabels(post, locale, 3);
 
   return (
     <article className="zhs-card zhs-card-hover group relative overflow-hidden flex flex-col h-full">
-      <Link href={`/posts/${post.slug}`} className="absolute inset-0 z-20" />
+      <Link href={`/posts/${post.slug}`} className="absolute inset-0 z-20" aria-label={content.title} />
       
       <PostThumbnail 
         title={content.title} 
@@ -40,13 +25,16 @@ export function PostCard({ post }: { post: Post }) {
       />
 
       <div className="p-6 flex flex-col flex-1 relative z-10 bg-card">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary/60 group-hover:text-primary transition-colors">
-            {kindLabel}
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-primary/70 group-hover:text-primary transition-colors">
+            {typeLabel}
           </span>
-          <div className="flex items-center gap-2 text-[11px] font-bold text-muted/40 uppercase">
-            <span>{post.publishedAt}</span>
-          </div>
+          <span className="rounded-full bg-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-muted/60">
+            {categoryLabel}
+          </span>
+          <span className="ml-auto text-[11px] font-bold text-muted/40 uppercase">
+            {post.publishedAt}
+          </span>
         </div>
 
         <h3 className="text-xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors leading-tight">
@@ -56,6 +44,16 @@ export function PostCard({ post }: { post: Post }) {
         <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-muted/80">
           {content.description}
         </p>
+
+        {relatedTools.length > 0 && (
+          <div className="mt-5 flex flex-wrap gap-2" aria-label={locale === "ko" ? "관련 도구" : "Related tools"}>
+            {relatedTools.map((tool) => (
+              <span key={tool.slug} className="rounded-full border border-border px-2.5 py-1 font-mono text-[10px] font-bold text-muted/60">
+                {tool.label}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className="mt-auto pt-6 flex items-center justify-between">
           <span className="text-[11px] font-mono font-bold text-muted/40">{minutesLabel}</span>

@@ -4,7 +4,7 @@ status: published
 authoring_harness: zhs-rewrite
 created: 2026-05-01
 updated: 2026-05-10
-title: 59㎡, 75㎡, 84㎡가 왜 24평·30평·34평으로 불리는가
+title: 평수 변환기 사용법: 59㎡·84㎡ 아파트 면적을 제대로 읽는 법
 slug: pyeong-to-square-meter-korea-apartment
 kind: guide
 category: korea-living
@@ -28,7 +28,7 @@ quality_gate: rewritten
 share_url:
 telegram_handoff: false
 ---
-# 59㎡, 75㎡, 84㎡가 왜 24평·30평·34평으로 불리는가
+# 평수 변환기 사용법: 59㎡·84㎡ 아파트 면적을 제대로 읽는 법
 
 한국 아파트 매물을 보면 숫자가 두 겹으로 나온다. 전용면적은 59㎡인데 광고에는 24평형이라고 쓰여 있고, 84㎡는 단순 환산하면 25평 정도인데 시장에서는 34평형으로 불린다. 처음 보는 사람에게는 계산이 틀린 것처럼 느껴진다.
 

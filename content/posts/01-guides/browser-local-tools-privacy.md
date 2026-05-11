@@ -4,7 +4,7 @@ status: published
 authoring_harness: zhs-rewrite
 created: 2026-05-01
 updated: 2026-05-10
-title: 입력값을 서버로 보내지 않는 도구가 주는 안심
+title: 브라우저 로컬 도구 안내: 어떤 데이터가 서버로 가지 않는지 확인하는 법
 slug: browser-local-tools-privacy
 kind: guide
 category: developer
@@ -29,7 +29,7 @@ quality_gate: rewritten
 share_url:
 telegram_handoff: false
 ---
-# 입력값을 서버로 보내지 않는 도구가 주는 안심
+# 브라우저 로컬 도구 안내: 어떤 데이터가 서버로 가지 않는지 확인하는 법
 
 웹 도구를 만들 때 가장 먼저 보이는 것은 기능이다. JSON을 정리해준다, 이미지를 바꿔준다, QR을 만든다, 내 IP를 보여준다. 사용자는 입력하고 버튼을 누르고 결과를 가져간다. 겉으로 보면 아주 단순한 흐름이다.
 

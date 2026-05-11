@@ -4,7 +4,7 @@ status: published
 authoring_harness: zhs-rewrite
 created: 2026-05-01
 updated: 2026-05-10
-title: JSON·YAML·XML을 정리하기 전에 먼저 봐야 하는 것
+title: JSON/YAML/XML Validator 사용법: 검증·정렬·압축을 헷갈리지 않는 법
 slug: json-yaml-xml-formatting
 kind: guide
 category: developer
@@ -29,7 +29,7 @@ quality_gate: rewritten
 share_url:
 telegram_handoff: false
 ---
-# JSON·YAML·XML을 정리하기 전에 먼저 봐야 하는 것
+# JSON/YAML/XML Validator 사용법: 검증·정렬·압축을 헷갈리지 않는 법
 
 “포맷 좀 정리해줘”라는 말은 생각보다 넓다. 어떤 사람은 깨진 JSON의 오류 위치를 찾고 싶어 한다. 어떤 사람은 리뷰하기 쉽게 들여쓰기를 맞추고 싶어 한다. 또 어떤 사람은 웹훅 테스트 화면에 붙여넣기 위해 공백을 줄이고 싶어 한다.
 

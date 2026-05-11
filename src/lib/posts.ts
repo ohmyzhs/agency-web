@@ -210,8 +210,18 @@ export function getPostsByKind(kind: PostKind): Post[] {
   return getAllPosts().filter((post) => post.kind === kind);
 }
 
+export function getPostsByRelatedTool(toolSlug: string, limit?: number): Post[] {
+  const matches = getAllPosts().filter((post) => post.relatedToolSlugs?.includes(toolSlug));
+  return typeof limit === "number" ? matches.slice(0, limit) : matches;
+}
+
 export function getRelatedPosts(post: Post, limit = 3): Post[] {
+  const toolSlugs = post.relatedToolSlugs ?? [];
   return getAllPosts()
-    .filter((candidate) => candidate.slug !== post.slug && candidate.category === post.category)
+    .filter((candidate) => {
+      if (candidate.slug === post.slug) return false;
+      if (toolSlugs.length > 0 && candidate.relatedToolSlugs?.some((slug) => toolSlugs.includes(slug))) return true;
+      return candidate.category === post.category;
+    })
     .slice(0, limit);
 }
