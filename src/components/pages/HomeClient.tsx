@@ -6,14 +6,17 @@ import { type Tool } from "@/lib/tools";
 import type { Post } from "@/lib/posts";
 import { getPostContent } from "@/lib/post-types";
 import { PostThumbnail } from "@/components/ui/post-thumbnail";
+import { UnifiedSearch } from "@/components/home/UnifiedSearch";
 
 type HomeClientProps = {
   latestPosts: Post[];
+  allPosts: Post[];
   featuredTools: Tool[];
+  allTools: Tool[];
   totalToolCount: number;
 };
 
-export function HomeClient({ latestPosts, featuredTools, totalToolCount }: HomeClientProps) {
+export function HomeClient({ latestPosts, allPosts, featuredTools, allTools, totalToolCount }: HomeClientProps) {
   const { t, locale } = useLocale();
   const home = t.home;
 
@@ -65,6 +68,9 @@ export function HomeClient({ latestPosts, featuredTools, totalToolCount }: HomeC
           </div>
         </div>
       </section>
+
+      {/* 1.5. Unified Search */}
+      <UnifiedSearch tools={allTools} posts={allPosts} />
 
       {/* 2. Bento Grid: Practical Intelligence */}
       <section className="mx-auto w-full max-w-6xl px-6">
