@@ -11,9 +11,10 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function HomePage() {
-  const latestPosts = getAllPosts().slice(0, 6);
+  const allPosts = getAllPosts();
+  const latestPosts = allPosts.slice(0, 6);
   const allTools = getAllTools();
-  
+
   // Choose featured tools based on specific slugs for high marketing impact
   const featuredSlugs = [
     "pyeong-converter",
@@ -25,9 +26,11 @@ export default function HomePage() {
   const featuredTools = allTools.filter(t => featuredSlugs.includes(t.slug));
 
   return (
-    <HomeClient 
-      latestPosts={latestPosts} 
+    <HomeClient
+      latestPosts={latestPosts}
+      allPosts={allPosts}
       featuredTools={featuredTools}
+      allTools={allTools}
       totalToolCount={allTools.length}
     />
   );

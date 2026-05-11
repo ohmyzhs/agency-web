@@ -24,6 +24,12 @@ export type ToolField = {
 
 export type ToolFaq = { question: string; answer: string };
 
+export type ToolDataNotice = {
+  processing: string;
+  storage: string;
+  caution: string;
+};
+
 export type LocalizedToolContent = {
   title: string;
   shortTitle: string;
@@ -35,6 +41,7 @@ export type LocalizedToolContent = {
   examples: ToolExample[];
   explanation: string[];
   faqs: ToolFaq[];
+  dataNotice?: ToolDataNotice;
 };
 
 export type Tool = LocalizedToolContent & {
@@ -57,11 +64,30 @@ export const tools: Tool[] = [
     tier: 1,
     seoTitle: "Developer Text Toolkit | Base64 URL JWT Hash UUID Regex Diff",
     seoDescription: "A browser-local toolkit for text counters, Base64 and URL encoding, text diff, JWT decoding, hash generation, UUID generation, and regex testing.",
-    inputs: [{ label: "Text or token", description: "Paste text, encoded values, JWTs, or regex test samples." }],
-    outputs: [{ label: "Transformed result", description: "Counts, decoded text, diff rows, JWT payload, hashes, UUIDs, or regex matches." }],
-    examples: [{ label: "JWT inspection", input: "header.payload.signature", output: "Decoded header and payload JSON" }],
-    explanation: ["Batch 1 developer utilities are grouped into one workspace to avoid thin duplicate pages while still covering frequent search/use cases.", "All processing runs in the browser. Do not paste production secrets into public tools even when processing is local."],
-    faqs: [{ question: "Does this validate JWT signatures?", answer: "No. It decodes header and payload only. Signature verification needs the issuer secret or public key." }],
+    inputs: [
+      { label: "Text, token, or pattern", description: "Paste plain text, encoded strings, JWTs, regular expressions, or comparison samples." },
+      { label: "Mode options", description: "Choose counting, Base64/URL encode-decode, diff, JWT decode, hash, UUID, or regex testing." },
+    ],
+    outputs: [
+      { label: "Transformed result", description: "Counts, decoded text, diff rows, JWT payload, hashes, UUIDs, or regex matches." },
+      { label: "Copy-ready artifacts", description: "Use the generated value as a debugging aid, documentation snippet, or temporary test fixture." },
+    ],
+    examples: [
+      { label: "JWT inspection", input: "header.payload.signature", output: "Decoded header and payload JSON" },
+      { label: "Release note diff", input: "Two text versions", output: "Changed lines highlighted" },
+      { label: "API payload helper", input: "Text with spaces and symbols", output: "URL-encoded or Base64 value" },
+    ],
+    explanation: [
+      "Developer text work often starts with a tiny task: count bytes, decode a value, compare two snippets, generate a UUID, or check whether a regular expression really matches. Keeping those tasks in one workspace reduces context switching.",
+      "The toolkit is designed for inspection and transformation, not for production authentication. JWT decoding only reads the header and payload; it does not prove that a token is valid or trusted.",
+      "Hash and UUID outputs are convenient for fixtures, cache keys, examples, and debugging notes. They should not replace a reviewed security library for password storage, signing, or cryptographic protocols.",
+      "All normal transformations run in the browser. Even so, production secrets, private keys, access tokens, and customer data should stay out of public web tools unless you have a deliberate internal policy for that workflow.",
+    ],
+    faqs: [
+      { question: "Does this validate JWT signatures?", answer: "No. It decodes header and payload only. Signature verification needs the issuer secret or public key and must happen in a trusted environment." },
+      { question: "Can I paste production API keys here?", answer: "Avoid doing that. The tool is browser-local for normal operations, but secret handling should remain inside approved internal tooling." },
+      { question: "Are generated hashes suitable for passwords?", answer: "No. Password storage needs salted, slow password hashing such as bcrypt, scrypt, or Argon2." },
+    ],
     relatedToolSlugs: ["json-yaml-validator", "webhook-payload-formatter", "cron-explainer"],
     ko: {
       title: "개발자 텍스트 도구 모음",
@@ -69,11 +95,30 @@ export const tools: Tool[] = [
       description: "글자수, Base64, URL 인코딩, 텍스트 diff, JWT 디코더, 해시, UUID, 정규식 테스트를 로컬에서 처리합니다.",
       seoTitle: "개발자 텍스트 도구 | Base64 URL JWT 해시 UUID 정규식 diff",
       seoDescription: "글자수/단어수/바이트 카운터, Base64·URL 인코딩/디코딩, 텍스트 비교, JWT 디코더, 해시/UUID 생성, 정규식 테스트를 브라우저에서 제공합니다.",
-      inputs: [{ label: "텍스트 또는 토큰", description: "텍스트, 인코딩 문자열, JWT, 정규식 테스트 샘플을 입력합니다." }],
-      outputs: [{ label: "처리 결과", description: "카운트, 디코딩 결과, diff, JWT payload, 해시, UUID, 정규식 매칭 결과를 표시합니다." }],
-      examples: [{ label: "JWT 확인", input: "header.payload.signature", output: "헤더와 payload JSON 디코딩" }],
-      explanation: ["Batch 1 개발자 유틸리티는 얇은 중복 페이지를 늘리지 않기 위해 하나의 워크스페이스로 묶었습니다.", "모든 처리는 브라우저에서 실행됩니다. 로컬 처리라도 운영 비밀값은 공개 도구에 붙여넣지 않는 것이 안전합니다."],
-      faqs: [{ question: "JWT 서명 검증도 하나요?", answer: "아닙니다. 헤더와 payload 디코딩만 수행합니다. 서명 검증은 발급자 secret 또는 공개키가 필요합니다." }],
+      inputs: [
+        { label: "텍스트, 토큰, 패턴", description: "일반 텍스트, 인코딩 문자열, JWT, 정규식, 비교할 두 텍스트를 입력합니다." },
+        { label: "작업 모드", description: "글자수/바이트, Base64·URL 인코딩, diff, JWT 디코딩, 해시, UUID, 정규식 테스트 중 선택합니다." },
+      ],
+      outputs: [
+        { label: "처리 결과", description: "카운트, 디코딩 결과, diff, JWT payload, 해시, UUID, 정규식 매칭 결과를 표시합니다." },
+        { label: "복사용 결과", description: "디버깅 메모, 문서 예시, 임시 테스트 데이터로 바로 복사할 수 있는 값을 제공합니다." },
+      ],
+      examples: [
+        { label: "JWT 확인", input: "header.payload.signature", output: "헤더와 payload JSON 디코딩" },
+        { label: "릴리즈 노트 비교", input: "두 버전의 문장", output: "달라진 줄 하이라이트" },
+        { label: "API payload 보조", input: "공백과 기호가 포함된 텍스트", output: "URL 인코딩 또는 Base64 값" },
+      ],
+      explanation: [
+        "개발 중 텍스트 작업은 대개 아주 작은 확인에서 시작됩니다. 바이트 수를 세고, 값을 디코딩하고, 두 스니펫을 비교하고, UUID를 만들고, 정규식이 실제로 맞는지 보는 작업을 한 화면에 모았습니다.",
+        "이 도구는 점검과 변환을 위한 것이며 운영 인증을 대신하지 않습니다. JWT 디코딩은 헤더와 payload를 읽는 기능일 뿐, 토큰이 유효하거나 신뢰할 수 있다는 뜻은 아닙니다.",
+        "해시와 UUID 결과는 fixture, 캐시 키, 문서 예시, 디버깅 노트에는 편리하지만 비밀번호 저장, 서명, 암호 프로토콜에는 검토된 보안 라이브러리를 사용해야 합니다.",
+        "일반 변환은 브라우저에서 실행됩니다. 그래도 운영 secret, 개인키, access token, 고객 원본 데이터는 승인된 내부 도구가 아니라면 공개 웹 도구에 붙여넣지 않는 것이 안전합니다.",
+      ],
+      faqs: [
+        { question: "JWT 서명 검증도 하나요?", answer: "아닙니다. 헤더와 payload 디코딩만 수행합니다. 서명 검증은 발급자 secret 또는 공개키가 있는 신뢰 환경에서 해야 합니다." },
+        { question: "운영 API 키를 붙여넣어도 되나요?", answer: "권장하지 않습니다. 일반 처리는 브라우저 로컬이지만 secret 관리는 승인된 내부 도구에서만 하는 것이 안전합니다." },
+        { question: "생성한 해시를 비밀번호 저장에 써도 되나요?", answer: "아닙니다. 비밀번호 저장에는 salt와 느린 해시가 적용된 bcrypt, scrypt, Argon2 같은 전용 방식이 필요합니다." },
+      ],
     },
   },
   {
@@ -85,11 +130,30 @@ export const tools: Tool[] = [
     tier: 1,
     seoTitle: "Image Editing Toolkit | Compress Resize Crop Watermark Mosaic Palette",
     seoDescription: "Browser-local image compression, resize, crop, rotate, EXIF stripping by re-export, watermarking, mosaic blur, and color palette extraction.",
-    inputs: [{ label: "Image file", description: "Upload a browser-readable image up to 20MB." }],
-    outputs: [{ label: "Processed image or palette", description: "Download a re-exported JPG or copy extracted palette colors." }],
-    examples: [{ label: "Privacy resize", input: "Phone photo", output: "Smaller JPG with most metadata stripped" }],
-    explanation: ["Batch 2 image operations are grouped as an image workspace because users often compress, resize, watermark, and strip metadata in one session.", "Canvas re-export removes most EXIF metadata, but browser support varies by input format."],
-    faqs: [{ question: "Does this support HEIC?", answer: "Only if the browser can decode it. HEIC conversion may need a separate library or server flow later." }],
+    inputs: [
+      { label: "Image file", description: "Upload a browser-readable image up to 20MB for compression, resizing, cropping, rotation, watermarking, mosaic, or palette extraction." },
+      { label: "Editing options", description: "Choose output size, quality, crop area, rotation, watermark text, mosaic strength, or palette count." },
+    ],
+    outputs: [
+      { label: "Processed image", description: "Download a re-exported image optimized for sharing, upload, documentation, or privacy cleanup." },
+      { label: "Palette or preview", description: "Copy extracted colors and inspect the result before downloading." },
+    ],
+    examples: [
+      { label: "Privacy resize", input: "Phone photo", output: "Smaller JPG with most metadata stripped" },
+      { label: "Blog image prep", input: "Large screenshot", output: "Compressed Web image with controlled width" },
+      { label: "Sensitive area blur", input: "Screenshot with account name", output: "Mosaic applied before sharing" },
+    ],
+    explanation: [
+      "Image work is rarely a single action. A user may resize a screenshot, strip metadata, add a watermark, blur a private area, and copy colors for a post thumbnail in the same session.",
+      "The workspace uses browser image decoding and Canvas-style re-export for the supported operations. That keeps normal image processing local and avoids uploading private drafts to a server.",
+      "Canvas re-export removes most EXIF metadata, but browser support varies by source format and some metadata may behave differently across PNG, JPEG, WebP, and mobile photo formats.",
+      "Very large files can exhaust browser memory, especially on mobile. For archival originals, keep a separate backup before destructive edits such as cropping or heavy compression.",
+    ],
+    faqs: [
+      { question: "Does this support HEIC?", answer: "Only if the browser can decode it. HEIC conversion may need a separate library or server flow later." },
+      { question: "Are uploaded images stored by ZHS?", answer: "No. The editing workflow is designed around browser-local processing and download from the client." },
+      { question: "Does metadata stripping guarantee complete privacy?", answer: "No. Re-export removes most common EXIF data, but you should still visually inspect images for visible addresses, names, account IDs, or screenshots of private content." },
+    ],
     relatedToolSlugs: ["image-format-converter", "icon-favicon-generator", "og-image-generator"],
     ko: {
       title: "이미지 편집 도구 모음",
@@ -97,11 +161,30 @@ export const tools: Tool[] = [
       description: "이미지 압축, 리사이즈, 크롭, 회전, 메타데이터 제거용 재저장, 워터마크, 모자이크, 색상 추출을 처리합니다.",
       seoTitle: "이미지 편집 도구 | 압축 리사이즈 크롭 워터마크 모자이크 색상 추출",
       seoDescription: "이미지 압축, 리사이즈/크롭/회전, EXIF 제거용 재저장, 워터마크, 모자이크/블러, 이미지 색상 팔레트를 브라우저에서 처리합니다.",
-      inputs: [{ label: "이미지 파일", description: "20MB 이하의 브라우저가 읽을 수 있는 이미지를 업로드합니다." }],
-      outputs: [{ label: "처리 이미지 또는 팔레트", description: "재저장된 JPG를 다운로드하거나 추출된 색상 팔레트를 확인합니다." }],
-      examples: [{ label: "개인정보 보호 리사이즈", input: "휴대폰 사진", output: "대부분의 메타데이터가 제거된 작은 JPG" }],
-      explanation: ["Batch 2 이미지 작업은 압축, 리사이즈, 워터마크, 메타데이터 제거가 한 세션에서 자주 이어지므로 하나의 워크스페이스로 묶었습니다.", "Canvas 재저장은 대부분의 EXIF 메타데이터를 제거하지만 입력 포맷별 브라우저 지원에는 차이가 있습니다."],
-      faqs: [{ question: "HEIC도 지원하나요?", answer: "브라우저가 직접 디코딩할 수 있는 경우에만 가능합니다. HEIC 변환은 이후 별도 라이브러리나 서버 흐름 검증이 필요합니다." }],
+      inputs: [
+        { label: "이미지 파일", description: "압축, 리사이즈, 크롭, 회전, 워터마크, 모자이크, 색상 추출에 사용할 20MB 이하 이미지를 업로드합니다." },
+        { label: "편집 옵션", description: "출력 크기, 품질, 크롭 영역, 회전, 워터마크 문구, 모자이크 강도, 팔레트 개수를 조정합니다." },
+      ],
+      outputs: [
+        { label: "처리 이미지", description: "공유, 업로드, 문서 삽입, 개인정보 정리에 맞게 재저장된 이미지를 다운로드합니다." },
+        { label: "팔레트 또는 미리보기", description: "추출 색상을 복사하고 결과를 확인한 뒤 다운로드합니다." },
+      ],
+      examples: [
+        { label: "개인정보 보호 리사이즈", input: "휴대폰 사진", output: "대부분의 메타데이터가 제거된 작은 JPG" },
+        { label: "블로그 이미지 준비", input: "큰 스크린샷", output: "폭과 용량을 줄인 웹용 이미지" },
+        { label: "민감 영역 흐림", input: "계정명이 보이는 화면", output: "공유 전 모자이크 적용" },
+      ],
+      explanation: [
+        "이미지 작업은 한 번에 끝나지 않는 경우가 많습니다. 스크린샷을 줄이고, 메타데이터를 제거하고, 워터마크를 넣고, 민감한 영역을 흐리고, 썸네일 색상을 뽑는 흐름을 한 페이지에 모았습니다.",
+        "지원되는 작업은 브라우저 이미지 디코딩과 Canvas 기반 재저장을 활용합니다. 일반적인 이미지 처리를 로컬에서 끝내므로 비공개 초안을 서버에 올릴 필요가 없습니다.",
+        "Canvas 재저장은 대부분의 EXIF 메타데이터를 제거하지만 PNG, JPEG, WebP, 모바일 사진 포맷마다 브라우저 지원과 처리 방식에는 차이가 있습니다.",
+        "매우 큰 파일은 특히 모바일에서 브라우저 메모리 한계에 걸릴 수 있습니다. 크롭이나 강한 압축처럼 되돌리기 어려운 작업 전에는 원본 백업을 따로 보관하세요.",
+      ],
+      faqs: [
+        { question: "HEIC도 지원하나요?", answer: "브라우저가 직접 디코딩할 수 있는 경우에만 가능합니다. HEIC 변환은 이후 별도 라이브러리나 서버 흐름 검증이 필요합니다." },
+        { question: "업로드한 이미지가 ZHS 서버에 저장되나요?", answer: "아닙니다. 편집 흐름은 브라우저 로컬 처리와 클라이언트 다운로드를 기준으로 설계했습니다." },
+        { question: "메타데이터 제거만 하면 개인정보가 완전히 안전한가요?", answer: "아닙니다. EXIF는 대부분 제거되지만 이미지 안에 보이는 주소, 이름, 계정 ID, 사적인 화면 내용은 직접 확인해야 합니다." },
+      ],
     },
   },
   {
@@ -113,11 +196,30 @@ export const tools: Tool[] = [
     tier: 1,
     seoTitle: "Life Calculator Suite | Date D-Day Loan Salary VAT Tip Pomodoro",
     seoDescription: "Practical date, D-Day, stopwatch, pomodoro, percent, VAT, tip, loan, salary, severance, and annual leave calculators in one page.",
-    inputs: [{ label: "Amounts, dates, rates", description: "Enter dates, money amounts, percentages, periods, or timer lengths." }],
-    outputs: [{ label: "Estimated result", description: "Shows calculated dates, payments, totals, timer state, or estimated work benefits." }],
-    examples: [{ label: "Loan estimate", input: "10,000,000 at 5% for 36 months", output: "Estimated monthly payment" }],
-    explanation: ["Batch 4 calculators are grouped to keep practical daily calculations discoverable without creating many thin pages.", "Payroll, severance, tax, and leave calculations are simplified estimates and should be checked against current rules."],
-    faqs: [{ question: "Are salary and severance authoritative?", answer: "No. They are quick estimates with simplified assumptions, not legal/tax advice." }],
+    inputs: [
+      { label: "Amounts, dates, rates", description: "Enter dates, money amounts, percentages, periods, work days, or timer lengths depending on the selected calculator." },
+      { label: "Assumptions", description: "Use interest rates, tax rates, salary periods, or leave rules as simplified inputs for quick estimates." },
+    ],
+    outputs: [
+      { label: "Estimated result", description: "Shows calculated dates, payments, totals, timer state, or estimated work benefits." },
+      { label: "Context note", description: "Displays the simplified basis so the result is easier to verify before relying on it." },
+    ],
+    examples: [
+      { label: "Loan estimate", input: "10,000,000 at 5% for 36 months", output: "Estimated monthly payment" },
+      { label: "D-Day check", input: "Project due date", output: "Days remaining" },
+      { label: "VAT split", input: "Total price including tax", output: "Supply amount and VAT" },
+    ],
+    explanation: [
+      "Daily calculators are grouped because people often move between date math, percentages, VAT, loans, salary estimates, and timers while planning work or household decisions.",
+      "The results are intentionally fast reference values. They help with mental checks, planning, and comparison, but they are not a substitute for payroll software, tax rules, bank quotations, or labor-law review.",
+      "Financial and work-related calculators use simplified assumptions that may not match every Korean regulation, company policy, bank product, or local interpretation.",
+      "When a number matters legally or financially, treat this page as the first calculation pass and verify with current official sources or a qualified expert before making a decision.",
+    ],
+    faqs: [
+      { question: "Are salary and severance authoritative?", answer: "No. They are quick estimates with simplified assumptions, not legal/tax advice." },
+      { question: "Why are timers and money calculators together?", answer: "They support everyday planning: time blocks, deadlines, percentages, VAT, loans, salary, and leave are often checked in the same workflow." },
+      { question: "Can I use the result in contracts or filings?", answer: "Use it only as a reference. Official filings, payroll, contracts, and tax decisions require current official rules and professional confirmation." },
+    ],
     relatedToolSlugs: ["krw-currency-calculator", "unit-converter", "kst-timezone-converter"],
     ko: {
       title: "생활 계산기 모음",
@@ -125,11 +227,30 @@ export const tools: Tool[] = [
       description: "날짜, D-Day, 스톱워치, 포모도로, 퍼센트, 부가세, 팁, 대출, 급여, 퇴직금, 연차 계산을 한 페이지에서 제공합니다.",
       seoTitle: "생활 계산기 모음 | 날짜 D-Day 대출 급여 부가세 팁 포모도로",
       seoDescription: "날짜 계산기, D-Day, 스톱워치, 포모도로, 퍼센트, 부가세, 팁, 대출, 급여, 퇴직금, 연차 계산기를 한 페이지에서 사용합니다.",
-      inputs: [{ label: "금액, 날짜, 비율", description: "날짜, 금액, 퍼센트, 기간, 타이머 길이를 입력합니다." }],
-      outputs: [{ label: "계산 결과", description: "날짜 차이, 납입액, 합계, 타이머 상태, 근로 관련 추정값을 표시합니다." }],
-      examples: [{ label: "대출 추정", input: "1천만원, 연 5%, 36개월", output: "예상 월 납입액" }],
-      explanation: ["Batch 4 생활 계산기는 얇은 페이지를 많이 만들지 않도록 하나의 실용 계산기 모음으로 구성했습니다.", "급여, 퇴직금, 세금, 연차 결과는 단순 추정이며 실제 최신 법규와 회사 정책을 확인해야 합니다."],
-      faqs: [{ question: "급여/퇴직금 계산이 법적으로 정확한가요?", answer: "아닙니다. 단순 가정 기반 빠른 추정이며 법률·세무 조언이 아닙니다." }],
+      inputs: [
+        { label: "금액, 날짜, 비율", description: "선택한 계산기에 따라 날짜, 금액, 퍼센트, 기간, 근무일, 타이머 길이를 입력합니다." },
+        { label: "계산 가정", description: "이자율, 세율, 급여 기간, 연차 기준처럼 빠른 추정에 필요한 단순 가정을 넣습니다." },
+      ],
+      outputs: [
+        { label: "계산 결과", description: "날짜 차이, 납입액, 합계, 타이머 상태, 근로 관련 추정값을 표시합니다." },
+        { label: "참고 기준", description: "결과를 다시 검증하기 쉽도록 단순화된 계산 기준을 함께 안내합니다." },
+      ],
+      examples: [
+        { label: "대출 추정", input: "1천만원, 연 5%, 36개월", output: "예상 월 납입액" },
+        { label: "D-Day 확인", input: "프로젝트 마감일", output: "남은 일수" },
+        { label: "부가세 분리", input: "부가세 포함 총액", output: "공급가액과 부가세" },
+      ],
+      explanation: [
+        "생활 계산기는 날짜, 퍼센트, 부가세, 대출, 급여 추정, 타이머를 계획 중 자주 오가기 때문에 한 페이지에 묶었습니다.",
+        "결과는 빠른 참고값입니다. 머릿속 계산을 확인하고 계획을 비교하는 데 유용하지만 급여 프로그램, 세법, 은행 견적, 노동법 검토를 대체하지 않습니다.",
+        "재정·근로 관련 계산은 한국의 모든 규정, 회사 정책, 은행 상품, 지역별 해석을 반영하지 못하는 단순 가정 기반입니다.",
+        "숫자가 법적·금전적으로 중요하다면 이 페이지를 1차 계산으로만 사용하고 최신 공식 자료나 전문가 확인을 거쳐야 합니다.",
+      ],
+      faqs: [
+        { question: "급여/퇴직금 계산이 법적으로 정확한가요?", answer: "아닙니다. 단순 가정 기반 빠른 추정이며 법률·세무 조언이 아닙니다." },
+        { question: "타이머와 금액 계산기를 왜 같이 두었나요?", answer: "일상 계획에서는 시간 블록, 마감일, 퍼센트, 부가세, 대출, 급여, 연차를 같은 흐름에서 확인하는 경우가 많기 때문입니다." },
+        { question: "계약서나 신고에 바로 써도 되나요?", answer: "참고용으로만 사용하세요. 공식 신고, 급여, 계약, 세무 판단에는 최신 공식 기준과 전문가 검토가 필요합니다." },
+      ],
     },
   },
   {
@@ -195,10 +316,136 @@ export const tools: Tool[] = [
     },
   },
   {
-    slug: "og-image-generator", title: "OG Image & Thumbnail Generator", shortTitle: "OG Image", description: "Create 1200×630 social preview images from templates in the browser.", category: "file-media", tier: 1, seoTitle: "OG Image Generator | 1200x630 Social Thumbnail Maker", seoDescription: "Generate OpenGraph, Twitter, Kakao, and blog thumbnail PNG images with templates and Korean text wrapping.", inputs: [{ label: "Title and subtitle", description: "Enter the copy and choose a visual template." }], outputs: [{ label: "1200×630 PNG", description: "Download a social preview image." }], examples: [{ label: "Blog thumbnail", input: "Post title", output: "OG PNG" }], explanation: ["The generator uses Canvas templates sized for common social previews.", "Always preview important Korean line breaks before publishing."], faqs: [{ question: "Can I upload a logo?", answer: "This MVP uses built-in templates. Logo upload can be added later." }], relatedToolSlugs: ["icon-favicon-generator", "image-format-converter", "color-contrast-checker"], ko: { title: "OG이미지 / 썸네일 생성기", shortTitle: "OG 이미지", description: "블로그·SNS 공유용 1200×630 썸네일을 브라우저에서 생성합니다.", seoTitle: "OG이미지 생성기 | 1200x630 썸네일 만들기", seoDescription: "OpenGraph, Twitter, 카카오, 블로그 공유용 1200×630 PNG 이미지를 템플릿과 한국어 줄바꿈으로 생성합니다.", inputs: [{ label: "제목과 부제목", description: "문구를 입력하고 템플릿을 선택합니다." }], outputs: [{ label: "1200×630 PNG", description: "공유 미리보기 이미지를 다운로드합니다." }], examples: [{ label: "블로그 썸네일", input: "글 제목", output: "OG PNG" }], explanation: ["일반적인 SNS 미리보기 크기에 맞춘 Canvas 템플릿을 사용합니다.", "중요한 한국어 줄바꿈은 게시 전 미리보기로 확인하세요."], faqs: [{ question: "로고 업로드도 되나요?", answer: "MVP는 내장 템플릿 중심입니다. 로고 업로드는 이후 추가할 수 있습니다." }] },
+    slug: "og-image-generator",
+    title: "OG Image & Thumbnail Generator",
+    shortTitle: "OG Image",
+    description: "Create 1200×630 social preview images for blogs, X, Kakao, newsletters, and documentation thumbnails from browser templates.",
+    category: "file-media",
+    tier: 1,
+    seoTitle: "OG Image Generator | 1200x630 Social Thumbnail Maker",
+    seoDescription: "Generate OpenGraph, Twitter, Kakao, and blog thumbnail PNG images with browser templates, Korean text wrapping, and copy-ready social preview sizing.",
+    inputs: [
+      { label: "Title and subtitle", description: "Enter the visible copy for the thumbnail and choose a template style." },
+      { label: "Visual options", description: "Adjust colors, layout, and preview text before exporting the image." },
+    ],
+    outputs: [
+      { label: "1200×630 PNG", description: "Download a social preview image suitable for OpenGraph and blog cards." },
+      { label: "Preview check", description: "Inspect Korean line breaks and contrast before publishing." },
+    ],
+    examples: [
+      { label: "Blog thumbnail", input: "Post title and short summary", output: "OG PNG for a post card" },
+      { label: "Launch note", input: "Tool name and one-line benefit", output: "Share image for social channels" },
+      { label: "Documentation cover", input: "Guide headline", output: "Consistent 1200×630 cover" },
+    ],
+    explanation: [
+      "Social cards often decide whether a useful post is noticed. This generator focuses on a standard 1200×630 canvas so the same image works across common OpenGraph, Twitter/X, Kakao, and blog preview contexts.",
+      "The tool is meant for fast, repeatable editorial production: pick a template, write a concise title, verify line breaks, then export a PNG without opening a full design application.",
+      "Korean text can wrap differently depending on font, length, and punctuation. Always preview the exported layout, especially for mixed Korean-English titles and numbers.",
+      "The generator uses browser rendering, so final visual fidelity depends on available fonts and canvas behavior. For brand-critical campaigns, treat the result as a draft and run a manual design review.",
+    ],
+    faqs: [
+      { question: "Can I upload a logo?", answer: "This MVP uses built-in templates. Logo upload can be added later after validating safe image handling and layout controls." },
+      { question: "Is 1200×630 always the right size?", answer: "It is the common OpenGraph baseline, but some platforms crop differently. Keep important text away from edges." },
+      { question: "Are titles sent to the server?", answer: "No. The preview and PNG export are generated in the browser." },
+    ],
+    relatedToolSlugs: ["icon-favicon-generator", "image-format-converter", "color-contrast-checker"],
+    ko: {
+      title: "OG이미지 / 썸네일 생성기",
+      shortTitle: "OG 이미지",
+      description: "블로그, X, 카카오, 뉴스레터, 문서 커버에 쓸 1200×630 공유 썸네일을 브라우저 템플릿으로 만듭니다.",
+      seoTitle: "OG이미지 생성기 | 1200x630 썸네일 만들기",
+      seoDescription: "OpenGraph, Twitter, 카카오, 블로그 공유용 1200×630 PNG 이미지를 템플릿과 한국어 줄바꿈 확인으로 생성합니다.",
+      inputs: [
+        { label: "제목과 부제목", description: "썸네일에 표시할 문구를 입력하고 템플릿 스타일을 선택합니다." },
+        { label: "시각 옵션", description: "색상, 레이아웃, 미리보기 문구를 조정한 뒤 내보냅니다." },
+      ],
+      outputs: [
+        { label: "1200×630 PNG", description: "OpenGraph와 블로그 카드에 쓰기 좋은 공유 미리보기 이미지를 다운로드합니다." },
+        { label: "미리보기 확인", description: "게시 전에 한국어 줄바꿈과 대비를 확인합니다." },
+      ],
+      examples: [
+        { label: "블로그 썸네일", input: "글 제목과 짧은 요약", output: "게시글 카드용 OG PNG" },
+        { label: "런칭 안내", input: "도구명과 한 줄 장점", output: "소셜 공유 이미지" },
+        { label: "문서 커버", input: "가이드 제목", output: "일관된 1200×630 커버" },
+      ],
+      explanation: [
+        "소셜 카드 이미지는 좋은 글이 클릭되는지에 큰 영향을 줍니다. 이 도구는 1200×630 표준 캔버스에 맞춰 OpenGraph, Twitter/X, 카카오, 블로그 미리보기에 함께 쓰기 좋은 이미지를 빠르게 만듭니다.",
+        "전체 디자인 툴을 열지 않고 템플릿 선택, 짧은 제목 작성, 줄바꿈 확인, PNG 다운로드까지 이어지는 반복 편집 흐름을 목표로 합니다.",
+        "한국어는 글꼴, 문장 길이, 문장부호, 영문 혼용 여부에 따라 줄바꿈이 어색해질 수 있으므로 게시 전 반드시 미리보기를 확인해야 합니다.",
+        "브라우저 렌더링을 사용하므로 최종 품질은 사용 가능한 글꼴과 Canvas 동작에 영향을 받습니다. 브랜드 캠페인용 이미지는 초안으로 보고 별도 디자인 검수를 권장합니다.",
+      ],
+      faqs: [
+        { question: "로고 업로드도 되나요?", answer: "MVP는 내장 템플릿 중심입니다. 안전한 이미지 처리와 레이아웃 제어를 검증한 뒤 추가할 수 있습니다." },
+        { question: "1200×630이면 모든 플랫폼에서 맞나요?", answer: "일반적인 OpenGraph 기준이지만 플랫폼마다 일부 크롭이 다를 수 있습니다. 중요한 문구는 가장자리에서 떨어뜨려 배치하세요." },
+        { question: "입력한 제목이 서버로 전송되나요?", answer: "아닙니다. 미리보기와 PNG 내보내기는 브라우저에서 생성됩니다." },
+      ],
+    },
   },
   {
-    slug: "qr-barcode-generator", title: "QR & Barcode Generator", shortTitle: "QR/Barcode", description: "Generate QR codes and common barcodes locally in the browser.", category: "file-media", tier: 1, seoTitle: "QR Code and Barcode Generator | SVG PNG Download", seoDescription: "Create URL, text, Wi-Fi, vCard QR codes and Code128/EAN/UPC barcodes locally with SVG or PNG download.", inputs: [{ label: "Content", description: "Choose QR content type and barcode value." }], outputs: [{ label: "QR SVG and barcode PNG", description: "Download generated codes." }], examples: [{ label: "Wi-Fi QR", input: "SSID and password", output: "Scannable QR code" }], explanation: ["QR codes are generated as SVG and barcodes as PNG in the browser.", "For product labels or payments, verify the result with a real scanner."], faqs: [{ question: "Are values uploaded?", answer: "No. Generation is local." }], relatedToolSlugs: ["og-image-generator", "icon-favicon-generator", "image-format-converter"], ko: { title: "QR / Barcode 생성기", shortTitle: "QR/Barcode", description: "URL, 텍스트, Wi-Fi, vCard QR과 주요 바코드를 브라우저에서 생성합니다.", seoTitle: "QR코드 바코드 생성기 | SVG PNG 다운로드", seoDescription: "URL, 텍스트, Wi-Fi, vCard QR 코드와 Code128/EAN/UPC 바코드를 로컬에서 생성합니다.", inputs: [{ label: "내용", description: "QR 유형과 바코드 값을 입력합니다." }], outputs: [{ label: "QR SVG와 바코드 PNG", description: "생성된 코드를 다운로드합니다." }], examples: [{ label: "Wi-Fi QR", input: "SSID와 비밀번호", output: "스캔 가능한 QR 코드" }], explanation: ["QR은 SVG, 바코드는 PNG로 브라우저에서 생성합니다.", "상품 라벨이나 결제 용도는 실제 스캐너로 검증하세요."], faqs: [{ question: "입력값이 업로드되나요?", answer: "아닙니다. 생성은 로컬에서 수행됩니다." }] },
+    slug: "qr-barcode-generator",
+    title: "QR & Barcode Generator",
+    shortTitle: "QR/Barcode",
+    description: "Generate QR codes for URLs, text, Wi-Fi, and contact cards plus common barcodes locally in the browser.",
+    category: "file-media",
+    tier: 1,
+    seoTitle: "QR Code and Barcode Generator | SVG PNG Download",
+    seoDescription: "Create URL, text, Wi-Fi, vCard QR codes and Code128/EAN/UPC barcodes locally with SVG or PNG download, scanner verification guidance, and privacy notes.",
+    inputs: [
+      { label: "QR content", description: "Choose URL, text, Wi-Fi, vCard, or another QR content pattern and enter the value." },
+      { label: "Barcode value", description: "Enter a supported barcode value such as Code128, EAN, or UPC depending on the selected format." },
+    ],
+    outputs: [
+      { label: "QR SVG/PNG", description: "Download a scannable QR image for print, signage, packaging, or internal documents." },
+      { label: "Barcode PNG", description: "Generate a barcode image and verify it with a physical scanner before operational use." },
+    ],
+    examples: [
+      { label: "Wi-Fi QR", input: "SSID and password", output: "Scannable QR code" },
+      { label: "Event link", input: "Landing page URL", output: "QR code for posters" },
+      { label: "Inventory label", input: "Internal item code", output: "Code128-style barcode" },
+    ],
+    explanation: [
+      "QR codes are useful when a user must move from offline material to a URL, Wi-Fi profile, contact card, or text payload without retyping. Barcodes are useful for labels, inventory, and scan-first workflows.",
+      "The generator produces codes in the browser and lets you download image assets for print or digital use. It does not shorten URLs, track scans, or create analytics links by itself.",
+      "Barcode formats have strict length and character rules. A value that renders visually may still be invalid for a retailer, payment provider, or scanner workflow if the format assumptions are wrong.",
+      "Always test with the real devices and apps that will scan the code. Printing size, contrast, quiet zone, paper finish, and camera quality can all affect scan reliability.",
+    ],
+    faqs: [
+      { question: "Are values uploaded?", answer: "No. Generation is local in the browser." },
+      { question: "Can I use this for payments or product labels?", answer: "Only after testing with the real payment app, POS system, or scanner. This tool creates the visual code, not a certified payment or retail workflow." },
+      { question: "Does this track QR scans?", answer: "No. To track scans you would need a separate redirect or analytics service, which changes the privacy model." },
+    ],
+    relatedToolSlugs: ["og-image-generator", "icon-favicon-generator", "image-format-converter"],
+    ko: {
+      title: "QR / Barcode 생성기",
+      shortTitle: "QR/Barcode",
+      description: "URL, 텍스트, Wi-Fi, vCard QR과 주요 바코드를 브라우저에서 생성하고 인쇄·문서용 이미지로 내려받습니다.",
+      seoTitle: "QR코드 바코드 생성기 | SVG PNG 다운로드",
+      seoDescription: "URL, 텍스트, Wi-Fi, vCard QR 코드와 Code128/EAN/UPC 바코드를 로컬에서 생성하고 스캐너 검증 안내와 개인정보 주의사항을 제공합니다.",
+      inputs: [
+        { label: "QR 내용", description: "URL, 텍스트, Wi-Fi, vCard 등 QR 유형을 고르고 값을 입력합니다." },
+        { label: "바코드 값", description: "선택한 포맷에 맞는 Code128, EAN, UPC 등의 값을 입력합니다." },
+      ],
+      outputs: [
+        { label: "QR SVG/PNG", description: "인쇄물, 안내문, 패키지, 내부 문서에 쓸 QR 이미지를 다운로드합니다." },
+        { label: "바코드 PNG", description: "바코드 이미지를 생성하고 운영 전 실제 스캐너로 검증합니다." },
+      ],
+      examples: [
+        { label: "Wi-Fi QR", input: "SSID와 비밀번호", output: "스캔 가능한 QR 코드" },
+        { label: "행사 링크", input: "랜딩 페이지 URL", output: "포스터용 QR 코드" },
+        { label: "재고 라벨", input: "내부 상품 코드", output: "Code128 형태 바코드" },
+      ],
+      explanation: [
+        "QR 코드는 오프라인 안내물에서 URL, Wi-Fi, 연락처, 텍스트로 이동할 때 재입력을 줄여줍니다. 바코드는 라벨, 재고, 스캔 우선 업무 흐름에 유용합니다.",
+        "생성은 브라우저에서 이루어지며 인쇄나 디지털 사용을 위한 이미지를 내려받을 수 있습니다. 이 도구 자체는 URL 단축, 스캔 추적, 분석 링크를 만들지 않습니다.",
+        "바코드 포맷은 길이와 문자 규칙이 엄격합니다. 화면에 그려졌더라도 소매, 결제, 스캐너 시스템의 포맷 가정과 맞지 않으면 운영에 사용할 수 없습니다.",
+        "실제 사용할 기기와 앱으로 반드시 테스트하세요. 인쇄 크기, 대비, 여백, 종이 재질, 카메라 품질이 스캔 성공률에 영향을 줍니다.",
+      ],
+      faqs: [
+        { question: "입력값이 업로드되나요?", answer: "아닙니다. 생성은 브라우저 로컬에서 수행됩니다." },
+        { question: "결제나 상품 라벨에 바로 써도 되나요?", answer: "실제 결제 앱, POS, 스캐너에서 검증한 뒤 사용해야 합니다. 이 도구는 시각 코드를 만들 뿐 인증된 결제·유통 흐름을 제공하지 않습니다." },
+        { question: "QR 스캔 횟수를 추적하나요?", answer: "아닙니다. 추적이 필요하면 별도 리다이렉트나 분석 서비스를 써야 하며, 그 경우 개인정보 처리 방식도 달라집니다." },
+      ],
+    },
   },
   {
     slug: "image-to-ascii-art",
@@ -321,7 +568,70 @@ export const tools: Tool[] = [
     },
   },
   {
-    slug: "webhook-request-simulator", title: "Webhook Request Simulator", shortTitle: "Webhook Tester", description: "Send test HTTP requests from the browser and inspect status, headers, and body.", category: "developer-automation", tier: 1, seoTitle: "Webhook Request Simulator | Browser HTTP Tester", seoDescription: "Test webhook URLs with GET, POST, PUT, PATCH, DELETE, custom headers, JSON bodies, and response inspection.", inputs: [{ label: "Request", description: "URL, method, headers, and body." }], outputs: [{ label: "Response", description: "Status, timing, response headers, and body." }], examples: [{ label: "POST test", input: "JSON payload", output: "Webhook response" }], explanation: ["The request is sent with browser fetch, so CORS policies apply.", "Do not paste production secrets into a public browser tool."], faqs: [{ question: "Why did my webhook fail?", answer: "The most common reason is CORS. Server-side webhook testing can be added later." }], relatedToolSlugs: ["json-yaml-validator", "cron-explainer", "network-diagnostics"], ko: { title: "웹훅 요청 시뮬레이터", shortTitle: "Webhook 테스트", description: "GET/POST 등 HTTP 요청을 보내고 상태, 헤더, 본문을 확인합니다.", seoTitle: "웹훅 요청 시뮬레이터 | 브라우저 HTTP 테스트", seoDescription: "Webhook URL에 GET, POST, PUT, PATCH, DELETE 요청과 커스텀 헤더/JSON 본문을 보내고 응답을 확인합니다.", inputs: [{ label: "요청", description: "URL, method, headers, body를 입력합니다." }], outputs: [{ label: "응답", description: "상태, 시간, 응답 헤더와 본문을 확인합니다." }], examples: [{ label: "POST 테스트", input: "JSON payload", output: "Webhook 응답" }], explanation: ["브라우저 fetch로 요청하므로 대상 서버의 CORS 정책이 적용됩니다.", "공개 브라우저 도구에 운영 비밀 토큰을 붙여넣지 마세요."], faqs: [{ question: "웹훅 요청이 실패하는 이유는?", answer: "가장 흔한 원인은 CORS입니다. 서버 측 웹훅 테스트는 이후 추가할 수 있습니다." }] },
+    slug: "webhook-request-simulator",
+    title: "Webhook Request Simulator",
+    shortTitle: "Webhook Tester",
+    description: "Send controlled test HTTP requests to webhook endpoints and inspect status, headers, timing, and response body before connecting automation.",
+    category: "developer-automation",
+    tier: 1,
+    seoTitle: "Webhook Request Simulator | Browser HTTP Tester",
+    seoDescription: "Test webhook URLs with GET, POST, PUT, PATCH, DELETE, custom headers, JSON bodies, response inspection, and safe endpoint-use warnings.",
+    inputs: [
+      { label: "Request target", description: "Enter a URL you own or are authorized to test and choose the HTTP method." },
+      { label: "Headers and body", description: "Add JSON payloads and non-secret headers for realistic webhook receiver testing." },
+    ],
+    outputs: [
+      { label: "Response summary", description: "Shows status code, response time, headers, and body preview where the browser allows access." },
+      { label: "Debug context", description: "Use the output to check receiver availability, payload shape, and basic automation wiring." },
+    ],
+    examples: [
+      { label: "Slack-style webhook", input: "POST JSON", output: "200 OK preview" },
+      { label: "Local receiver", input: "POST to test endpoint", output: "Inspect accepted payload" },
+      { label: "Method check", input: "GET vs POST", output: "Confirm allowed methods" },
+    ],
+    explanation: [
+      "Webhook failures are often caused by small mismatches: wrong method, invalid JSON, missing headers, unavailable receiver, or an unexpected response code. This simulator gives a quick manual check before wiring a scheduler, bot, or third-party automation.",
+      "Requests are real network requests. Unlike purely local text tools, the target server, browser, network path, and CORS policy all affect what you can send and inspect.",
+      "Do not use this tool for scanning, load testing, bypassing authentication, or probing endpoints you do not control. It is a debugging aid for your own receivers and test services.",
+      "Avoid production secrets in public test requests. If a receiver requires authorization, use a temporary token with narrow scope and revoke it after testing.",
+    ],
+    faqs: [
+      { question: "Can this bypass CORS?", answer: "No. Browser restrictions apply. If a server does not allow the browser to read the response, the tool cannot safely bypass that." },
+      { question: "Are requests sent to the target server?", answer: "Yes. This is the point of the simulator, so target logs may record the request." },
+      { question: "Can I use production webhook secrets?", answer: "Avoid it. Use a temporary test endpoint or token whenever possible." },
+    ],
+    relatedToolSlugs: ["json-yaml-validator", "cron-explainer", "network-diagnostics"],
+    ko: {
+      title: "웹훅 요청 시뮬레이터",
+      shortTitle: "Webhook 테스트",
+      description: "자동화 연결 전에 webhook endpoint로 제어된 HTTP 테스트 요청을 보내고 상태, 헤더, 시간, 응답 본문을 확인합니다.",
+      seoTitle: "웹훅 요청 시뮬레이터 | 브라우저 HTTP 테스트",
+      seoDescription: "GET/POST/PUT/PATCH/DELETE, 커스텀 헤더, JSON 본문, 응답 확인, 안전한 endpoint 사용 안내로 webhook URL을 테스트합니다.",
+      inputs: [
+        { label: "요청 대상", description: "본인 소유이거나 테스트 허가를 받은 URL과 HTTP 메서드를 입력합니다." },
+        { label: "헤더와 본문", description: "JSON payload와 비밀값이 아닌 헤더를 넣어 실제 webhook 수신 상황을 점검합니다." },
+      ],
+      outputs: [
+        { label: "응답 요약", description: "브라우저가 허용하는 범위에서 상태 코드, 응답 시간, 헤더, 본문 미리보기를 표시합니다." },
+        { label: "디버깅 맥락", description: "수신기 동작 여부, payload 형태, 기본 자동화 연결 상태를 확인합니다." },
+      ],
+      examples: [
+        { label: "Slack 스타일 webhook", input: "POST JSON", output: "200 OK 미리보기" },
+        { label: "로컬 수신기", input: "테스트 endpoint로 POST", output: "payload 수신 확인" },
+        { label: "메서드 확인", input: "GET과 POST 비교", output: "허용 메서드 확인" },
+      ],
+      explanation: [
+        "Webhook 오류는 잘못된 메서드, 깨진 JSON, 누락된 헤더, 수신기 중단, 예상과 다른 응답 코드처럼 작은 불일치에서 자주 발생합니다. 이 도구는 스케줄러, 봇, 외부 자동화에 연결하기 전 수동 점검을 돕습니다.",
+        "요청은 실제 네트워크 요청입니다. 순수 로컬 텍스트 도구와 달리 대상 서버, 브라우저, 네트워크 경로, CORS 정책이 전송과 응답 확인 범위에 영향을 줍니다.",
+        "스캔, 부하 테스트, 인증 우회, 본인 소유가 아닌 endpoint 탐색 용도로 사용하지 마세요. 이 도구는 본인 수신기와 테스트 서비스 디버깅을 위한 보조 도구입니다.",
+        "공개 테스트 요청에 운영 secret을 넣지 않는 것이 안전합니다. 인증이 필요하다면 범위가 좁은 임시 토큰을 쓰고 테스트 후 폐기하세요.",
+      ],
+      faqs: [
+        { question: "CORS를 우회하나요?", answer: "아닙니다. 브라우저 제한이 적용됩니다. 서버가 응답 읽기를 허용하지 않으면 안전하게 우회할 수 없습니다." },
+        { question: "요청이 실제 대상 서버로 전송되나요?", answer: "네. 시뮬레이터의 목적이 실제 요청 점검이므로 대상 서버 로그에 요청 흔적이 남을 수 있습니다." },
+        { question: "운영 webhook secret을 써도 되나요?", answer: "권장하지 않습니다. 가능하면 임시 테스트 endpoint나 제한된 토큰을 사용하세요." },
+      ],
+    },
   },
   {
     slug: "network-diagnostics",

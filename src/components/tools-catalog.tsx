@@ -122,6 +122,27 @@ const copy = {
     viewModeLabel: "보기 방식",
     viewGrid: "그리드",
     viewList: "컴팩트",
+    workflowEyebrow: "편집 방향",
+    workflowTitle: "도구를 낱개 기능이 아니라 실제 작업 흐름으로 묶었습니다.",
+    workflowLead: "oh-my-zhs.com의 도구 라이브러리는 애드센스 승인을 위한 페이지 수 늘리기가 아니라, 한국 생활·개발자 업무·파일/이미지/PDF 처리·진단 작업에서 반복되는 작은 문제를 설명과 함께 해결하는 공개 유틸리티 허브입니다.",
+    workflows: [
+      {
+        title: "한국 생활 계산 흐름",
+        body: "평수, 신발 사이즈, 조리 단위, 원화, 시간대처럼 해외 서비스가 자주 놓치는 한국형 기준을 우선 정리합니다. 결과는 빠른 참고값이며 부동산 계약, 세금, 급여, 법적 판단에는 공식 자료와 전문가 확인이 필요합니다.",
+      },
+      {
+        title: "파일·이미지·PDF 작업 흐름",
+        body: "PDF 병합·분할, 이미지 압축·리사이즈, 포맷 변환, QR/바코드, OG 이미지 제작을 한 라이브러리에서 이어서 사용할 수 있게 배치했습니다. 파일 도구는 가능한 한 브라우저 로컬 처리를 우선하고, 큰 파일·암호화 문서·브라우저 미지원 포맷의 한계를 명시합니다.",
+      },
+      {
+        title: "개발자·자동화 유틸리티 흐름",
+        body: "JSON/YAML 검증, cron 해석, webhook 테스트, 텍스트 변환, 타임스탬프, 색상 대비 확인처럼 운영 중 자주 필요한 검증 작업을 모았습니다. 토큰·시크릿·운영 데이터는 공개 브라우저 도구에 붙여넣지 않는 것을 기본 원칙으로 안내합니다.",
+      },
+      {
+        title: "검수와 업데이트 기준",
+        body: "각 도구 페이지는 입력값, 출력값, 사용 예시, 처리 방식, 개인정보 처리, FAQ, 관련 글 링크를 함께 제공하도록 보강 중입니다. 단순한 위젯보다 사용자가 왜 그 결과를 신뢰하거나 조심해야 하는지 이해할 수 있는 설명을 우선합니다.",
+      },
+    ],
   },
   en: {
     searchLabel: "Search Tool Library",
@@ -144,6 +165,27 @@ const copy = {
     viewModeLabel: "View",
     viewGrid: "Grid",
     viewList: "Compact",
+    workflowEyebrow: "Editorial direction",
+    workflowTitle: "Tools are organized as practical workflows, not isolated widgets.",
+    workflowLead: "The oh-my-zhs.com tool library is not a page-count exercise for AdSense. It is a public utility hub that pairs small repeatable tasks with explanations for Korean living, developer work, file/image/PDF handling, diagnostics, and operations support.",
+    workflows: [
+      {
+        title: "Korean living calculations",
+        body: "Pyeong conversion, shoe sizes, cooking measures, KRW references, and timezone utilities prioritize local context that global generic tools often miss. Results are quick references; real estate, payroll, tax, legal, or financial decisions still require official sources and expert review.",
+      },
+      {
+        title: "File, image, and PDF workflow",
+        body: "PDF merge/split/render, image compression/resizing, format conversion, QR/barcode output, and OG thumbnail creation are arranged for adjacent tasks in one library. File tools prefer browser-local processing where possible and document limits such as large files, encrypted documents, or unsupported browser formats.",
+      },
+      {
+        title: "Developer and automation utilities",
+        body: "JSON/YAML checks, cron explanations, webhook testing, text transforms, timestamps, and color contrast checks support everyday debugging and publishing work. The library explicitly warns against pasting secrets, production tokens, or sensitive operational data into public browser tools.",
+      },
+      {
+        title: "Review and update standard",
+        body: "Tool pages are being maintained with inputs, outputs, examples, processing notes, data handling guidance, FAQs, and related guides. The goal is to help users understand when to trust a result, when to verify it, and how each tool fits a larger workflow.",
+      },
+    ],
   },
 };
 
@@ -276,6 +318,24 @@ export function ToolsCatalog() {
               {t.categories[category] ?? category}
             </FilterChip>
           ))}
+        </div>
+      </section>
+
+      <section className="mb-16 rounded-[2rem] border border-border bg-card p-6 md:p-8">
+        <span className="zhs-eyebrow text-primary/60">{strings.workflowEyebrow}</span>
+        <div className="mt-4 grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+          <div>
+            <h2 className="text-2xl font-black tracking-tight md:text-3xl">{strings.workflowTitle}</h2>
+            <p className="mt-4 text-sm leading-relaxed text-muted md:text-base">{strings.workflowLead}</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {strings.workflows.map((item) => (
+              <article key={item.title} className="rounded-2xl border border-border bg-background p-5">
+                <h3 className="text-sm font-extrabold tracking-tight text-foreground">{item.title}</h3>
+                <p className="mt-3 text-xs leading-relaxed text-muted">{item.body}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 

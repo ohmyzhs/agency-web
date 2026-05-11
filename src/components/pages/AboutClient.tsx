@@ -72,6 +72,26 @@ const aboutCopy = {
         body: "에이전트가 스스로 문제를 보고하고 해결책을 배포하는, 운영 리소스 제로에 수렴하는 미래형 웹을 실험합니다.",
       },
     ],
+    standardsTitle: "사이트를 유용하게 유지하는 방법",
+    standardsLead: "ZHS는 사람이 주도하고 AI가 보조하는 방식으로 운영됩니다. 내용의 정확성과 도구의 안전성에 대한 최종 책임은 항상 스튜디오 운영자에게 있습니다.",
+    standards: [
+      {
+        title: "책임 있는 운영자",
+        body: "ZHS는 단독 운영자가 관리하는 AI 지원 웹 스튜디오입니다. 모든 게시 결정, 수정, 삭제의 최종 판단은 운영자가 직접 내립니다. AI는 초안 작성과 반복 작업에 활용되지만, 사용자에게 제공되는 내용에 대한 책임은 스튜디오가 집니다.",
+      },
+      {
+        title: "가정과 한계를 먼저 밝히기",
+        body: "계산기와 변환기는 결과값과 함께 사용된 공식, 기준, 한계를 명시합니다. 브라우저 로컬 처리가 적용되는 도구는 해당 사실을 도구 설명에 표시합니다. 법적·의학적·세무·재정 조언은 제공하지 않으며, 모든 결과는 참고용 추정치입니다.",
+      },
+      {
+        title: "기본값으로 프라이버시 보호",
+        body: "민감한 데이터를 처리하는 도구는 가능하면 서버로 전송하지 않고 브라우저 내에서 처리합니다. 그러나 로컬 처리라 하더라도 개인정보나 보안 자격증명은 공개 브라우저 도구에 입력하지 않는 것을 권장합니다.",
+      },
+      {
+        title: "피드백이 백로그가 됩니다",
+        body: "오류 신고, 도구 요청, QA 점검, 작은 수정 사항 모두 사이트를 개선하는 실제 입력이 됩니다. 문제를 발견하면 연락 페이지나 GitHub 이슈로 알려주세요. 모든 피드백은 다음 개선 주기에 반영됩니다.",
+      },
+    ],
     principlesTitle: "Principles",
     principles: [
       "실제 근거가 없는 숫자는 절대 기록하지 않습니다.",
@@ -153,6 +173,26 @@ const aboutCopy = {
       {
         title: "Autonomous Web Operations",
         body: "We experiment with a future where agents report issues and deploy solutions with zero human overhead.",
+      },
+    ],
+    standardsTitle: "How we keep the site useful",
+    standardsLead: "ZHS is operated as a human-directed, AI-assisted web studio. Final responsibility for all content accuracy and tool safety lies with the studio operator.",
+    standards: [
+      {
+        title: "Maintained by a responsible operator",
+        body: "ZHS is a solo-operated, AI-assisted web studio. Every publish, edit, and removal decision is made by the operator. AI assists with drafting and iteration, but the studio takes accountability for what users see.",
+      },
+      {
+        title: "Explain assumptions before results",
+        body: "Calculators and converters disclose their formulas, reference standards, and known limits alongside every result. Browser-local processing is noted when applicable. No legal, medical, tax, or financial advice is provided; all outputs are reference estimates.",
+      },
+      {
+        title: "Privacy by default",
+        body: "Tools that handle sensitive data process locally in the browser wherever possible without server transmission. Even so, we recommend not entering personal data or security credentials into any public browser tool.",
+      },
+      {
+        title: "Feedback becomes backlog",
+        body: "Bug reports, tool requests, QA findings, and small corrections all feed real improvements. If you find an issue, reach out via the contact page or GitHub issues. Every report enters the next improvement cycle.",
       },
     ],
     principlesTitle: "Principles",
@@ -246,6 +286,39 @@ export function AboutClient() {
               <p className="mt-4 text-sm leading-relaxed text-muted/80">{pillar.body}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      {/* 3.5. Quality & Trust Standards */}
+      <section className="mx-auto max-w-6xl px-6">
+        <div className="rounded-[2rem] border border-border bg-card p-8 md:p-12 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+          <div className="max-w-2xl mb-10">
+            <span className="zhs-eyebrow text-primary/60">STANDARDS</span>
+            <h2 className="mt-4 text-2xl font-black tracking-tight md:text-4xl">{about.standardsTitle}</h2>
+            <p className="mt-4 text-base text-muted leading-relaxed">{about.standardsLead}</p>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {about.standards.map((item) => (
+              <article key={item.title} className="flex flex-col gap-3 p-6 rounded-2xl bg-accent/20 border border-border">
+                <h3 className="text-base font-extrabold tracking-tight">{item.title}</h3>
+                <p className="text-sm leading-relaxed text-muted">{item.body}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-wrap gap-4 pt-6 border-t border-border">
+            <Link href="/contact" className="text-sm font-bold text-primary hover:underline flex items-center gap-1">
+              {locale === "ko" ? "피드백 보내기" : "Send feedback"} →
+            </Link>
+            <a
+              href="https://github.com/ohmyzhs/agency-web/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-bold text-muted hover:text-primary hover:underline flex items-center gap-1"
+            >
+              GitHub Issues →
+            </a>
+          </div>
         </div>
       </section>
 
