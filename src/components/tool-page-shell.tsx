@@ -4,10 +4,57 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/providers";
 import QuickToolSlots from "@/components/tools/shared/QuickToolSlots";
-import { getRelatedTools, getToolContent, type Tool } from "@/lib/tools";
+import { getRelatedTools, getToolContent, type Tool, type ToolDataNotice } from "@/lib/tools";
 import { getPostContent, type Post } from "@/lib/post-types";
 
 const localOnlyCategories = new Set(["developer-automation", "micro-utility", "file-media"]);
+
+const defaultDataNotices: Record<"ko" | "en", Record<string, ToolDataNotice>> = {
+  ko: {
+    local: {
+      processing: "브라우저 로컬 처리: 이 도구의 주요 계산·변환은 사용자의 브라우저에서 실행됩니다.",
+      storage: "서버 저장 없음: 즐겨찾기 같은 UI 설정을 제외하고 입력 파일이나 텍스트를 ZHS 서버에 저장하지 않습니다.",
+      caution: "민감정보 주의: 로컬 처리라도 운영 비밀키, 주민등록번호, 금융정보, 고객 원본 데이터는 공개 웹 도구에 입력하지 않는 것을 권장합니다.",
+    },
+    network: {
+      processing: "네트워크 요청 사용: 이 도구는 IP 확인, DNS/HTTP 진단, webhook 테스트처럼 외부 URL 또는 ZHS API를 호출할 수 있습니다.",
+      storage: "저장 최소화: 화면에 결과를 표시하기 위한 요청이며, 공개 페이지는 입력값을 영구 저장하는 기능을 제공하지 않습니다. 다만 대상 서버·중간 네트워크·호스팅 로그에는 요청 흔적이 남을 수 있습니다.",
+      caution: "합법적 사용: 본인 소유 또는 테스트 허가를 받은 대상만 진단하세요. 인증 토큰, 내부망 주소, 운영 webhook secret은 입력하지 마세요.",
+    },
+    estimate: {
+      processing: "참고용 계산: 이 도구는 입력값과 공개된 일반 공식을 바탕으로 빠른 추정값을 제공합니다.",
+      storage: "서버 저장 없음: 계산 입력값은 결과 표시용으로만 사용되며 ZHS 서버에 저장하지 않습니다.",
+      caution: "검증 필요: 법률·세무·급여·부동산·재정 판단에는 최신 공식 기준과 전문가 확인이 필요합니다.",
+    },
+  },
+  en: {
+    local: {
+      processing: "Browser-local processing: the main calculation or conversion runs in your browser.",
+      storage: "No server storage: except for UI preferences such as favorites, ZHS does not store your input files or text on the server.",
+      caution: "Sensitive-data caution: even with local processing, avoid entering production secrets, national IDs, financial data, or raw customer data into public web tools.",
+    },
+    network: {
+      processing: "Network requests: this tool may call external URLs or ZHS APIs for IP checks, DNS/HTTP diagnostics, or webhook tests.",
+      storage: "Minimal retention: the public page displays results and does not provide permanent input storage, but target servers, intermediaries, or hosting logs may record request traces.",
+      caution: "Authorized use only: test only targets you own or have permission to inspect. Do not enter auth tokens, internal addresses, or production webhook secrets.",
+    },
+    estimate: {
+      processing: "Reference calculation: this tool provides quick estimates from your inputs and common public formulas.",
+      storage: "No server storage: calculation inputs are only used to display the result and are not stored by ZHS.",
+      caution: "Verification required: legal, tax, payroll, real-estate, or financial decisions require current official sources and expert review.",
+    },
+  },
+};
+
+function getDefaultDataNotice(tool: Tool, locale: "ko" | "en"): ToolDataNotice {
+  if (tool.category === "network-diagnostics" || tool.slug === "webhook-request-simulator") {
+    return defaultDataNotices[locale].network;
+  }
+  if (tool.category === "time-money" || tool.category === "korea-living") {
+    return defaultDataNotices[locale].estimate;
+  }
+  return defaultDataNotices[locale].local;
+}
 
 type ToolPageShellProps = {
   tool: Tool;
@@ -21,6 +68,7 @@ export function ToolPageShell({ tool, guidePosts = [], children }: ToolPageShell
   const relatedTools = getRelatedTools(tool);
   const categoryLabel = t.categories[tool.category] ?? tool.category;
   const showPrivacyNote = localOnlyCategories.has(tool.category);
+  const dataNotice = content.dataNotice ?? getDefaultDataNotice(tool, locale);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-10 md:py-14">
@@ -143,6 +191,17 @@ export function ToolPageShell({ tool, guidePosts = [], children }: ToolPageShell
                     </p>
                   </div>
                 ))}
+              </div>
+            </section>
+
+            <section className="rounded-2xl border border-primary/10 bg-primary/5 p-5">
+              <h2 className="text-lg font-black tracking-tight text-foreground mb-4">
+                {locale === "ko" ? "데이터 처리 안내" : "Data handling notice"}
+              </h2>
+              <div className="grid gap-3 md:grid-cols-3">
+                <p className="rounded-xl bg-background/80 p-4 text-sm leading-relaxed text-muted">{dataNotice.processing}</p>
+                <p className="rounded-xl bg-background/80 p-4 text-sm leading-relaxed text-muted">{dataNotice.storage}</p>
+                <p className="rounded-xl bg-background/80 p-4 text-sm leading-relaxed text-muted">{dataNotice.caution}</p>
               </div>
             </section>
           </div>
