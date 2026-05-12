@@ -5,6 +5,7 @@ import { AppProvider } from "@/components/providers";
 import { Analytics } from "@/components/analytics";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { CoupangBanner } from "@/components/coupang-banner";
 import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 const inter = Inter({
@@ -113,6 +114,7 @@ export default function RootLayout({
             Skip to content
           </a>
           <Header />
+          <CoupangBanner />
           <main id="main-content" className="flex-1">{children}</main>
           <Footer />
           <Analytics />
