@@ -1,10 +1,10 @@
 export function CoupangBanner() {
   return (
-    <section
-      aria-label="Sponsored banner"
-      className="border-b border-border bg-accent/30"
+    <aside
+      aria-label="Sponsored banners"
+      className="pointer-events-none fixed right-6 top-28 z-40 hidden xl:block"
     >
-      <div className="mx-auto flex max-w-6xl justify-center px-6 py-4">
+      <div className="pointer-events-auto flex flex-col gap-4">
         <iframe
           src="https://coupa.ng/cmRjIv"
           width="120"
@@ -12,9 +12,18 @@ export function CoupangBanner() {
           frameBorder="0"
           scrolling="no"
           referrerPolicy="unsafe-url"
-          title="Coupang Partners banner"
+          title="Coupang Partners banner 1"
+        />
+        <iframe
+          src="https://coupa.ng/cmRkqN"
+          width="120"
+          height="240"
+          frameBorder="0"
+          scrolling="no"
+          referrerPolicy="unsafe-url"
+          title="Coupang Partners banner 2"
         />
       </div>
-    </section>
+    </aside>
   );
 }
