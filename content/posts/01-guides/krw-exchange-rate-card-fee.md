@@ -7,7 +7,7 @@ updated: 2026-05-10
 title: KRW Currency Calculator 사용법: 환율·카드 수수료·해외결제 금액 읽기
 slug: krw-exchange-rate-calculator
 kind: guide
-category: korea-living
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-10
 updatedAt: 2026-05-10

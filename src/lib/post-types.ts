@@ -2,13 +2,26 @@ import type { Locale } from "./i18n";
 
 export type PostKind =
   | "guide"
+  | "news-explainer"
+  | "comparison"
+  | "workflow"
+  | "trend-note"
+  | "retrospective"
+  | "experiment"
+  | "site-note"
+  | "release-note"
   | "it-news"
   | "daily"
-  | "tool-note"
-  | "experiment"
-  | "site-note";
+  | "tool-note";
 
-export type PostCategory =
+export type PublicPostCategory =
+  | "ai-insight"
+  | "practical-guide"
+  | "comparison-recommendation"
+  | "work-productivity"
+  | "digital-trends";
+
+export type LegacyPostCategory =
   | "korea-living"
   | "automation"
   | "developer"
@@ -17,7 +30,10 @@ export type PostCategory =
   | "daily"
   | "culture"
   | "experiments"
-  | "site-notes";
+  | "site-notes"
+  | "file-media";
+
+export type PostCategory = PublicPostCategory | LegacyPostCategory;
 
 export type PostBlock =
   | { type: "p"; text: string }
@@ -48,6 +64,18 @@ export type Post = {
   en: LocalizedPostContent;
   ko?: LocalizedPostContent;
 };
+
+export const publicPostCategories = [
+  "ai-insight",
+  "practical-guide",
+  "comparison-recommendation",
+  "work-productivity",
+  "digital-trends",
+] as const satisfies readonly PublicPostCategory[];
+
+export function isPublicPostCategory(category: string): category is PublicPostCategory {
+  return (publicPostCategories as readonly string[]).includes(category);
+}
 
 export function getPostContent(post: Post, locale: Locale): LocalizedPostContent {
   if (locale === "ko" && post.ko) return post.ko;

@@ -6,8 +6,8 @@ created: 2026-05-01
 updated: 2026-05-01
 title: 작은 자동화 도구 스택을 구성하는 법
 slug: automation-small-tools-stack
-kind: it-news
-category: automation
+kind: trend-note
+category: work-productivity
 locale: ko
 publishedAt: 2026-05-01
 readingMinutes: 6

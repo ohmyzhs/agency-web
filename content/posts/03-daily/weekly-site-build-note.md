@@ -6,8 +6,8 @@ created: 2026-05-01
 updated: 2026-05-01
 title: 이번 주 사이트 빌드 노트
 slug: weekly-site-build-note
-kind: daily
-category: daily
+kind: retrospective
+category: digital-trends
 locale: ko
 publishedAt: 2026-05-01
 readingMinutes: 4

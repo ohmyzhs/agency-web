@@ -7,7 +7,7 @@ updated: 2026-05-06
 title: 타자연습을 다시 제품처럼 만든 며칠의 기록
 slug: typing-practice-upgrade-retrospective
 kind: experiment
-category: experiments
+category: digital-trends
 locale: ko
 publishedAt: 2026-05-06
 readingMinutes: 10

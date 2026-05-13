@@ -6,8 +6,8 @@ created: 2026-05-13
 updated: 2026-05-13
 title: agency-web 리포지토리 분석: 로컬 퍼스트 도구 허브와 타자연습 제품의 방향성
 slug: agency-web-repo-analysis-local-first-tools-typing-product
-kind: site-note
-category: site-notes
+kind: retrospective
+category: digital-trends
 locale: ko
 publishedAt: 2026-05-13
 readingMinutes: 8

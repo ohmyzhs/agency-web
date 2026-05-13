@@ -7,7 +7,7 @@ updated: 2026-05-03
 title: 타자연습에서 키보드와 손가락 가이드를 다시 만든 이유
 slug: typing-practice-keyboard-guide-retrospective
 kind: experiment
-category: experiments
+category: digital-trends
 locale: ko
 publishedAt: 2026-05-03
 readingMinutes: 14

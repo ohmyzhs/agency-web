@@ -7,7 +7,7 @@ updated: 2026-05-11
 title: Cron Explainer 사용법: 반복 작업 스케줄을 안전하게 확인하는 법
 slug: cron-expression-from-schedule
 kind: guide
-category: automation
+category: work-productivity
 locale: ko
 publishedAt: 2026-05-10
 updatedAt: 2026-05-11

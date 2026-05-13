@@ -7,7 +7,7 @@ updated: 2026-05-11
 title: 타임스탬프 변환기 사용법: 로그 시간과 UTC/KST를 빠르게 맞추는 법
 slug: timestamp-converter-guide
 kind: guide
-category: developer
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-11
 updatedAt: 2026-05-11

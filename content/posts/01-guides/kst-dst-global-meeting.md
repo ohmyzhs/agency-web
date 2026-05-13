@@ -7,7 +7,7 @@ updated: 2026-05-10
 title: KST Timezone Converter 사용법: 해외 회의 시간과 DST 확인하기
 slug: kst-global-meeting-time
 kind: guide
-category: korea-living
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-10
 updatedAt: 2026-05-10

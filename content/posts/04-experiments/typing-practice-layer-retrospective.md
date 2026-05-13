@@ -7,7 +7,7 @@ updated: 2026-05-03
 title: 타자연습을 작은 도구가 아니라 하나의 연습 공간으로 만든 기록
 slug: typing-practice-layer-retrospective
 kind: experiment
-category: experiments
+category: digital-trends
 locale: ko
 publishedAt: 2026-05-02
 readingMinutes: 8

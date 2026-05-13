@@ -7,7 +7,7 @@ updated: 2026-05-10
 title: JSON/YAML/XML Validator 사용법: 검증·정렬·압축을 헷갈리지 않는 법
 slug: json-yaml-xml-formatting
 kind: guide
-category: developer
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-10
 updatedAt: 2026-05-10

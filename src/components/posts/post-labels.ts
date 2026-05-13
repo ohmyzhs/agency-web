@@ -1,36 +1,84 @@
-import type { Post } from "@/lib/post-types";
+import type { Post, PostCategory, PostKind, PublicPostCategory } from "@/lib/post-types";
 import { getToolBySlug, getToolContent } from "@/lib/tools";
 
 export type PostsLocale = "ko" | "en";
-export type DisplayPostType = "tool-guide" | "retrospective" | "experiment" | "news-note" | "daily";
+export type DisplayPostType = "guide" | "news-explainer" | "comparison" | "workflow" | "trend" | "retrospective" | "experiment" | "update";
+
+export const publicCategoryOrder = [
+  "ai-insight",
+  "practical-guide",
+  "comparison-recommendation",
+  "work-productivity",
+  "digital-trends",
+] as const satisfies readonly PublicPostCategory[];
+
+export function normalizePostCategory(category: PostCategory, kind?: PostKind): PublicPostCategory {
+  if (publicCategoryOrder.includes(category as PublicPostCategory)) return category as PublicPostCategory;
+  if (kind === "comparison") return "comparison-recommendation";
+  if (kind === "workflow") return "work-productivity";
+  if (kind === "trend-note" || kind === "it-news" || kind === "news-explainer") return "digital-trends";
+  if (kind === "site-note" || kind === "release-note" || kind === "experiment" || kind === "daily") return "digital-trends";
+
+  switch (category) {
+    case "ai":
+      return "ai-insight";
+    case "automation":
+      return "work-productivity";
+    case "it-news":
+    case "culture":
+    case "experiments":
+    case "site-notes":
+    case "daily":
+      return "digital-trends";
+    case "korea-living":
+    case "developer":
+    case "file-media":
+    default:
+      return "practical-guide";
+  }
+}
 
 export function getDisplayPostType(post: Post): DisplayPostType {
-  if (post.kind === "guide" && (post.relatedToolSlugs?.length ?? 0) > 0) return "tool-guide";
+  if (post.kind === "release-note") return "update";
+  if (post.kind === "comparison") return "comparison";
+  if (post.kind === "workflow") return "workflow";
+  if (post.kind === "trend-note" || post.kind === "it-news") return "trend";
+  if (post.kind === "news-explainer") return "news-explainer";
   if (post.kind === "site-note") return "retrospective";
   if (post.kind === "experiment") return "experiment";
-  if (post.kind === "daily") return "daily";
-  return "news-note";
+  return "guide";
 }
 
 const typeLabels: Record<PostsLocale, Record<DisplayPostType, string>> = {
   ko: {
-    "tool-guide": "툴 상세가이드",
-    retrospective: "회고",
+    guide: "실용 가이드",
+    "news-explainer": "뉴스 해설",
+    comparison: "비교·추천",
+    workflow: "업무 흐름",
+    trend: "트렌드 노트",
+    retrospective: "제작 기록",
     experiment: "실험",
-    "news-note": "뉴스/노트",
-    daily: "일상",
+    update: "업데이트",
   },
   en: {
-    "tool-guide": "Tool guide",
-    retrospective: "Retrospective",
+    guide: "Guide",
+    "news-explainer": "News explainer",
+    comparison: "Comparison",
+    workflow: "Workflow",
+    trend: "Trend note",
+    retrospective: "Build note",
     experiment: "Experiment",
-    "news-note": "News / Note",
-    daily: "Daily",
+    update: "Update",
   },
 };
 
 const categoryLabels: Record<PostsLocale, Record<string, string>> = {
   ko: {
+    "ai-insight": "AI 인사이트",
+    "practical-guide": "실용 가이드",
+    "comparison-recommendation": "비교·추천",
+    "work-productivity": "업무 생산성",
+    "digital-trends": "디지털 트렌드",
     "korea-living": "한국 생활",
     automation: "자동화",
     developer: "개발자",
@@ -40,8 +88,14 @@ const categoryLabels: Record<PostsLocale, Record<string, string>> = {
     culture: "문화",
     experiments: "실험",
     "site-notes": "사이트 기록",
+    "file-media": "파일·미디어",
   },
   en: {
+    "ai-insight": "AI insight",
+    "practical-guide": "Practical guide",
+    "comparison-recommendation": "Comparisons",
+    "work-productivity": "Work productivity",
+    "digital-trends": "Digital trends",
     "korea-living": "Korea living",
     automation: "Automation",
     developer: "Developer",
@@ -51,6 +105,7 @@ const categoryLabels: Record<PostsLocale, Record<string, string>> = {
     culture: "Culture",
     experiments: "Experiments",
     "site-notes": "Site notes",
+    "file-media": "File / media",
   },
 };
 
@@ -60,6 +115,10 @@ export function getPostTypeLabel(post: Post, locale: PostsLocale) {
 
 export function getPostCategoryLabel(category: string, locale: PostsLocale) {
   return categoryLabels[locale][category] ?? category;
+}
+
+export function getPublicPostCategoryLabel(category: PostCategory, locale: PostsLocale, kind?: PostKind) {
+  return getPostCategoryLabel(normalizePostCategory(category, kind), locale);
 }
 
 export function getRelatedToolLabels(post: Post, locale: PostsLocale, limit = 3) {
