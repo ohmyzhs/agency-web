@@ -7,7 +7,7 @@ updated: 2026-05-11
 title: OG 이미지 생성기 사용법: 블로그와 SNS 썸네일을 1200×630으로 만드는 법
 slug: og-image-generator-guide
 kind: guide
-category: file-media
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-11
 updatedAt: 2026-05-11

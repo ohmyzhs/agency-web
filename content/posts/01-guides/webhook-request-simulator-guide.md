@@ -7,7 +7,7 @@ updated: 2026-05-11
 title: 웹훅 요청 시뮬레이터 사용법: 배포 전 POST 요청을 안전하게 테스트하기
 slug: webhook-request-simulator-guide
 kind: guide
-category: developer
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-11
 updatedAt: 2026-05-11

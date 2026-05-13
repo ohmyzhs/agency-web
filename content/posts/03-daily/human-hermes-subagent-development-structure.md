@@ -6,8 +6,8 @@ created: 2026-05-03
 updated: 2026-05-03
 title: 사람 오케스트레이터, Hermes Agent, 서브 코딩 에이전트가 함께 개발하는 구조
 slug: human-hermes-subagent-development-structure
-kind: site-note
-category: site-notes
+kind: retrospective
+category: digital-trends
 locale: ko
 publishedAt: 2026-05-03
 readingMinutes: 9

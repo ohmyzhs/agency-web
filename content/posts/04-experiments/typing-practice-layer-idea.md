@@ -7,7 +7,7 @@ updated: 2026-05-01
 title: 타자연습기 레이어 아이디어
 slug: typing-practice-layer-idea
 kind: experiment
-category: experiments
+category: digital-trends
 locale: ko
 publishedAt: 2026-05-01
 readingMinutes: 5

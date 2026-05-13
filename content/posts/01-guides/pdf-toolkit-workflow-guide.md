@@ -7,7 +7,7 @@ updated: 2026-05-11
 title: PDF 도구 모음 사용법: 병합·분할·이미지 변환을 한 번에 처리하는 순서
 slug: pdf-toolkit-workflow-guide
 kind: guide
-category: file-media
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-11
 updatedAt: 2026-05-11

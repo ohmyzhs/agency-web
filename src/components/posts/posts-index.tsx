@@ -9,14 +9,16 @@ import {
   getDisplayPostType,
   getPostCategoryLabel,
   getPostTypeLabel,
+  getPublicPostCategoryLabel,
   getRelatedToolLabels,
+  normalizePostCategory,
+  publicCategoryOrder,
   type DisplayPostType,
 } from "@/components/posts/post-labels";
 
-const allTypes = ["tool-guide", "retrospective", "experiment", "news-note", "daily"] as const;
+const allTypes = ["guide", "news-explainer", "comparison", "workflow", "trend", "retrospective", "experiment"] as const;
 type TypeFilter = "all" | DisplayPostType;
 type SortMode = "newest" | "oldest" | "reading";
-
 type CategoryFilter = "all" | string;
 type ToolFilter = "all" | string;
 
@@ -29,7 +31,7 @@ export type PostsIndexInitialFilters = {
 };
 
 function coerceTypeFilter(value?: string): TypeFilter {
-  if (value && allTypes.includes(value as DisplayPostType)) return value as DisplayPostType;
+  if (value && allTypes.includes(value as Exclude<DisplayPostType, "update">)) return value as DisplayPostType;
   return "all";
 }
 
@@ -44,10 +46,10 @@ function uniqueSorted(values: string[]) {
 
 export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; initialFilters?: PostsIndexInitialFilters }) {
   const { locale } = useLocale();
-  const availableCategories = useMemo(
-    () => uniqueSorted(posts.map((post) => post.category)),
-    [posts],
-  );
+  const availableCategories = useMemo(() => {
+    const present = new Set(posts.map((post) => normalizePostCategory(post.category, post.kind)));
+    return publicCategoryOrder.filter((category) => present.has(category));
+  }, [posts]);
 
   const availableTools = useMemo(
     () => uniqueSorted(posts.flatMap((post) => post.relatedToolSlugs ?? [])),
@@ -56,7 +58,7 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
 
   const [typeFilter, setTypeFilter] = useState<TypeFilter>(() => coerceTypeFilter(initialFilters.type));
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>(() => (
-    initialFilters.category && posts.some((post) => post.category === initialFilters.category)
+    initialFilters.category && posts.some((post) => normalizePostCategory(post.category, post.kind) === initialFilters.category)
       ? initialFilters.category
       : "all"
   ));
@@ -70,27 +72,31 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
 
   const searchablePosts = useMemo(() => posts.map((post) => {
     const content = getPostContent(post, locale);
+    const publicCategory = normalizePostCategory(post.category, post.kind);
     const relatedTools = getRelatedToolLabels(post, locale, 10);
     const haystack = [
       content.title,
       content.description,
       post.kind,
       post.category,
+      publicCategory,
       getPostCategoryLabel(post.category, locale),
+      getPublicPostCategoryLabel(post.category, locale, post.kind),
       getPostTypeLabel(post, locale),
       ...post.tags,
       ...(post.relatedToolSlugs ?? []),
       ...relatedTools.map((tool) => tool.label),
     ].join(" ").toLowerCase();
-    return { post, content, haystack };
+    return { post, content, publicCategory, haystack };
   }), [posts, locale]);
 
   const visiblePosts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     return searchablePosts
-      .filter(({ post, haystack }) => {
+      .filter(({ post, publicCategory, haystack }) => {
+        if (getDisplayPostType(post) === "update") return false;
         if (typeFilter !== "all" && getDisplayPostType(post) !== typeFilter) return false;
-        if (categoryFilter !== "all" && post.category !== categoryFilter) return false;
+        if (categoryFilter !== "all" && publicCategory !== categoryFilter) return false;
         if (toolFilter !== "all" && !(post.relatedToolSlugs ?? []).includes(toolFilter)) return false;
         if (normalizedQuery && !haystack.includes(normalizedQuery)) return false;
         return true;
@@ -103,12 +109,12 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
       });
   }, [searchablePosts, typeFilter, categoryFilter, toolFilter, query, sortMode]);
 
-  const eyebrow = locale === "ko" ? "// 블로그 아카이브" : "// blog archive";
-  const title = locale === "ko" ? "글 목록" : "Posts";
+  const eyebrow = locale === "ko" ? "// AI 운영 블로그" : "// AI-operated blog";
+  const title = locale === "ko" ? "AI와 실무를 연결하는 글" : "Posts for AI and practical work";
   const lead =
     locale === "ko"
-      ? "툴 상세가이드, 개발 회고, 실험 기록을 한 곳에서 찾을 수 있도록 정리했습니다. 검색과 필터로 필요한 글을 바로 찾아보세요."
-      : "Browse tool guides, retrospectives, experiments, and notes with search and filters.";
+      ? "최신 AI 뉴스 해설, 실용 가이드, 비교·추천, 업무 자동화와 디지털 트렌드를 한 곳에서 정리합니다. 모든 글은 출처와 맥락을 바탕으로 AI 편집 시스템의 관점에서 작성됩니다."
+      : "AI explainers, practical guides, comparisons, productivity workflows, and digital trend notes from an AI-operated editorial system.";
 
   const allLabel = locale === "ko" ? "전체" : "All";
   const typeOptions: { value: TypeFilter; label: string }[] = [
@@ -118,13 +124,14 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
       .map((type) => ({
         value: type,
         label: locale === "ko"
-          ? ({ "tool-guide": "툴 상세가이드", retrospective: "회고", experiment: "실험", "news-note": "뉴스/노트", daily: "일상" }[type])
-          : ({ "tool-guide": "Tool guides", retrospective: "Retrospectives", experiment: "Experiments", "news-note": "News / Notes", daily: "Daily" }[type]),
+          ? ({ guide: "가이드", "news-explainer": "뉴스 해설", comparison: "비교", workflow: "워크플로우", trend: "트렌드", retrospective: "제작 기록", experiment: "실험" }[type])
+          : ({ guide: "Guides", "news-explainer": "Explainers", comparison: "Comparisons", workflow: "Workflows", trend: "Trends", retrospective: "Build notes", experiment: "Experiments" }[type]),
       })),
   ];
 
   const featuredPosts = posts
-    .filter((post) => getDisplayPostType(post) === "tool-guide" || getDisplayPostType(post) === "retrospective")
+    .filter((post) => getDisplayPostType(post) !== "update")
+    .filter((post) => getDisplayPostType(post) === "guide" || getDisplayPostType(post) === "retrospective")
     .slice(0, 3);
 
   const resetFilters = () => {

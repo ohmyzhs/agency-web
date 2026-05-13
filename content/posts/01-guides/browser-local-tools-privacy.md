@@ -7,7 +7,7 @@ updated: 2026-05-10
 title: 브라우저 로컬 도구 안내: 어떤 데이터가 서버로 가지 않는지 확인하는 법
 slug: browser-local-tools-privacy
 kind: guide
-category: developer
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-10
 updatedAt: 2026-05-10

@@ -6,8 +6,8 @@ created: 2026-05-02
 updated: 2026-05-03
 title: 한 명의 오케스트레이터와 AI 에이전트들이 웹사이트를 만든 방식
 slug: human-orchestrator-ai-agent-build-retrospective
-kind: site-note
-category: site-notes
+kind: retrospective
+category: digital-trends
 locale: ko
 publishedAt: 2026-05-02
 readingMinutes: 7

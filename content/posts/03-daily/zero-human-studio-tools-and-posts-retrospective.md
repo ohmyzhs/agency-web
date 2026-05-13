@@ -6,8 +6,8 @@ created: 2026-05-02
 updated: 2026-05-03
 title: Zero Human Studio를 도구와 글이 함께 있는 사이트로 다시 만든 과정
 slug: zero-human-studio-tools-and-posts-retrospective
-kind: site-note
-category: site-notes
+kind: retrospective
+category: digital-trends
 locale: ko
 publishedAt: 2026-05-02
 readingMinutes: 8

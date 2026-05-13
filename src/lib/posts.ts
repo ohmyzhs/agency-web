@@ -5,6 +5,7 @@ export type { LocalizedPostContent, Post, PostBlock, PostCategory, PostKind, Sou
 export { getPostContent } from "./post-types";
 
 const POSTS_DIR = path.join(process.cwd(), "content", "posts");
+const UPDATES_DIR = path.join(process.cwd(), "content", "updates");
 
 type FrontmatterValue = string | string[] | Record<string, string>[];
 type Frontmatter = Record<string, FrontmatterValue>;
@@ -95,6 +96,7 @@ function stripInlineMarkdown(text: string): string {
     .replace(/`([^`]+)`/g, "$1")
     .replace(/\*\*([^*]+)\*\*/g, "$1")
     .replace(/__([^_]+)__/g, "$1")
+    .replace(/^\|(.+)\|$/g, "$1")
     .trim();
 }
 
@@ -102,7 +104,7 @@ function buildDescription(markdown: string, fallbackTitle: string): string {
   const paragraph = markdown
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .find((line) => line && !line.startsWith("#") && !line.startsWith("-") && !line.startsWith(">"));
+    .find((line) => line && !line.startsWith("#") && !line.startsWith("-") && !line.startsWith(">") && !line.startsWith("|"));
   const description = stripInlineMarkdown(paragraph ?? fallbackTitle);
   return description.length > 160 ? `${description.slice(0, 157)}...` : description;
 }
@@ -128,7 +130,7 @@ function parseMarkdownBody(markdown: string): PostBlock[] {
 
   for (const rawLine of lines) {
     const line = rawLine.trim();
-    if (!line || line === "---") {
+    if (!line || line === "---" || /^\|?\s*:?-{3,}:?/.test(line)) {
       flushParagraph();
       flushList();
       continue;
@@ -182,7 +184,7 @@ function parsePost(filePath: string): Post | null {
   return {
     slug,
     kind: asString(frontmatter.kind, "guide") as PostKind,
-    category: asString(frontmatter.category, "developer") as PostCategory,
+    category: asString(frontmatter.category, "practical-guide") as PostCategory,
     locale: asString(frontmatter.locale, "ko") as Post["locale"],
     publishedAt,
     updatedAt: updatedAt || undefined,
@@ -195,11 +197,19 @@ function parsePost(filePath: string): Post | null {
   };
 }
 
-export function getAllPosts(): Post[] {
-  return walkMarkdownFiles(POSTS_DIR)
+function getPublishedFromDir(dir: string): Post[] {
+  return walkMarkdownFiles(dir)
     .map(parsePost)
     .filter((post): post is Post => Boolean(post))
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
+}
+
+export function getAllPosts(): Post[] {
+  return getPublishedFromDir(POSTS_DIR);
+}
+
+export function getAllUpdates(): Post[] {
+  return getPublishedFromDir(UPDATES_DIR).filter((post) => post.kind === "release-note" || post.kind === "site-note");
 }
 
 export function getPostBySlug(slug: string): Post | undefined {

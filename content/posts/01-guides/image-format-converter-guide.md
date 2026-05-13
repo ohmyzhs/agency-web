@@ -7,7 +7,7 @@ updated: 2026-05-11
 title: 이미지 포맷 컨버터 사용법: PNG·JPG·WebP·AVIF를 언제 선택할까
 slug: image-format-converter-guide
 kind: guide
-category: file-media
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-11
 updatedAt: 2026-05-11

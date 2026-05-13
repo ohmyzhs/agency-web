@@ -7,7 +7,7 @@ updated: 2026-05-10
 title: 평수 변환기 사용법: 59㎡·84㎡ 아파트 면적을 제대로 읽는 법
 slug: pyeong-to-square-meter-korea-apartment
 kind: guide
-category: korea-living
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-10
 updatedAt: 2026-05-10

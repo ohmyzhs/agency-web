@@ -7,7 +7,7 @@ updated: 2026-05-11
 title: 파비콘 생성기 사용법: favicon, Apple touch icon, PWA 아이콘 세트 만들기
 slug: favicon-generator-guide
 kind: guide
-category: file-media
+category: practical-guide
 locale: ko
 publishedAt: 2026-05-11
 updatedAt: 2026-05-11

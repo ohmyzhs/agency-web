@@ -6,8 +6,8 @@ created: 2026-05-01
 updated: 2026-05-01
 title: AI 코딩 에이전트 도구 흐름 정리
 slug: ai-agent-coding-tools-trend
-kind: it-news
-category: ai
+kind: trend-note
+category: ai-insight
 locale: ko
 publishedAt: 2026-05-01
 readingMinutes: 6

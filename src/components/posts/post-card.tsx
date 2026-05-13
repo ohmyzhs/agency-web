@@ -4,13 +4,13 @@ import Link from "next/link";
 import { useLocale } from "@/components/providers";
 import { getPostContent, type Post } from "@/lib/post-types";
 import { PostThumbnail } from "@/components/ui/post-thumbnail";
-import { getPostCategoryLabel, getPostTypeLabel, getRelatedToolLabels } from "@/components/posts/post-labels";
+import { getPostTypeLabel, getPublicPostCategoryLabel, getRelatedToolLabels } from "@/components/posts/post-labels";
 
 export function PostCard({ post }: { post: Post }) {
   const { locale } = useLocale();
   const content = getPostContent(post, locale);
   const typeLabel = getPostTypeLabel(post, locale);
-  const categoryLabel = getPostCategoryLabel(post.category, locale);
+  const categoryLabel = getPublicPostCategoryLabel(post.category, locale, post.kind);
   const minutesLabel = locale === "ko" ? `${post.readingMinutes}분 분량` : `${post.readingMinutes} min`;
   const relatedTools = getRelatedToolLabels(post, locale, 3);
 
