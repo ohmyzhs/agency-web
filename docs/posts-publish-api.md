@@ -248,3 +248,77 @@ curl -X POST http://localhost:3000/api/posts/publish \
 - API 라우트: `src/app/api/posts/publish/route.ts`
 - 인증 유틸: `src/lib/post-auth.ts`
 - 게시 유틸: `src/lib/posts.ts`
+
+## Implemented content intake endpoints
+
+The production publishing path is Git-backed. Runtime writes to the deployed filesystem are not used for durable publishing.
+
+### Endpoints
+
+- `POST /api/webhooks/content-intake` — generic intake endpoint for trusted automation tools.
+- `POST /api/posts/publish` — compatibility alias for blog-post publishing. It calls the same service.
+
+### Required authentication
+
+Send a bearer token:
+
+```http
+Authorization: Bearer [REDACTED]
+```
+
+The server accepts `CONTENT_WEBHOOK_BEARER_TOKEN` first and falls back to `POST_PUBLISH_BEARER_TOKEN`.
+
+If `CONTENT_WEBHOOK_HMAC_SECRET` is configured, also send:
+
+```http
+X-ZHS-Signature: sha256=<hex hmac over raw request body>
+```
+
+### Environment variables
+
+```env
+CONTENT_WEBHOOK_BEARER_TOKEN=[REDACTED]
+POST_PUBLISH_BEARER_TOKEN=[REDACTED]
+CONTENT_WEBHOOK_HMAC_SECRET=[REDACTED]
+GITHUB_CONTENT_TOKEN=[REDACTED]
+POST_PUBLISH_REPO=ohmyzhs/agency-web
+POST_PUBLISH_BASE_BRANCH=main
+POST_PUBLISH_DEFAULT_MODE=draft-pr
+POST_PUBLISH_ALLOW_LOCAL_DRAFTS=false
+```
+
+### Publish modes
+
+- `draft-pr` — creates a content branch, writes the Markdown artifact through the GitHub Contents API, then opens a draft PR.
+- `direct-main` — writes the Markdown artifact directly to the base branch through the GitHub Contents API.
+- `local-draft` — writes to the local checkout only. This is forbidden in production unless `POST_PUBLISH_ALLOW_LOCAL_DRAFTS=true`.
+
+### Example request
+
+```bash
+curl -X POST https://oh-my-zhs.com/api/webhooks/content-intake \
+  -H 'Authorization: Bearer [REDACTED]' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "contentType": "post",
+    "sourceApp": "manus-social-app",
+    "idempotencyKey": "external-run-2026-05-13-001",
+    "title": "AI 검색 변화가 콘텐츠 운영에 주는 의미",
+    "description": "AI 검색 결과와 콘텐츠 운영 전략의 변화를 해설합니다.",
+    "markdown": "본문 Markdown...",
+    "category": "ai-insight",
+    "kind": "news-explainer",
+    "tags": ["ai", "search"],
+    "sourceLinks": [{ "label": "Source", "url": "https://example.com/article" }],
+    "status": "draft",
+    "publishMode": "draft-pr"
+  }'
+```
+
+### Validation notes
+
+- Allowed categories: `ai-insight`, `practical-guide`, `comparison-recommendation`, `work-productivity`, `digital-trends`.
+- Allowed kinds: `guide`, `news-explainer`, `comparison`, `workflow`, `trend-note`, `retrospective`, `experiment`, `site-note`, `release-note`.
+- `news-explainer`, `trend-note`, and `comparison` require at least one source link.
+- Posts are rendered to `content/posts/auto/<slug>.md`; updates are rendered to `content/updates/<slug>.md`.
+
