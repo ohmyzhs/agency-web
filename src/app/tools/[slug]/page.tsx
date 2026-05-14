@@ -9,7 +9,14 @@ import DeveloperTextToolkit from "@/components/tools/DeveloperTextToolkit";
 import ImageEditingToolkit from "@/components/tools/ImageEditingToolkit";
 import ImageFormatConverter from "@/components/tools/ImageFormatConverter";
 import ImageToAsciiArtTool from "@/components/tools/ImageToAsciiArtTool";
+import HousingPensionCalculator from "@/components/tools/HousingPensionCalculator";
 import JsonYamlValidator from "@/components/tools/JsonYamlValidator";
+import LoanInterestCalculator from "@/components/tools/LoanInterestCalculator";
+import DepositInterestCalculator from "@/components/tools/DepositInterestCalculator";
+import SavingsInterestCalculator from "@/components/tools/SavingsInterestCalculator";
+import MilitarySavingsCalculator from "@/components/tools/MilitarySavingsCalculator";
+import YouthAccountCalculator from "@/components/tools/YouthAccountCalculator";
+import DollarExchangeCalculator from "@/components/tools/DollarExchangeCalculator";
 import LifeCalculatorSuite from "@/components/tools/LifeCalculatorSuite";
 import NetworkDiagnosticsTool from "@/components/tools/NetworkDiagnosticsTool";
 import OgImageGeneratorTool from "@/components/tools/OgImageGeneratorTool";
@@ -58,6 +65,13 @@ const widgetMap: Record<string, React.ReactNode> = {
   "developer-text-toolkit": <DeveloperTextToolkit />,
   "image-editing-toolkit": <ImageEditingToolkit />,
   "life-calculator-suite": <LifeCalculatorSuite />,
+  "loan-interest-calculator": <LoanInterestCalculator />,
+  "deposit-interest-calculator": <DepositInterestCalculator />,
+  "savings-interest-calculator": <SavingsInterestCalculator />,
+  "housing-pension-calculator": <HousingPensionCalculator />,
+  "military-savings-calculator": <MilitarySavingsCalculator />,
+  "youth-account-calculator": <YouthAccountCalculator />,
+  "dollar-exchange-calculator": <DollarExchangeCalculator />,
   "pdf-toolkit": <PdfToolkitTool />,
   "og-image-generator": <OgImageGeneratorTool />,
   "qr-barcode-generator": <QrBarcodeGeneratorTool />,

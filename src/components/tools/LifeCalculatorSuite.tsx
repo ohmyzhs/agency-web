@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale } from "@/components/providers";
 
-type Mode = "dates" | "dday" | "stopwatch" | "pomodoro" | "percent" | "vat" | "tip" | "loan" | "salary" | "retire" | "annual";
-const modes: Mode[] = ["dates", "dday", "stopwatch", "pomodoro", "percent", "vat", "tip", "loan", "salary", "retire", "annual"];
+type Mode = "dates" | "dday" | "stopwatch" | "pomodoro" | "percent" | "vat" | "tip" | "salary" | "retire" | "annual";
+const modes: Mode[] = ["dates", "dday", "stopwatch", "pomodoro", "percent", "vat", "tip", "salary", "retire", "annual"];
 const inputClass = "rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary";
 
 function daysBetween(a: string, b: string) {
@@ -23,12 +23,6 @@ function money(value: number) {
 function time(seconds: number) {
   const positive = Math.max(0, seconds);
   return `${String(Math.floor(positive / 3600)).padStart(2, "0")}:${String(Math.floor(positive / 60) % 60).padStart(2, "0")}:${String(positive % 60).padStart(2, "0")}`;
-}
-function monthlyPayment(principal: number, annualRate: number, months: number) {
-  const n = Math.max(1, months);
-  const monthlyRate = annualRate / 100 / 12;
-  if (monthlyRate === 0) return principal / n;
-  return principal * monthlyRate * (1 + monthlyRate) ** n / ((1 + monthlyRate) ** n - 1);
 }
 function annualLeave(monthsWorked: number, weeklyHours: number) {
   if (weeklyHours < 15) return 0;
@@ -95,7 +89,6 @@ export default function LifeCalculatorSuite() {
 
   const calc = useMemo(() => {
     const diff = daysBetween(aDate, bDate);
-    const payment = monthlyPayment(amount, rate, months);
     const grossMonthly = salary;
     const nationalPension = Math.min(grossMonthly, 6_170_000) * 0.045;
     const health = grossMonthly * 0.03545;
@@ -116,9 +109,6 @@ export default function LifeCalculatorSuite() {
       vatAdded: amount * 1.1,
       tip: amount * rate / 100,
       totalTip: amount * (1 + rate / 100),
-      loanPay: payment,
-      loanTotal: payment * Math.max(1, months),
-      loanInterest: payment * Math.max(1, months) - amount,
       deductions,
       netSalary: grossMonthly - deductions,
       retire: averageWage * Math.max(0, months) / 12,
@@ -137,14 +127,14 @@ export default function LifeCalculatorSuite() {
 
       {mode === "pomodoro" && <Panel><div className="grid gap-3 sm:grid-cols-2"><Field label="Focus minutes"><input type="number" className={inputClass} value={pomodoroMinutes} onChange={(e) => setPomodoroMinutes(Number(e.target.value))} /></Field><Field label="Break minutes"><input type="number" className={inputClass} value={breakMinutes} onChange={(e) => setBreakMinutes(Number(e.target.value))} /></Field></div><div className="rounded-lg bg-card p-4"><p className="text-sm text-muted">{phase === "focus" ? t.focus : t.rest}</p><div className="text-5xl font-semibold tabular-nums">{time(remaining)}</div></div><div className="flex flex-wrap gap-2"><button type="button" onClick={() => setPomodoroOn(!pomodoroOn)} className="rounded bg-primary px-4 py-2 text-white">{pomodoroOn ? "Pause" : "Start"}</button><button type="button" onClick={() => resetPomodoro("focus")} className="rounded border border-border px-4 py-2">Reset</button><button type="button" onClick={() => resetPomodoro(phase === "focus" ? "break" : "focus")} className="rounded border border-border px-4 py-2">Switch</button></div></Panel>}
 
-      {!["dates", "dday", "stopwatch", "pomodoro"].includes(mode) && <Panel><CalculatorInputs mode={mode} t={t} amount={amount} setAmount={setAmount} rate={rate} setRate={setRate} months={months} setMonths={setMonths} salary={salary} setSalary={setSalary} bonus={bonus} setBonus={setBonus} weeklyHours={weeklyHours} setWeeklyHours={setWeeklyHours} />{mode === "percent" && <ResultGrid rows={[[`${rate}%`, money(calc.percent)], ["increase", money(calc.percentIncrease)], ["decrease", money(calc.percentDecrease)]]} />}{mode === "vat" && <ResultGrid rows={[["VAT included", money(calc.vatFromIncluded)], ["net price", money(calc.priceWithoutVat)], ["add VAT", money(calc.vatAdded)]]} />}{mode === "tip" && <ResultGrid rows={[["tip", money(calc.tip)], ["total", money(calc.totalTip)], ["per 4 people", money(calc.totalTip / 4)]]} />}{mode === "loan" && <ResultGrid rows={[["monthly", money(calc.loanPay)], ["total", money(calc.loanTotal)], ["interest", money(calc.loanInterest)]]} />}{mode === "salary" && <ResultGrid rows={[["gross", money(salary)], ["deductions", money(calc.deductions)], ["estimated net", money(calc.netSalary)]]} />}{mode === "retire" && <ResultGrid rows={[["average wage", money(salary + bonus / 12)], ["worked months", String(months)], ["estimated severance", money(calc.retire)]]} />}{mode === "annual" && <ResultGrid rows={[["worked months", String(months)], ["weekly hours", String(weeklyHours)], ["estimated leave", `${calc.annual} days`]]} />}<p className="text-xs text-muted">{t.disclaimer}</p></Panel>}
+      {!["dates", "dday", "stopwatch", "pomodoro"].includes(mode) && <Panel><CalculatorInputs mode={mode} t={t} amount={amount} setAmount={setAmount} rate={rate} setRate={setRate} months={months} setMonths={setMonths} salary={salary} setSalary={setSalary} bonus={bonus} setBonus={setBonus} weeklyHours={weeklyHours} setWeeklyHours={setWeeklyHours} />{mode === "percent" && <ResultGrid rows={[[`${rate}%`, money(calc.percent)], ["increase", money(calc.percentIncrease)], ["decrease", money(calc.percentDecrease)]]} />}{mode === "vat" && <ResultGrid rows={[["VAT included", money(calc.vatFromIncluded)], ["net price", money(calc.priceWithoutVat)], ["add VAT", money(calc.vatAdded)]]} />}{mode === "tip" && <ResultGrid rows={[["tip", money(calc.tip)], ["total", money(calc.totalTip)], ["per 4 people", money(calc.totalTip / 4)]]} />}{mode === "salary" && <ResultGrid rows={[["gross", money(salary)], ["deductions", money(calc.deductions)], ["estimated net", money(calc.netSalary)]]} />}{mode === "retire" && <ResultGrid rows={[["average wage", money(salary + bonus / 12)], ["worked months", String(months)], ["estimated severance", money(calc.retire)]]} />}{mode === "annual" && <ResultGrid rows={[["worked months", String(months)], ["weekly hours", String(weeklyHours)], ["estimated leave", `${calc.annual} days`]]} />}<p className="text-xs text-muted">{t.disclaimer}</p></Panel>}
     </div>
   );
 }
 
 function CalculatorInputs(props: { mode: Mode; t: { amount: string; rate: string; months: string; salary: string; bonus: string; weekly: string }; amount: number; setAmount: (v: number) => void; rate: number; setRate: (v: number) => void; months: number; setMonths: (v: number) => void; salary: number; setSalary: (v: number) => void; bonus: number; setBonus: (v: number) => void; weeklyHours: number; setWeeklyHours: (v: number) => void }) {
   const salaryMode = props.mode === "salary" || props.mode === "retire" || props.mode === "annual";
-  return <div className="grid gap-3 sm:grid-cols-3">{!salaryMode && <Field label={props.t.amount}><input type="number" className={inputClass} value={props.amount} onChange={(e) => props.setAmount(Number(e.target.value))} /></Field>}{!salaryMode && <Field label={props.t.rate}><input type="number" className={inputClass} value={props.rate} onChange={(e) => props.setRate(Number(e.target.value))} /></Field>}{(props.mode === "loan" || props.mode === "retire" || props.mode === "annual") && <Field label={props.t.months}><input type="number" className={inputClass} value={props.months} onChange={(e) => props.setMonths(Number(e.target.value))} /></Field>}{salaryMode && <Field label={props.t.salary}><input type="number" className={inputClass} value={props.salary} onChange={(e) => props.setSalary(Number(e.target.value))} /></Field>}{props.mode === "retire" && <Field label={props.t.bonus}><input type="number" className={inputClass} value={props.bonus} onChange={(e) => props.setBonus(Number(e.target.value))} /></Field>}{props.mode === "annual" && <Field label={props.t.weekly}><input type="number" className={inputClass} value={props.weeklyHours} onChange={(e) => props.setWeeklyHours(Number(e.target.value))} /></Field>}</div>;
+  return <div className="grid gap-3 sm:grid-cols-3">{!salaryMode && <Field label={props.t.amount}><input type="number" className={inputClass} value={props.amount} onChange={(e) => props.setAmount(Number(e.target.value))} /></Field>}{!salaryMode && <Field label={props.t.rate}><input type="number" className={inputClass} value={props.rate} onChange={(e) => props.setRate(Number(e.target.value))} /></Field>}{(props.mode === "retire" || props.mode === "annual") && <Field label={props.t.months}><input type="number" className={inputClass} value={props.months} onChange={(e) => props.setMonths(Number(e.target.value))} /></Field>}{salaryMode && <Field label={props.t.salary}><input type="number" className={inputClass} value={props.salary} onChange={(e) => props.setSalary(Number(e.target.value))} /></Field>}{props.mode === "retire" && <Field label={props.t.bonus}><input type="number" className={inputClass} value={props.bonus} onChange={(e) => props.setBonus(Number(e.target.value))} /></Field>}{props.mode === "annual" && <Field label={props.t.weekly}><input type="number" className={inputClass} value={props.weeklyHours} onChange={(e) => props.setWeeklyHours(Number(e.target.value))} /></Field>}</div>;
 }
 function Panel({ children }: { children: React.ReactNode }) { return <div className="space-y-4 rounded-xl border border-border p-4">{children}</div>; }
 function Field({ label, children }: { label: string; children: React.ReactNode }) { return <label className="grid gap-1 text-sm"><span className="font-medium">{label}</span>{children}</label>; }
