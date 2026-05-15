@@ -1,6 +1,6 @@
 ---
 type: blog-draft
-status: draft
+status: published
 authoring_harness: manus-finance-guide-writer
 created: 2026-05-14
 updated: 2026-05-14
