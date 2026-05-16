@@ -5,6 +5,22 @@ import { useLocale } from "@/components/providers";
 import { getPostContent, type Post, type PostBlock, type PostInline } from "@/lib/post-types";
 import { getToolBySlug, getToolContent } from "@/lib/tools";
 
+function normalizePostHref(href: string) {
+  try {
+    const url = new URL(href);
+    if (url.hostname === "oh-my-zhs.com" || url.hostname === "www.oh-my-zhs.com") {
+      return `${url.pathname}${url.search}${url.hash}`;
+    }
+  } catch {
+    // Relative URL; keep as-is.
+  }
+  return href;
+}
+
+function isExternalHref(href: string) {
+  return /^https?:\/\//.test(href) && !/^https?:\/\/(www\.)?oh-my-zhs\.com(?=\/|$)/.test(href);
+}
+
 function renderInline(parts: PostInline[] | undefined, fallback: string) {
   const inline = parts ?? [{ type: "text" as const, text: fallback }];
   return inline.map((part, index) => {
@@ -15,11 +31,12 @@ function renderInline(parts: PostInline[] | undefined, fallback: string) {
       return <code key={index} className="rounded bg-accent px-1.5 py-0.5 font-mono text-[0.9em] text-foreground">{part.text}</code>;
     }
 
-    const isExternal = /^https?:\/\//.test(part.href);
+    const href = normalizePostHref(part.href);
+    const isExternal = isExternalHref(part.href);
     return (
       <Link
         key={`${part.href}-${index}`}
-        href={part.href}
+        href={href}
         target={isExternal ? "_blank" : undefined}
         rel={isExternal ? "noopener noreferrer" : undefined}
         className="font-semibold text-primary underline underline-offset-4 transition-colors hover:text-foreground"
@@ -106,11 +123,12 @@ function renderBlock(block: PostBlock, index: number) {
     case "hr":
       return <hr key={index} className="my-8 border-border" />;
     case "button": {
-      const isExternal = /^https?:\/\//.test(block.href);
+      const href = normalizePostHref(block.href);
+      const isExternal = isExternalHref(block.href);
       return (
         <Link
           key={index}
-          href={block.href}
+          href={href}
           target={isExternal ? "_blank" : undefined}
           rel={isExternal ? "noopener noreferrer" : undefined}
           className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-85"

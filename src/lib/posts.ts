@@ -109,7 +109,7 @@ function normalizeInlineMarkdown(text: string): string {
 function parseInlineMarkdown(text: string): PostInline[] {
   const normalized = normalizeInlineMarkdown(text);
   const parts: PostInline[] = [];
-  const inlinePattern = /(`([^`]+)`)|\*\*([^*]+)\*\*|__([^_]+)__|(?<!\*)\*([^*]+)\*(?!\*)|\[([^\]]+)\]\(([^)]+)\)/g;
+  const inlinePattern = /(`([^`]+)`)|\*\*\[([^\]]+)\]\(([^)]+)\)\*\*|__\[([^\]]+)\]\(([^)]+)\)__|\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|__([^_]+)__|(?<!\*)\*([^*]+)\*(?!\*)/g;
   let cursor = 0;
   let match: RegExpExecArray | null;
 
@@ -119,9 +119,11 @@ function parseInlineMarkdown(text: string): PostInline[] {
     }
 
     if (match[2]) parts.push({ type: "code", text: match[2] });
-    else if (match[3] || match[4]) parts.push({ type: "strong", text: match[3] ?? match[4] });
-    else if (match[5]) parts.push({ type: "em", text: match[5] });
-    else if (match[6] && match[7]) parts.push({ type: "link", text: stripInlineMarkdown(match[6]), href: match[7] });
+    else if (match[3] && match[4]) parts.push({ type: "link", text: stripInlineMarkdown(match[3]), href: match[4] });
+    else if (match[5] && match[6]) parts.push({ type: "link", text: stripInlineMarkdown(match[5]), href: match[6] });
+    else if (match[7] && match[8]) parts.push({ type: "link", text: stripInlineMarkdown(match[7]), href: match[8] });
+    else if (match[9] || match[10]) parts.push({ type: "strong", text: match[9] ?? match[10] });
+    else if (match[11]) parts.push({ type: "em", text: match[11] });
 
     cursor = match.index + match[0].length;
   }
