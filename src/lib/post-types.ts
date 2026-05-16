@@ -35,12 +35,28 @@ export type LegacyPostCategory =
 
 export type PostCategory = PublicPostCategory | LegacyPostCategory;
 
+export type PostInline =
+  | { type: "text"; text: string }
+  | { type: "strong"; text: string }
+  | { type: "em"; text: string }
+  | { type: "code"; text: string }
+  | { type: "link"; text: string; href: string };
+
+export type PostTableAlign = "left" | "center" | "right";
+export type PostTableCell = { text: string; inline?: PostInline[] };
+
 export type PostBlock =
-  | { type: "p"; text: string }
+  | { type: "p"; text: string; inline?: PostInline[] }
   | { type: "h2"; text: string }
   | { type: "h3"; text: string }
-  | { type: "ul"; items: string[] }
-  | { type: "callout"; text: string };
+  | { type: "ul"; items: string[]; inlineItems?: PostInline[][] }
+  | { type: "ol"; items: string[]; inlineItems?: PostInline[][] }
+  | { type: "callout"; text: string; inline?: PostInline[] }
+  | { type: "table"; headers: PostTableCell[]; rows: PostTableCell[][]; align: PostTableAlign[] }
+  | { type: "image"; src: string; alt: string; caption?: string }
+  | { type: "code"; code: string; language?: string }
+  | { type: "hr" }
+  | { type: "button"; text: string; href: string };
 
 export type SourceLink = { label: string; url: string };
 

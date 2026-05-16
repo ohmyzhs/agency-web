@@ -2,8 +2,39 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/providers";
-import { getPostContent, type Post, type PostBlock } from "@/lib/post-types";
+import { getPostContent, type Post, type PostBlock, type PostInline } from "@/lib/post-types";
 import { getToolBySlug, getToolContent } from "@/lib/tools";
+
+function renderInline(parts: PostInline[] | undefined, fallback: string) {
+  const inline = parts ?? [{ type: "text" as const, text: fallback }];
+  return inline.map((part, index) => {
+    if (part.type === "text") return <span key={index}>{part.text}</span>;
+    if (part.type === "strong") return <strong key={index} className="font-semibold text-foreground">{part.text}</strong>;
+    if (part.type === "em") return <em key={index}>{part.text}</em>;
+    if (part.type === "code") {
+      return <code key={index} className="rounded bg-accent px-1.5 py-0.5 font-mono text-[0.9em] text-foreground">{part.text}</code>;
+    }
+
+    const isExternal = /^https?:\/\//.test(part.href);
+    return (
+      <Link
+        key={`${part.href}-${index}`}
+        href={part.href}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        className="font-semibold text-primary underline underline-offset-4 transition-colors hover:text-foreground"
+      >
+        {part.text}
+      </Link>
+    );
+  });
+}
+
+function tableAlignClass(align?: "left" | "center" | "right") {
+  if (align === "center") return "text-center";
+  if (align === "right") return "text-right";
+  return "text-left";
+}
 
 function renderBlock(block: PostBlock, index: number) {
   switch (block.type) {
@@ -12,19 +43,82 @@ function renderBlock(block: PostBlock, index: number) {
     case "h3":
       return <h3 key={index} className="mt-6 text-lg font-semibold tracking-tight">{block.text}</h3>;
     case "p":
-      return <p key={index} className="mt-4 text-[15px] leading-relaxed text-muted">{block.text}</p>;
+      return <p key={index} className="mt-4 text-[15px] leading-relaxed text-muted">{renderInline(block.inline, block.text)}</p>;
     case "ul":
       return (
         <ul key={index} className="mt-4 space-y-2 pl-5 text-[15px] leading-relaxed text-muted">
-          {block.items.map((item, idx) => <li key={idx} className="list-disc">{item}</li>)}
+          {block.items.map((item, idx) => <li key={idx} className="list-disc">{renderInline(block.inlineItems?.[idx], item)}</li>)}
         </ul>
+      );
+    case "ol":
+      return (
+        <ol key={index} className="mt-4 space-y-2 pl-5 text-[15px] leading-relaxed text-muted">
+          {block.items.map((item, idx) => <li key={idx} className="list-decimal">{renderInline(block.inlineItems?.[idx], item)}</li>)}
+        </ol>
       );
     case "callout":
       return (
         <aside key={index} className="mt-6 rounded-lg border border-border bg-accent px-4 py-3 text-sm leading-relaxed text-foreground">
-          {block.text}
+          {renderInline(block.inline, block.text)}
         </aside>
       );
+    case "table":
+      return (
+        <div key={index} className="mt-6 overflow-x-auto rounded-xl border border-border">
+          <table className="min-w-full border-collapse text-sm">
+            <thead className="bg-accent text-foreground">
+              <tr>
+                {block.headers.map((cell, idx) => (
+                  <th key={idx} className={`border-b border-border px-4 py-3 font-semibold ${tableAlignClass(block.align[idx])}`}>
+                    {renderInline(cell.inline, cell.text)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {block.rows.map((row, rowIndex) => (
+                <tr key={rowIndex} className="odd:bg-background even:bg-card/40">
+                  {row.map((cell, cellIndex) => (
+                    <td key={cellIndex} className={`px-4 py-3 align-top text-muted ${tableAlignClass(block.align[cellIndex])}`}>
+                      {renderInline(cell.inline, cell.text)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    case "image":
+      return (
+        <figure key={index} className="mt-6 overflow-hidden rounded-xl border border-border bg-card">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={block.src} alt={block.alt} className="h-auto w-full object-cover" loading="lazy" />
+          {block.caption && <figcaption className="border-t border-border px-4 py-3 text-center text-xs text-muted">{block.caption}</figcaption>}
+        </figure>
+      );
+    case "code":
+      return (
+        <pre key={index} className="mt-6 overflow-x-auto rounded-xl border border-border bg-[#0b0f17] p-4 text-sm leading-relaxed text-slate-100">
+          <code>{block.code}</code>
+        </pre>
+      );
+    case "hr":
+      return <hr key={index} className="my-8 border-border" />;
+    case "button": {
+      const isExternal = /^https?:\/\//.test(block.href);
+      return (
+        <Link
+          key={index}
+          href={block.href}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
+          className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-85"
+        >
+          {block.text} →
+        </Link>
+      );
+    }
   }
 }
 

@@ -23,6 +23,8 @@ related_tools:
   - pdf-toolkit
   - image-format-converter
   - image-editing-toolkit
+  - og-image-generator
+  - qr-barcode-generator
 sourceLinks: []
 canonical: https://oh-my-zhs.com/posts/pdf-toolkit-workflow-guide
 quality_gate: published

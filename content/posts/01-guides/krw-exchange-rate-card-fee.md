@@ -22,6 +22,7 @@ tags:
 related_tools:
   - krw-currency-calculator
   - unit-converter
+  - dollar-exchange-calculator
 sourceLinks: []
 canonical: https://oh-my-zhs.com/posts/krw-exchange-rate-calculator
 quality_gate: rewritten

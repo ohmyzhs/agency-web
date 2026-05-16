@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { Post, PostBlock, PostCategory, PostKind, SourceLink } from "./post-types";
-export type { LocalizedPostContent, Post, PostBlock, PostCategory, PostKind, SourceLink } from "./post-types";
+import type { Post, PostBlock, PostCategory, PostInline, PostKind, PostTableAlign, PostTableCell, SourceLink } from "./post-types";
+export type { LocalizedPostContent, Post, PostBlock, PostCategory, PostInline, PostKind, SourceLink } from "./post-types";
 export { getPostContent } from "./post-types";
 
 const POSTS_DIR = path.join(process.cwd(), "content", "posts");
@@ -92,21 +92,102 @@ function asSourceLinks(value: FrontmatterValue | undefined): SourceLink[] {
 
 function stripInlineMarkdown(text: string): string {
   return text
+    .replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)/g, "$1")
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
     .replace(/`([^`]+)`/g, "$1")
     .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
     .replace(/__([^_]+)__/g, "$1")
     .replace(/^\|(.+)\|$/g, "$1")
     .trim();
+}
+
+function normalizeInlineMarkdown(text: string): string {
+  return text.replace(/^\|(.+)\|$/g, "$1").trim();
+}
+
+function parseInlineMarkdown(text: string): PostInline[] {
+  const normalized = normalizeInlineMarkdown(text);
+  const parts: PostInline[] = [];
+  const inlinePattern = /(`([^`]+)`)|\*\*([^*]+)\*\*|__([^_]+)__|(?<!\*)\*([^*]+)\*(?!\*)|\[([^\]]+)\]\(([^)]+)\)/g;
+  let cursor = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = inlinePattern.exec(normalized)) !== null) {
+    if (match.index > cursor) {
+      parts.push({ type: "text", text: normalized.slice(cursor, match.index) });
+    }
+
+    if (match[2]) parts.push({ type: "code", text: match[2] });
+    else if (match[3] || match[4]) parts.push({ type: "strong", text: match[3] ?? match[4] });
+    else if (match[5]) parts.push({ type: "em", text: match[5] });
+    else if (match[6] && match[7]) parts.push({ type: "link", text: stripInlineMarkdown(match[6]), href: match[7] });
+
+    cursor = match.index + match[0].length;
+  }
+
+  if (cursor < normalized.length) {
+    parts.push({ type: "text", text: normalized.slice(cursor) });
+  }
+
+  return parts.length > 0 ? parts : [{ type: "text", text: normalized }];
+}
+
+function inlinePlainText(inline: PostInline[]): string {
+  return inline.map((part) => part.text).join("").trim();
 }
 
 function buildDescription(markdown: string, fallbackTitle: string): string {
   const paragraph = markdown
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .find((line) => line && !line.startsWith("#") && !line.startsWith("-") && !line.startsWith(">") && !line.startsWith("|"));
+    .find((line) => line && !line.startsWith("#") && !line.startsWith("-") && !line.startsWith(">") && !line.startsWith("|") && !line.startsWith("!"));
   const description = stripInlineMarkdown(paragraph ?? fallbackTitle);
   return description.length > 160 ? `${description.slice(0, 157)}...` : description;
+}
+
+function parseImageMarkdown(line: string): { alt: string; src: string; caption?: string } | null {
+  const match = line.match(/^!\[([^\]]*)\]\(([^\s)]+)(?:\s+"([^"]+)")?\)$/);
+  if (!match) return null;
+  return { alt: match[1], src: match[2], caption: match[3] };
+}
+
+function parseButtonMarkdown(line: string): { text: string; href: string } | null {
+  const match = line.match(/^\[!button\s+([^\]]+)\]\(([^)]+)\)$/i) ?? line.match(/^\[([^\]]+)\]\(([^)]+)\)\{\.button\}$/i);
+  if (!match) return null;
+  return { text: stripInlineMarkdown(match[1]).trim(), href: match[2].trim() };
+}
+
+function splitTableRow(line: string): string[] {
+  return line
+    .trim()
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((cell) => cell.trim());
+}
+
+function isTableRow(line: string): boolean {
+  return /^\|.*\|$/.test(line.trim());
+}
+
+function isTableSeparator(line: string): boolean {
+  const cells = splitTableRow(line);
+  return cells.length > 0 && cells.every((cell) => /^:?-{3,}:?$/.test(cell.trim()));
+}
+
+function parseTableAlign(separatorLine: string): PostTableAlign[] {
+  return splitTableRow(separatorLine).map((cell) => {
+    const trimmed = cell.trim();
+    if (trimmed.startsWith(":") && trimmed.endsWith(":")) return "center";
+    if (trimmed.endsWith(":")) return "right";
+    return "left";
+  });
+}
+
+function tableCell(text: string): PostTableCell {
+  const inline = parseInlineMarkdown(text);
+  return { text: inlinePlainText(inline), inline };
 }
 
 function parseMarkdownBody(markdown: string): PostBlock[] {
@@ -114,56 +195,138 @@ function parseMarkdownBody(markdown: string): PostBlock[] {
   const blocks: PostBlock[] = [];
   let paragraph: string[] = [];
   let list: string[] = [];
+  let orderedList: string[] = [];
+  let codeFence: { language?: string; lines: string[] } | null = null;
 
   const flushParagraph = () => {
     if (paragraph.length > 0) {
-      blocks.push({ type: "p", text: stripInlineMarkdown(paragraph.join(" ")) });
+      const inline = parseInlineMarkdown(paragraph.join(" "));
+      blocks.push({ type: "p", text: inlinePlainText(inline), inline });
       paragraph = [];
     }
   };
   const flushList = () => {
     if (list.length > 0) {
-      blocks.push({ type: "ul", items: list.map(stripInlineMarkdown) });
+      const inlineItems = list.map(parseInlineMarkdown);
+      blocks.push({ type: "ul", items: inlineItems.map(inlinePlainText), inlineItems });
       list = [];
     }
   };
+  const flushOrderedList = () => {
+    if (orderedList.length > 0) {
+      const inlineItems = orderedList.map(parseInlineMarkdown);
+      blocks.push({ type: "ol", items: inlineItems.map(inlinePlainText), inlineItems });
+      orderedList = [];
+    }
+  };
+  const flushLists = () => {
+    flushList();
+    flushOrderedList();
+  };
 
-  for (const rawLine of lines) {
+  for (let index = 0; index < lines.length; index += 1) {
+    const rawLine = lines[index];
     const line = rawLine.trim();
-    if (!line || line === "---" || /^\|?\s*:?-{3,}:?/.test(line)) {
-      flushParagraph();
-      flushList();
+
+    const fenceMatch = line.match(/^```\s*([A-Za-z0-9_-]+)?\s*$/);
+    if (fenceMatch) {
+      if (codeFence) {
+        blocks.push({ type: "code", code: codeFence.lines.join("\n"), language: codeFence.language });
+        codeFence = null;
+      } else {
+        flushParagraph();
+        flushLists();
+        codeFence = { language: fenceMatch[1], lines: [] };
+      }
       continue;
     }
+
+    if (codeFence) {
+      codeFence.lines.push(rawLine);
+      continue;
+    }
+
+    if (!line) {
+      flushParagraph();
+      flushLists();
+      continue;
+    }
+
+    if (line === "---" || line === "***" || line === "___") {
+      flushParagraph();
+      flushLists();
+      blocks.push({ type: "hr" });
+      continue;
+    }
+
     if (line.startsWith("# ")) continue;
     if (line.startsWith("## ")) {
       flushParagraph();
-      flushList();
+      flushLists();
       blocks.push({ type: "h2", text: stripInlineMarkdown(line.slice(3)) });
       continue;
     }
     if (line.startsWith("### ")) {
       flushParagraph();
-      flushList();
+      flushLists();
       blocks.push({ type: "h3", text: stripInlineMarkdown(line.slice(4)) });
+      continue;
+    }
+    if (isTableRow(line) && index + 1 < lines.length && isTableSeparator(lines[index + 1])) {
+      flushParagraph();
+      flushLists();
+      const headers = splitTableRow(line).map(tableCell);
+      const align = parseTableAlign(lines[index + 1]);
+      const rows: PostTableCell[][] = [];
+      index += 2;
+      while (index < lines.length && isTableRow(lines[index])) {
+        rows.push(splitTableRow(lines[index]).map(tableCell));
+        index += 1;
+      }
+      index -= 1;
+      blocks.push({ type: "table", headers, rows, align });
+      continue;
+    }
+    const image = parseImageMarkdown(line);
+    if (image) {
+      flushParagraph();
+      flushLists();
+      blocks.push({ type: "image", ...image });
+      continue;
+    }
+    const button = parseButtonMarkdown(line);
+    if (button) {
+      flushParagraph();
+      flushLists();
+      blocks.push({ type: "button", ...button });
       continue;
     }
     if (line.startsWith("> ")) {
       flushParagraph();
-      flushList();
-      blocks.push({ type: "callout", text: stripInlineMarkdown(line.slice(2)) });
+      flushLists();
+      const inline = parseInlineMarkdown(line.slice(2));
+      blocks.push({ type: "callout", text: inlinePlainText(inline), inline });
       continue;
     }
     if (line.startsWith("- ")) {
       flushParagraph();
+      flushOrderedList();
       list.push(line.slice(2));
       continue;
     }
-    flushList();
+    const orderedMatch = line.match(/^\d+[.)]\s+(.+)$/);
+    if (orderedMatch) {
+      flushParagraph();
+      flushList();
+      orderedList.push(orderedMatch[1]);
+      continue;
+    }
+    flushLists();
     paragraph.push(line);
   }
   flushParagraph();
-  flushList();
+  flushLists();
+  if (codeFence) blocks.push({ type: "code", code: codeFence.lines.join("\n"), language: codeFence.language });
   return blocks;
 }
 

@@ -18,7 +18,9 @@ tags:
   - automation
 related_tools:
   - cron-explainer
+  - webhook-request-simulator
   - webhook-payload-formatter
+  - json-yaml-validator
 sourceLinks: []
 quality_gate: pending
 share_url:
