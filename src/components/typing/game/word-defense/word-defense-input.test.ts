@@ -89,4 +89,16 @@ describe('word defense input helpers', () => {
     assert.equal(state.matchedById.get(7), 7);
     assert.equal(state.completeTargetId, 7);
   });
+
+  it('accepts English game words case-insensitively', () => {
+    const state = resolveWordDefenseInput({
+      input: 'missile',
+      meteors: [{ id: 8, word: 'MISSILE', matched: 0 }],
+      activeTargetId: null,
+    });
+
+    assert.equal(state.activeTargetId, 8);
+    assert.equal(state.matchedById.get(8), 7);
+    assert.equal(state.completeTargetId, 8);
+  });
 });

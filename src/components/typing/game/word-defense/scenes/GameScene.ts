@@ -5,11 +5,12 @@
  */
 import * as Phaser from 'phaser';
 import { disassemble } from 'es-hangul';
-import type { StageLevel } from '@/lib/typing/types';
-import { getWordsForStage } from '@/lib/typing/packs-staged';
+import type { StageLevel, TypingLanguage } from '@/lib/typing/types';
 import { displayTypedProgress, resolveWordDefenseInput } from '../word-defense-input';
+import { getWordDefenseWords, pickWordWithoutRecent } from '../word-defense-words';
 import {
   STAGE_CONFIG,
+  type StartWave,
   WAVES_TO_CLEAR,
   WAVE_DURATION_MS,
   SPECIAL_PROBABILITY,
@@ -57,6 +58,9 @@ export class GameScene extends Phaser.Scene {
   private slowUntil = 0;
   private wordPool: string[] = [];
   private stageLevel: StageLevel = 400;
+  private language: TypingLanguage = 'ko';
+  private startWave: StartWave = 1;
+  private recentWords: string[] = [];
   private bgFar?: Phaser.GameObjects.TileSprite;
   private bgNear?: Phaser.GameObjects.TileSprite;
   private particles?: Phaser.GameObjects.Particles.ParticleEmitter;
@@ -79,17 +83,20 @@ export class GameScene extends Phaser.Scene {
     super('GameScene');
   }
 
-  init(data: { stage: StageLevel; bus: Phaser.Events.EventEmitter }) {
+  init(data: { stage: StageLevel; language?: TypingLanguage; startWave?: StartWave; bus: Phaser.Events.EventEmitter }) {
     this.stageLevel = data.stage;
+    this.language = data.language ?? 'ko';
+    this.startWave = data.startWave ?? 1;
     this.bus = data.bus;
-    this.wordPool = getWordsForStage(this.stageLevel);
+    this.wordPool = getWordDefenseWords(this.stageLevel, this.language);
+    this.recentWords = [];
     this.meteors = [];
     this.nextId = 1;
     this.spawnTimer = 0;
     this.waveTimer = 0;
     this.slowFactor = 1;
     this.slowUntil = 0;
-    this.waveIdx = 1;
+    this.waveIdx = this.startWave;
     this.hp = 100;
     this.score = 0;
     this.combo = 1;
@@ -162,7 +169,7 @@ export class GameScene extends Phaser.Scene {
     this.bus.on('inputText', this.onTextInput, this);
     this.bus.on('reset', this.scene.restart, this.scene);
 
-    this.bus.emit('hud', { wave: 1, hp: 100, score: 0, combo: 1 });
+    this.bus.emit('hud', { wave: this.waveIdx, hp: 100, score: 0, combo: 1 });
     this.emitAim();
   }
 
@@ -228,7 +235,9 @@ export class GameScene extends Phaser.Scene {
 
   // ─── Spawning ──────────────────────────────────────────────────────────────
   private spawnMeteor() {
-    const word = Phaser.Math.RND.pick(this.wordPool);
+    const word = pickWordWithoutRecent(this.wordPool, this.recentWords);
+    this.recentWords.push(word);
+    if (this.recentWords.length > 24) this.recentWords.shift();
     const jamoSeq = disassemble(word);
     const cfg = STAGE_CONFIG[this.stageLevel];
 
@@ -268,7 +277,7 @@ export class GameScene extends Phaser.Scene {
     const container = this.add.container(x, -40, [spriteObj, bgObj, textObj]);
     container.setSize(w, h);
 
-    const speed = cfg.fallSpeed * (1 + (this.waveIdx - 1) * 0.08);
+    const speed = cfg.fallSpeed * (1 + (this.waveIdx - 1) * 0.12);
 
     this.meteors.push({
       id: this.nextId++,
@@ -360,6 +369,10 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
+    if (byPlayer) {
+      this.launchMissileEffect(m.container.x, m.container.y);
+    }
+
     if (this.particles) {
       this.particles.emitParticleAt(m.container.x, m.container.y, byPlayer ? 14 : 22);
     }
@@ -388,6 +401,49 @@ export class GameScene extends Phaser.Scene {
 
     this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
     this.emitAim();
+  }
+
+  private launchMissileEffect(targetX: number, targetY: number) {
+    const startX = this.ship?.x ?? WIDTH / 2;
+    const startY = SHIP_BASE_Y - 28;
+    const missile = this.add.rectangle(startX, startY, 8, 24, 0x7dd3fc, 1)
+      .setStrokeStyle(2, 0xffffff, 0.95)
+      .setBlendMode(Phaser.BlendModes.ADD);
+    const trail = this.add.rectangle(startX, startY + 20, 4, 44, 0x38bdf8, 0.5)
+      .setBlendMode(Phaser.BlendModes.ADD);
+    const flare = this.add.circle(startX, startY + 34, 10, 0xf97316, 0.85)
+      .setBlendMode(Phaser.BlendModes.ADD);
+
+    this.tweens.add({
+      targets: [missile, trail, flare],
+      x: targetX,
+      y: targetY,
+      duration: 150,
+      ease: 'Cubic.easeOut',
+      onComplete: () => {
+        missile.destroy();
+        trail.destroy();
+        flare.destroy();
+        const flash = this.add.circle(targetX, targetY, 20, 0x7dd3fc, 0.7)
+          .setBlendMode(Phaser.BlendModes.ADD)
+          .setScale(0.35);
+        this.tweens.add({
+          targets: flash,
+          scale: 1.7,
+          alpha: 0,
+          duration: 180,
+          onComplete: () => flash.destroy(),
+        });
+      },
+    });
+
+    this.tweens.add({
+      targets: this.ship,
+      angle: { from: -2, to: 2 },
+      yoyo: true,
+      duration: 70,
+      repeat: 1,
+    });
   }
 
   private onMeteorReachFloor(m: Meteor) {

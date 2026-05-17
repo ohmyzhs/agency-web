@@ -7,8 +7,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDB } from '@/lib/typing/db/provider';
 import { useSoundFx } from '@/hooks/useSoundFx';
-import type { StageLevel } from '@/lib/typing/types';
+import type { StageLevel, TypingLanguage } from '@/lib/typing/types';
 import { STAGE_LIST } from '@/lib/typing/metrics-jamo';
+import { useLocale } from '@/components/providers';
+import { START_WAVES, type StartWave, WAVES_TO_CLEAR } from './config';
 type AimState = { typed: string; active: boolean };
 
 type HudState = { wave: number; hp: number; score: number; combo: number };
@@ -37,6 +39,7 @@ async function loadGameModule(): Promise<GameModule> {
 
 export function WordDefenseGame() {
   const db = useDB();
+  const { locale } = useLocale();
   const { playKey, play, playBgm, stopBgm } = useSoundFx();
   const hostRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -45,6 +48,8 @@ export function WordDefenseGame() {
   const aimRef = useRef<AimState>({ typed: '', active: false });
 
   const [stage, setStage] = useState<StageLevel>(400);
+  const [language, setLanguage] = useState<TypingLanguage>(locale === 'ko' ? 'ko' : 'en');
+  const [startWave, setStartWave] = useState<StartWave>(1);
   const [phase, setPhase] = useState<'idle' | 'playing' | 'gameover' | 'clear'>('idle');
   const [hud, setHud] = useState<HudState>({ wave: 1, hp: 100, score: 0, combo: 1 });
   const [final, setFinal] = useState<{ score: number; wave: number; comboMax: number } | null>(null);
@@ -98,16 +103,16 @@ export function WordDefenseGame() {
 
     game.scale.on('resize', () => {});
 
-    game.scene.start('GameScene', { stage, bus });
+    game.scene.start('GameScene', { stage, language, startWave, bus });
     submittedRef.current = false;
     aimRef.current = { typed: '', active: false };
     setFinal(null);
     setPhase('playing');
-    setHud({ wave: 1, hp: 100, score: 0, combo: 1 });
+    setHud({ wave: startWave, hp: 100, score: 0, combo: 1 });
     if (inputRef.current) inputRef.current.value = '';
     playBgm().catch(() => {});
     setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 50);
-  }, [stage, play, playBgm, stopBgm, syncInputFromAim]);
+  }, [stage, language, startWave, play, playBgm, stopBgm, syncInputFromAim]);
 
   useEffect(() => () => {
     gameRef.current?.destroy(true);
@@ -137,25 +142,61 @@ export function WordDefenseGame() {
   return (
     <div className="space-y-3">
       {phase === 'idle' && (
-        <div className="rounded-lg border border-border bg-card p-3">
-          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted">
-            도전단계 선택
-          </p>
-          <div className="flex flex-wrap gap-1">
-            {STAGE_LIST.map(s => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setStage(s as StageLevel)}
-                className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${
-                  s === stage
-                    ? 'border-primary bg-primary text-white'
-                    : 'border-border bg-background text-muted hover:border-primary/50'
-                }`}
-              >
-                {s}타
-              </button>
-            ))}
+        <div className="grid gap-3 rounded-lg border border-border bg-card p-3 md:grid-cols-[1.2fr_0.8fr_1fr]">
+          <div>
+            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted">
+              도전단계 선택
+            </p>
+            <div className="flex flex-wrap gap-1">
+              {STAGE_LIST.map(s => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setStage(s as StageLevel)}
+                  className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${
+                    s === stage
+                      ? 'border-primary bg-primary text-white'
+                      : 'border-border bg-background text-muted hover:border-primary/50'
+                  }`}
+                >
+                  {s}타
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted">언어</p>
+            <div className="flex flex-wrap gap-1">
+              {(['ko', 'en'] as const).map((lang) => (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => setLanguage(lang)}
+                  className={`rounded-full border px-3 py-1 text-xs font-semibold ${
+                    lang === language ? 'border-primary bg-primary text-white' : 'border-border bg-background text-muted hover:border-primary/50'
+                  }`}
+                >
+                  {lang === 'ko' ? '한국어' : 'English'}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted">시작 웨이브</p>
+            <div className="flex flex-wrap gap-1">
+              {START_WAVES.map((wave) => (
+                <button
+                  key={wave}
+                  type="button"
+                  onClick={() => setStartWave(wave)}
+                  className={`rounded-full border px-3 py-1 text-xs font-semibold ${
+                    wave === startWave ? 'border-primary bg-primary text-white' : 'border-border bg-background text-muted hover:border-primary/50'
+                  }`}
+                >
+                  W{wave}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -164,7 +205,7 @@ export function WordDefenseGame() {
         <div className="grid grid-cols-4 gap-2 rounded-lg border border-border bg-card p-3 text-center text-sm tabular-nums">
           <div>
             <p className="text-[10px] uppercase tracking-wider text-muted">웨이브</p>
-            <p className="font-semibold">{hud.wave} / 7</p>
+            <p className="font-semibold">{hud.wave} / {WAVES_TO_CLEAR}</p>
           </div>
           <div>
             <p className="text-[10px] uppercase tracking-wider text-muted">HP</p>
@@ -193,7 +234,7 @@ export function WordDefenseGame() {
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center">
             <h2 className="text-2xl font-bold">워드 디펜스</h2>
             <p className="mt-2 max-w-md text-sm text-muted">
-              떨어지는 한국어 단어를 자모 단위로 입력해 부숩니다. 빨강은 데미지 ↑, 보라는 슬로우모션, 금색은 점수 2배. 콤보를 ×3.0까지 쌓아 보세요.
+              한국어/영어 단어 운석을 요격합니다. 입력하면 우주선이 목표를 추적하고 미사일을 발사합니다. 빨강은 데미지 ↑, 보라는 슬로우모션, 금색은 점수 2배입니다.
             </p>
             <button
               type="button"

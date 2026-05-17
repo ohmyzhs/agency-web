@@ -66,7 +66,7 @@ function safeStrokeText(value: string): string {
 function strokePrefixLength(input: string, target: string): number {
   if (!input) return 0;
   let i = 0;
-  while (i < input.length && i < target.length && input[i] === target[i]) i += 1;
+  while (i < input.length && i < target.length && input[i]?.toLowerCase() === target[i]?.toLowerCase()) i += 1;
   return i;
 }
 
@@ -121,7 +121,7 @@ export function resolveWordDefenseInput(args: {
   }
 
   matchedById.set(best.meteor.id, best.matched);
-  const completeTargetId = best.matched >= best.targetSeq.length && inputSeq === best.targetSeq
+  const completeTargetId = best.matched >= best.targetSeq.length && inputSeq.toLowerCase() === best.targetSeq.toLowerCase()
     ? best.meteor.id
     : null;
 
