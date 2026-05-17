@@ -7,6 +7,7 @@ import * as Phaser from 'phaser';
 import { disassemble } from 'es-hangul';
 import type { StageLevel, TypingLanguage } from '@/lib/typing/types';
 import { displayTypedProgress, resolveWordDefenseInput } from '../word-defense-input';
+import { buildBossMeteorWord, resolveWaveAfterBossClear, shouldSpawnBossAfterWaveTimer } from '../word-defense-boss';
 import { getWordDefenseWords, pickWordWithoutRecent } from '../word-defense-words';
 import {
   STAGE_CONFIG,
@@ -16,7 +17,7 @@ import {
   SPECIAL_PROBABILITY,
 } from '../config';
 
-type SpecialKind = null | 'red' | 'purple' | 'gold';
+type SpecialKind = null | 'red' | 'purple' | 'gold' | 'boss';
 
 type Meteor = {
   id: number;
@@ -68,6 +69,7 @@ export class GameScene extends Phaser.Scene {
   private shipTargetX = WIDTH / 2;
   private lastInputAt = 0;
   private activeTargetId: number | null = null;
+  private bossActive = false;
   private pendingInput = '';
   private lastAim: AimState = { x: WIDTH / 2, y: SHIP_BASE_Y + INPUT_OFFSET_Y, typed: '', active: false };
 
@@ -102,6 +104,7 @@ export class GameScene extends Phaser.Scene {
     this.combo = 1;
     this.comboMax = 1;
     this.activeTargetId = null;
+    this.bossActive = false;
     this.pendingInput = '';
     this.shipTargetX = WIDTH / 2;
   }
@@ -190,23 +193,22 @@ export class GameScene extends Phaser.Scene {
     // spawn
     this.spawnTimer += delta;
     const interval = cfg.spawnIntervalMs * (this.slowFactor === 1 ? 1 : 1 / this.slowFactor);
-    if (this.spawnTimer >= interval && this.meteors.length < cfg.maxConcurrent) {
+    if (this.spawnTimer >= interval && !this.bossActive && this.meteors.length < cfg.maxConcurrent) {
       this.spawnTimer = 0;
       this.spawnMeteor();
     }
 
-    // wave timer
-    this.waveTimer += delta;
-    if (this.waveTimer >= WAVE_DURATION_MS) {
-      this.waveTimer = 0;
-      this.waveIdx += 1;
-      this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
-      if (this.waveIdx > WAVES_TO_CLEAR) {
-        this.bus.emit('clear', { score: this.score, wave: this.waveIdx, comboMax: this.comboMax });
-        this.activeTargetId = null;
-        this.emitAim();
-        this.scene.pause();
-        return;
+    // wave timer: each wave ends with one multi-word boss meteor. The next wave
+    // starts only after the boss is destroyed, so the boss actually matters.
+    if (!this.bossActive) {
+      this.waveTimer += delta;
+      if (this.waveTimer >= WAVE_DURATION_MS && shouldSpawnBossAfterWaveTimer({
+        waveIdx: this.waveIdx,
+        wavesToClear: WAVES_TO_CLEAR,
+        bossActive: this.bossActive,
+      })) {
+        this.waveTimer = 0;
+        this.spawnBossMeteor();
       }
     }
 
@@ -236,19 +238,40 @@ export class GameScene extends Phaser.Scene {
   // ─── Spawning ──────────────────────────────────────────────────────────────
   private spawnMeteor() {
     const word = pickWordWithoutRecent(this.wordPool, this.recentWords);
-    this.recentWords.push(word);
-    if (this.recentWords.length > 24) this.recentWords.shift();
+    this.createMeteor(word, null, -40);
+  }
+
+  private spawnBossMeteor() {
+    const word = buildBossMeteorWord({ pool: this.wordPool, recentWords: this.recentWords });
+    if (!word) return;
+    this.meteors.forEach((meteor) => this.destroyMeteor(meteor, false));
+    this.bossActive = true;
+    this.spawnTimer = 0;
+    this.activeTargetId = null;
+    this.pendingInput = '';
+    this.createMeteor(word, 'boss', -80);
+    this.cameras.main.flash(220, 168, 85, 247, true);
+    this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
+  }
+
+  private createMeteor(word: string, forcedSpecial: SpecialKind = null, startY = -40) {
+    this.recentWords.push(...word.split(/\s+/).filter(Boolean));
+    if (this.recentWords.length > 36) this.recentWords.splice(0, this.recentWords.length - 36);
     const jamoSeq = disassemble(word);
     const cfg = STAGE_CONFIG[this.stageLevel];
 
-    let special: SpecialKind = null;
-    const r = Math.random();
-    if (r < SPECIAL_PROBABILITY.red) special = 'red';
-    else if (r < SPECIAL_PROBABILITY.red + SPECIAL_PROBABILITY.purple) special = 'purple';
-    else if (r < SPECIAL_PROBABILITY.red + SPECIAL_PROBABILITY.purple + SPECIAL_PROBABILITY.gold) special = 'gold';
+    let special: SpecialKind = forcedSpecial;
+    if (!forcedSpecial) {
+      const r = Math.random();
+      if (r < SPECIAL_PROBABILITY.red) special = 'red';
+      else if (r < SPECIAL_PROBABILITY.red + SPECIAL_PROBABILITY.purple) special = 'purple';
+      else if (r < SPECIAL_PROBABILITY.red + SPECIAL_PROBABILITY.purple + SPECIAL_PROBABILITY.gold) special = 'gold';
+    }
 
-    const x = Phaser.Math.Between(60, WIDTH - 60);
-    const fontSize = Phaser.Math.Clamp(28 - word.length * 1.2, 16, 28);
+    const x = forcedSpecial === 'boss' ? WIDTH / 2 : Phaser.Math.Between(60, WIDTH - 60);
+    const fontSize = special === 'boss'
+      ? Phaser.Math.Clamp(24 - word.length * 0.35, 14, 22)
+      : Phaser.Math.Clamp(28 - word.length * 1.2, 16, 28);
     const padding = 10;
 
     const textObj = this.add.text(0, 0, word, {
@@ -264,7 +287,7 @@ export class GameScene extends Phaser.Scene {
     // Pick meteor sprite by word length; gold special always uses the gem.
     const spriteKey = this.pickMeteorSpriteKey(word.length, special);
     const tint = this.specialColor(special);
-    const spriteSize = Math.max(96, Math.min(160, w + 40));
+    const spriteSize = special === 'boss' ? Math.max(220, Math.min(300, w + 80)) : Math.max(96, Math.min(160, w + 40));
     const spriteObj = this.add.image(0, 0, spriteKey)
       .setDisplaySize(spriteSize, spriteSize)
       .setOrigin(0.5);
@@ -274,10 +297,12 @@ export class GameScene extends Phaser.Scene {
     const bgObj = this.add.rectangle(0, 0, w, h, 0x05060c, 0.55)
       .setStrokeStyle(1, tint, 0.7);
 
-    const container = this.add.container(x, -40, [spriteObj, bgObj, textObj]);
+    const container = this.add.container(x, startY, [spriteObj, bgObj, textObj]);
     container.setSize(w, h);
 
-    const speed = cfg.fallSpeed * (1 + (this.waveIdx - 1) * 0.12);
+    const speed = special === 'boss'
+      ? cfg.fallSpeed * (0.42 + (this.waveIdx - 1) * 0.04)
+      : cfg.fallSpeed * (1 + (this.waveIdx - 1) * 0.12);
 
     this.meteors.push({
       id: this.nextId++,
@@ -287,6 +312,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private pickMeteorSpriteKey(wordLen: number, special: SpecialKind): string {
+    if (special === 'boss' && this.textures.exists('wd-meteor-large')) return 'wd-meteor-large';
     if (special === 'gold' && this.textures.exists('wd-meteor-gem')) return 'wd-meteor-gem';
     if (wordLen >= 4 && this.textures.exists('wd-meteor-large')) return 'wd-meteor-large';
     if (wordLen >= 2 && this.textures.exists('wd-meteor-medium')) return 'wd-meteor-medium';
@@ -357,8 +383,9 @@ export class GameScene extends Phaser.Scene {
   private destroyMeteor(m: Meteor, byPlayer: boolean) {
     if (byPlayer) {
       const goldMul = m.special === 'gold' ? 2 : 1;
+      const bossMul = m.special === 'boss' ? 3 : 1;
       const base = m.word.length * 100 * (this.stageLevel / 200);
-      const earned = Math.round(base * this.combo * goldMul);
+      const earned = Math.round(base * this.combo * goldMul * bossMul);
       this.score += earned;
       this.combo = Math.min(3.0, this.combo + 0.5);
       this.comboMax = Math.max(this.comboMax, this.combo);
@@ -398,6 +425,22 @@ export class GameScene extends Phaser.Scene {
       this.activeTargetId = null;
     }
     this.pendingInput = '';
+
+    if (m.special === 'boss') {
+      this.bossActive = false;
+      if (byPlayer) {
+        const result = resolveWaveAfterBossClear({ waveIdx: this.waveIdx, wavesToClear: WAVES_TO_CLEAR });
+        this.waveIdx = result.nextWaveIdx;
+        this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
+        if (result.cleared) {
+          this.bus.emit('clear', { score: this.score, wave: this.waveIdx, comboMax: this.comboMax });
+          this.activeTargetId = null;
+          this.emitAim();
+          this.scene.pause();
+          return;
+        }
+      }
+    }
 
     this.bus.emit('hud', { wave: this.waveIdx, hp: this.hp, score: this.score, combo: this.combo });
     this.emitAim();
@@ -487,6 +530,7 @@ export class GameScene extends Phaser.Scene {
 
   private specialColor(s: SpecialKind): number {
     switch (s) {
+      case 'boss':   return 0xa855f7;
       case 'red':    return 0xff4040;
       case 'purple': return 0xa855f7;
       case 'gold':   return 0xfacc15;
