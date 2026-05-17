@@ -4,6 +4,7 @@
  * 카운트다운, 입력, 메트릭 바, 결과 패널을 통합한다.
  * 구 TypingApp을 대체한다.
  */
+import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTypingSession } from '@/stores/useTypingSession';
 import { useTypingProgress } from '@/stores/useTypingProgress';
@@ -115,10 +116,15 @@ type ModeShellProps = {
   lockedMode?: TypingMode;
   /** Lock the lesson id (e.g. zone lessonId or longform category). */
   lockedLessonId?: string;
+  /** Initial practice language. URL ?lang=en also works and takes priority. */
+  initialLanguage?: TypingLanguage;
+  onLanguageChange?: (language: TypingLanguage) => void;
 };
 
-export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
+export function ModeShell({ lockedMode, lockedLessonId, initialLanguage, onLanguageChange }: ModeShellProps = {}) {
   const { locale } = useLocale();
+  const searchParams = useSearchParams();
+  const requestedLanguage = searchParams.get('lang') === 'en' ? 'en' : searchParams.get('lang') === 'ko' ? 'ko' : undefined;
   const uiLang = locale;
   const modeOptions = uiLang === 'ko' ? MODE_OPTIONS_KO : MODE_OPTIONS_EN;
   const labels = uiLang === 'ko'
@@ -190,10 +196,15 @@ export function ModeShell({ lockedMode, lockedLessonId }: ModeShellProps = {}) {
   }, [focusTypingInput]);
 
   useEffect(() => {
-    if (lastLocaleSyncRef.current === uiLang) return;
-    lastLocaleSyncRef.current = uiLang;
-    if (language !== uiLang) setLanguage(uiLang);
-  }, [uiLang, language, setLanguage]);
+    const preferredLanguage = requestedLanguage ?? initialLanguage ?? uiLang;
+    if (lastLocaleSyncRef.current === preferredLanguage) return;
+    lastLocaleSyncRef.current = preferredLanguage;
+    if (language !== preferredLanguage) setLanguage(preferredLanguage);
+  }, [uiLang, requestedLanguage, initialLanguage, language, setLanguage]);
+
+  useEffect(() => {
+    onLanguageChange?.(language as TypingLanguage);
+  }, [language, onLanguageChange]);
 
   // ── content ──
   const { next: nextContent } = useStageContent({

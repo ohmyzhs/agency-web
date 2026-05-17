@@ -4,6 +4,7 @@
  * 검증: scripts/verify-content.ts로 자모 빈도/길이 분포 검사.
  */
 
+import { englishPassages } from './packs';
 import { englishAiShortStoryPassages, koreanAiShortStoryPassages } from './longform-stories';
 import type { LongformCategory, StageLevel } from './types';
 
@@ -741,8 +742,13 @@ export function getSentencesForStage(stage: StageLevel): string[] {
 }
 
 export function getPassagesForCategory(category: LongformCategory, language: 'ko' | 'en' = 'ko'): PassageItem[] {
-  if (category === 'AI단편' && language === 'en') {
-    return englishAiShortStoryPassages;
+  if (language === 'en') {
+    if (category === 'AI단편') return englishAiShortStoryPassages;
+    return englishPassages.map((text, index) => ({
+      title: `English Practice ${index + 1}`,
+      text,
+      source: 'original',
+    }));
   }
   if (REMOVED_SHORT_LONGFORM_CATEGORIES.has(category)) return [];
   return (koreanPassagesByCategory[category] ?? []).map(expandPassageToPracticeLength);

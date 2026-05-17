@@ -23,6 +23,8 @@ export default function SentencePage() {
         </p>
         <p className="mt-2 text-sm text-muted">
           <Link href="/typing" className="underline hover:text-foreground">← 모든 모드</Link>
+          <span className="mx-2">·</span>
+          <Link href="/typing/sentence?lang=en" className="font-medium text-primary underline">English sentence mode</Link>
         </p>
       </header>
 

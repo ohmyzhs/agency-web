@@ -175,6 +175,20 @@ export const englishSentences = [
   "Cron expressions are compact, but a small typo can shift a job by hours.",
   "The best result screen is the one you actually read before clicking next.",
   "A converter that explains its assumptions is more useful than a black box.",
+  "Clear variable names beat clever comments when the code changes quickly.",
+  "A fast keyboard is useful, but a calm rhythm prevents the worst mistakes.",
+  "Good interfaces make the next action obvious before the user has to think.",
+  "Every backup plan should be tested before the day it is truly needed.",
+  "Small bugs become expensive when nobody writes down how to reproduce them.",
+  "The fastest team is often the one that deletes unnecessary work first.",
+  "Typing accuracy grows when your eyes stay on the target instead of the keys.",
+  "A useful dashboard shows decisions, not just numbers arranged in boxes.",
+  "Reliable software is built from boring checks that run every single time.",
+  "A quiet morning is perfect for practicing sentences with steady breathing.",
+  "Design systems work best when spacing and contrast are treated as features.",
+  "The safest automation stops clearly when its assumptions are no longer true.",
+  "A sentence practice mode should offer enough prompts to avoid stale repeats.",
+  "Long sessions feel easier when the text has a natural rhythm and clear ideas.",
 ];
 
 // Long-form passages — original.
@@ -190,6 +204,10 @@ export const koreanPassages = [
 export const englishPassages = [
   "Typing practice rewards consistency more than ambition. A few minutes a day will outperform a long session once a month. Start slow and accurate. Speed will follow once your fingers stop hesitating about where each letter lives. The best practice session is the one you actually finish today.",
   "Korean input is different from plain alphabetic typing because individual jamos combine into a single syllable on screen. While the syllable is being composed, a good editor avoids flashing a red error on the partial result. Only after the syllable is finalized should correctness be judged. This small consideration makes long Korean writing feel much less tiring than it would otherwise.",
+  "A focused typing session is a small laboratory for attention. The text moves at the speed of your hands, but the quality of the session depends on patience. When you rush, mistakes become noise. When you slow down just enough to keep a steady rhythm, the same keyboard starts to feel predictable. Good practice is not heroic. It is repeatable.",
+  "Software teams often talk about speed, but reliable speed comes from removing confusion. Clear names, small tests, simple release steps, and honest error messages all reduce the number of decisions people must make under pressure. The same idea applies to typing practice: the interface should stay quiet, the target should be readable, and progress should be obvious.",
+  "Long-form practice trains a different muscle than short drills. A single sentence can be solved by memory and reaction, but a paragraph asks you to maintain posture, breathing, and attention over time. That endurance matters when writing emails, documentation, notes, or code reviews. The goal is not only to type quickly. The goal is to keep thinking while your hands keep moving.",
+  "Design work improves when contrast, spacing, and hierarchy are treated as functional choices. A button is not just decoration; it tells the user what can happen next. A label is not just text; it prevents hesitation. In a typing tool, those small decisions shape whether someone practices for thirty seconds or stays long enough to build a useful habit.",
 ];
 
 // Quick-pick word stream for speed test mode.

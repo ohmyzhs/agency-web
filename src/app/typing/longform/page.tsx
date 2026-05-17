@@ -35,6 +35,12 @@ export default function LongformHubPage() {
         <p className="mt-2 text-base text-muted">
           짧은 예문만 반복하지 않도록 1000자 안팎의 글만 남겼습니다. 주제와 제목을 보고 오늘 끝까지 입력할 글을 고르세요.
         </p>
+        <p className="mt-3 text-sm text-muted">
+          영어도 됩니다. 카테고리 진입 후 언어를 English로 바꾸거나
+          <Link href="/typing/longform/AI%EB%8B%A8%ED%8E%B8?lang=en" className="ml-1 font-medium text-primary underline">
+            English long-form 바로 시작
+          </Link>
+        </p>
       </header>
 
       <ul className="grid gap-3 sm:grid-cols-2">
