@@ -1,5 +1,5 @@
 import { assemble } from "es-hangul";
-import { decomposeForKeystrokes } from "./korean-keyboard";
+import { decomposeForKeystrokes, isEquivalentTypingStroke } from "./korean-keyboard";
 
 export type TypingSurfaceCharStatus = "correct" | "incorrect" | "pending" | "untyped";
 
@@ -64,7 +64,7 @@ export function buildTypingSurfaceParts(
     const hasAny = consumed > 0;
     const fullyTyped = consumed >= targetStrokes.length;
     const typedSlice = hasAny ? typedStrokes.slice(strokeStart, strokeStart + consumed) : [];
-    const matched = hasAny && typedSlice.every((stroke, index) => stroke === targetStrokes[index]);
+    const matched = hasAny && typedSlice.every((stroke, index) => isEquivalentTypingStroke(targetStrokes[index], stroke));
     const isCurrent = !fullyTyped && visualCursor === cache.chars.length;
 
     if (isCurrent) {

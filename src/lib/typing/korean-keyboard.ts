@@ -104,7 +104,22 @@ for (const k of allKeys) {
   }
 }
 
+function isLatinLetter(ch: string): boolean {
+  return /^[A-Za-z]$/.test(ch);
+}
+
+export function isEquivalentTypingStroke(target: string, typed: string): boolean {
+  if (target === typed) return true;
+  if (isLatinLetter(target) && isLatinLetter(typed)) {
+    return target.toLowerCase() === typed.toLowerCase();
+  }
+  return false;
+}
+
 export function codeForHangul(jamo: string): string | undefined {
+  if (jamo.length === 1 && isLatinLetter(jamo)) {
+    return allKeys.find((k) => k.base === jamo.toLowerCase())?.code;
+  }
   if (jamo.length === 1 && /[0-9\-_=+!@#$%^&*(),.<>/?;:]/.test(jamo)) {
     return allKeys.find((k) => k.base === jamo || k.shift === jamo)?.code;
   }
@@ -151,7 +166,7 @@ export function keyHintForChar(ch: string): KeyHint | undefined {
   if (!code) return undefined;
   const key = getKeyByCode(code);
   if (!key) return undefined;
-  const requiresShift = key.shift === ch || key.hangulShift === ch;
+  const requiresShift = !isLatinLetter(ch) && (key.shift === ch || key.hangulShift === ch);
   return {
     ...key,
     requiredShift: requiresShift,

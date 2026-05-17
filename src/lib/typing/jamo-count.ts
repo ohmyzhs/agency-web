@@ -1,3 +1,5 @@
+import { isEquivalentTypingStroke } from './korean-keyboard';
+
 /**
  * 한국 표준 "타" 단위 자모 카운터.
  * 한컴타자 2024-04-24 음절→자소 기준 변경을 따름.
@@ -52,7 +54,7 @@ export function countCorrectJamo(target: string, typed: string): {
 
   for (let i = 0; i < maxIdx; i++) {
     const tc = jamoCountOf(target[i]);
-    if (target[i] === typed[i]) {
+    if (isEquivalentTypingStroke(target[i], typed[i])) {
       jamoCorrect += tc;
     } else {
       // 자모 수는 typed 기준 (잘못 입력된 문자의 자모 수)
