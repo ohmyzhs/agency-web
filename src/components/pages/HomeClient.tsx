@@ -3,22 +3,22 @@
 import Link from "next/link";
 import { useLocale } from "@/components/providers";
 import { type Tool } from "@/lib/tools";
-import type { Post } from "@/lib/posts";
-import { getPostContent } from "@/lib/post-types";
+import { filterPostsForLocale, getPostContent, type Post } from "@/lib/post-types";
 import { PostThumbnail } from "@/components/ui/post-thumbnail";
 import { UnifiedSearch } from "@/components/home/UnifiedSearch";
 
 type HomeClientProps = {
-  latestPosts: Post[];
   allPosts: Post[];
   featuredTools: Tool[];
   allTools: Tool[];
   totalToolCount: number;
 };
 
-export function HomeClient({ latestPosts, allPosts, featuredTools, allTools, totalToolCount }: HomeClientProps) {
+export function HomeClient({ allPosts, featuredTools, allTools, totalToolCount }: HomeClientProps) {
   const { t, locale } = useLocale();
   const home = t.home;
+  const localizedAllPosts = filterPostsForLocale(allPosts, locale);
+  const localizedLatestPosts = localizedAllPosts.slice(0, 6);
 
   return (
     <div className="flex flex-col gap-14 pb-24 overflow-hidden md:gap-18">
@@ -70,7 +70,7 @@ export function HomeClient({ latestPosts, allPosts, featuredTools, allTools, tot
       </section>
 
       {/* 1.5. Unified Search */}
-      <UnifiedSearch tools={allTools} posts={allPosts} />
+      <UnifiedSearch tools={allTools} posts={localizedAllPosts} />
 
       {/* 2. Bento Grid: Practical Intelligence */}
       <section className="mx-auto w-full max-w-6xl px-6">
@@ -234,7 +234,7 @@ export function HomeClient({ latestPosts, allPosts, featuredTools, allTools, tot
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {latestPosts.map((post) => {
+          {localizedLatestPosts.map((post) => {
             const content = getPostContent(post, locale);
             return (
               <article key={post.slug} className="group relative flex flex-col h-full">

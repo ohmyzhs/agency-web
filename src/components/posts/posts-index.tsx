@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useLocale } from "@/components/providers";
 import SegmentedTabs from "@/components/tools/shared/SegmentedTabs";
 import { PostCard } from "@/components/posts/post-card";
-import { getPostContent, type Post } from "@/lib/post-types";
+import { filterPostsForLocale, getPostContent, type Post } from "@/lib/post-types";
 import {
   getDisplayPostType,
   getPostCategoryLabel,
@@ -46,19 +46,20 @@ function uniqueSorted(values: string[]) {
 
 export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; initialFilters?: PostsIndexInitialFilters }) {
   const { locale } = useLocale();
+  const localizedPosts = useMemo(() => filterPostsForLocale(posts, locale), [posts, locale]);
   const availableCategories = useMemo(() => {
-    const present = new Set(posts.map((post) => normalizePostCategory(post.category, post.kind)));
+    const present = new Set(localizedPosts.map((post) => normalizePostCategory(post.category, post.kind)));
     return publicCategoryOrder.filter((category) => present.has(category));
-  }, [posts]);
+  }, [localizedPosts]);
 
   const availableTools = useMemo(
-    () => uniqueSorted(posts.flatMap((post) => post.relatedToolSlugs ?? [])),
-    [posts],
+    () => uniqueSorted(localizedPosts.flatMap((post) => post.relatedToolSlugs ?? [])),
+    [localizedPosts],
   );
 
   const [typeFilter, setTypeFilter] = useState<TypeFilter>(() => coerceTypeFilter(initialFilters.type));
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>(() => (
-    initialFilters.category && posts.some((post) => normalizePostCategory(post.category, post.kind) === initialFilters.category)
+    initialFilters.category && localizedPosts.some((post) => normalizePostCategory(post.category, post.kind) === initialFilters.category)
       ? initialFilters.category
       : "all"
   ));
@@ -70,7 +71,7 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
   const [sortMode, setSortMode] = useState<SortMode>(() => coerceSortMode(initialFilters.sort));
   const [query, setQuery] = useState(() => initialFilters.q ?? "");
 
-  const searchablePosts = useMemo(() => posts.map((post) => {
+  const searchablePosts = useMemo(() => localizedPosts.map((post) => {
     const content = getPostContent(post, locale);
     const publicCategory = normalizePostCategory(post.category, post.kind);
     const relatedTools = getRelatedToolLabels(post, locale, 10);
@@ -88,7 +89,7 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
       ...relatedTools.map((tool) => tool.label),
     ].join(" ").toLowerCase();
     return { post, content, publicCategory, haystack };
-  }), [posts, locale]);
+  }), [localizedPosts, locale]);
 
   const visiblePosts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -120,7 +121,7 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
   const typeOptions: { value: TypeFilter; label: string }[] = [
     { value: "all", label: allLabel },
     ...allTypes
-      .filter((type) => posts.some((post) => getDisplayPostType(post) === type))
+      .filter((type) => localizedPosts.some((post) => getDisplayPostType(post) === type))
       .map((type) => ({
         value: type,
         label: locale === "ko"
@@ -129,7 +130,7 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
       })),
   ];
 
-  const featuredPosts = posts
+  const featuredPosts = localizedPosts
     .filter((post) => getDisplayPostType(post) !== "update")
     .filter((post) => getDisplayPostType(post) === "guide" || getDisplayPostType(post) === "retrospective")
     .slice(0, 3);
@@ -156,7 +157,7 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
             <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted/70">
               {locale === "ko" ? "먼저 읽기 좋은 글" : "Featured posts"}
             </h2>
-            <span className="font-mono text-[11px] text-muted/40">{posts.length} posts</span>
+            <span className="font-mono text-[11px] text-muted/40">{localizedPosts.length} posts</span>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             {featuredPosts.map((post) => {

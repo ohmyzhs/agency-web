@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/providers";
-import { getPostContent, type Post, type PostBlock, type PostInline } from "@/lib/post-types";
+import { filterPostsForLocale, getPostContent, type Post, type PostBlock, type PostInline } from "@/lib/post-types";
 import { getToolBySlug, getToolContent } from "@/lib/tools";
 
 function normalizePostHref(href: string) {
@@ -277,15 +277,17 @@ export function PostPageShell({ post, relatedPosts, allPosts }: PostPageShellPro
     ? (locale === "ko" ? `수정 ${post.updatedAt}` : `Updated ${post.updatedAt}`)
     : null;
   const labels = getLabels(locale);
-  const adjacentPosts = getAdjacentPosts(allPosts, post.slug);
+  const localizedAllPosts = filterPostsForLocale(allPosts, locale);
+  const localizedRelatedPosts = filterPostsForLocale(relatedPosts, locale);
+  const adjacentPosts = getAdjacentPosts(localizedAllPosts, post.slug);
 
   const relatedTools = (post.relatedToolSlugs ?? [])
     .map((slug) => getToolBySlug(slug))
     .filter((tool): tool is NonNullable<ReturnType<typeof getToolBySlug>> => Boolean(tool));
 
-  const bottomRecommendations = relatedPosts.length > 0
-    ? relatedPosts
-    : allPosts.filter((candidate) => candidate.slug !== post.slug).slice(0, 3);
+  const bottomRecommendations = localizedRelatedPosts.length > 0
+    ? localizedRelatedPosts
+    : localizedAllPosts.filter((candidate) => candidate.slug !== post.slug).slice(0, 3);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
@@ -294,7 +296,7 @@ export function PostPageShell({ post, relatedPosts, allPosts }: PostPageShellPro
           {labels.back}
         </Link>
         <div className="flex gap-2 overflow-x-auto pb-1 text-xs md:hidden">
-          {allPosts.filter((candidate) => candidate.slug !== post.slug).slice(0, 4).map((navPost) => {
+          {localizedAllPosts.filter((candidate) => candidate.slug !== post.slug).slice(0, 4).map((navPost) => {
             const navContent = getPostContent(navPost, locale);
             return (
               <Link
@@ -378,7 +380,7 @@ export function PostPageShell({ post, relatedPosts, allPosts }: PostPageShellPro
         </article>
 
         <div className="hidden lg:block">
-          <PostNavigator currentPost={post} allPosts={allPosts} relatedPosts={relatedPosts} labels={labels} />
+          <PostNavigator currentPost={post} allPosts={localizedAllPosts} relatedPosts={localizedRelatedPosts} labels={labels} />
         </div>
       </div>
     </div>

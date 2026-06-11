@@ -12,7 +12,6 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function HomePage() {
   const allPosts = getAllPosts();
-  const latestPosts = allPosts.slice(0, 6);
   const allTools = getAllTools();
 
   // Choose featured tools based on specific slugs for high marketing impact
@@ -27,7 +26,6 @@ export default function HomePage() {
 
   return (
     <HomeClient
-      latestPosts={latestPosts}
       allPosts={allPosts}
       featuredTools={featuredTools}
       allTools={allTools}

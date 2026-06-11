@@ -93,7 +93,15 @@ export function isPublicPostCategory(category: string): category is PublicPostCa
   return (publicPostCategories as readonly string[]).includes(category);
 }
 
+export function postHasLocale(post: Post, locale: Locale): boolean {
+  return post.locale === "both" || post.locale === locale;
+}
+
+export function filterPostsForLocale(posts: Post[], locale: Locale): Post[] {
+  return posts.filter((post) => postHasLocale(post, locale));
+}
+
 export function getPostContent(post: Post, locale: Locale): LocalizedPostContent {
-  if (locale === "ko" && post.ko) return post.ko;
+  if (locale === "ko") return post.ko ?? post.en;
   return post.en;
 }

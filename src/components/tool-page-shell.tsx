@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useLocale } from "@/components/providers";
 import QuickToolSlots from "@/components/tools/shared/QuickToolSlots";
 import { getRelatedTools, getToolContent, type Tool, type ToolDataNotice } from "@/lib/tools";
-import { getPostContent, type Post } from "@/lib/post-types";
+import { filterPostsForLocale, getPostContent, type Post } from "@/lib/post-types";
 
 const localOnlyCategories = new Set(["developer-automation", "micro-utility", "file-media"]);
 
@@ -65,6 +65,7 @@ type ToolPageShellProps = {
 export function ToolPageShell({ tool, guidePosts = [], children }: ToolPageShellProps) {
   const { locale, t } = useLocale();
   const content = getToolContent(tool, locale);
+  const localizedGuidePosts = filterPostsForLocale(guidePosts, locale);
   const relatedTools = getRelatedTools(tool);
   const categoryLabel = t.categories[tool.category] ?? tool.category;
   const showPrivacyNote = localOnlyCategories.has(tool.category);
@@ -238,13 +239,13 @@ export function ToolPageShell({ tool, guidePosts = [], children }: ToolPageShell
              </div>
 
              {/* Detailed guides */}
-             {guidePosts.length > 0 && (
+             {localizedGuidePosts.length > 0 && (
                 <div>
                   <h3 className="text-xs font-black uppercase tracking-[0.16em] text-muted mb-3 px-2">
                     {locale === "ko" ? "상세 가이드" : "Detailed guides"}
                   </h3>
                   <div className="space-y-3">
-                    {guidePosts.map((post) => {
+                    {localizedGuidePosts.map((post) => {
                       const postContent = getPostContent(post, locale);
                       return (
                         <Link

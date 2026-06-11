@@ -345,20 +345,22 @@ function parsePost(filePath: string): Post | null {
   const publishedAt = asString(frontmatter.publishedAt, asString(frontmatter.created));
   const updatedAt = asString(frontmatter.updatedAt, asString(frontmatter.updated));
   const readingMinutes = Number(asString(frontmatter.readingMinutes, "4"));
+  const locale = asString(frontmatter.locale, "ko") as Post["locale"];
+  const localizedContent = { title, description, body: parseMarkdownBody(markdown) };
 
   return {
     slug,
     kind: asString(frontmatter.kind, "guide") as PostKind,
     category: asString(frontmatter.category, "practical-guide") as PostCategory,
-    locale: asString(frontmatter.locale, "ko") as Post["locale"],
+    locale,
     publishedAt,
     updatedAt: updatedAt || undefined,
     readingMinutes: Number.isFinite(readingMinutes) ? readingMinutes : 4,
     tags: asStringArray(frontmatter.tags),
     relatedToolSlugs: asStringArray(frontmatter.related_tools),
     sourceLinks: asSourceLinks(frontmatter.sourceLinks),
-    en: { title, description, body: parseMarkdownBody(markdown) },
-    ko: { title, description, body: parseMarkdownBody(markdown) },
+    en: localizedContent,
+    ko: locale === "en" ? undefined : localizedContent,
   };
 }
 
