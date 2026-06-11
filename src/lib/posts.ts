@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { Post, PostBlock, PostCategory, PostInline, PostKind, PostTableAlign, PostTableCell, SourceLink } from "./post-types";
+import { comparePostsNewestFirst } from "./post-types";
 export type { LocalizedPostContent, Post, PostBlock, PostCategory, PostInline, PostKind, SourceLink } from "./post-types";
 export { getPostContent } from "./post-types";
 
@@ -343,6 +344,7 @@ function parsePost(filePath: string): Post | null {
   if (!title || !description || !slug) return null;
 
   const publishedAt = asString(frontmatter.publishedAt, asString(frontmatter.created));
+  const sortAt = asString(frontmatter.sortAt, publishedAt);
   const updatedAt = asString(frontmatter.updatedAt, asString(frontmatter.updated));
   const readingMinutes = Number(asString(frontmatter.readingMinutes, "4"));
   const locale = asString(frontmatter.locale, "ko") as Post["locale"];
@@ -356,6 +358,7 @@ function parsePost(filePath: string): Post | null {
     category: asString(frontmatter.category, "practical-guide") as PostCategory,
     locale,
     publishedAt,
+    sortAt,
     updatedAt: updatedAt || undefined,
     readingMinutes: Number.isFinite(readingMinutes) ? readingMinutes : 4,
     tags: asStringArray(frontmatter.tags),
@@ -370,7 +373,7 @@ function getPublishedFromDir(dir: string): Post[] {
   return walkMarkdownFiles(dir)
     .map(parsePost)
     .filter((post): post is Post => Boolean(post))
-    .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
+    .sort(comparePostsNewestFirst);
 }
 
 export function getAllPosts(): Post[] {

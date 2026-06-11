@@ -12,6 +12,7 @@ kind: news-explainer
 category: digital-trends
 locale: en
 publishedAt: 2026-06-11
+sortAt: 2026-06-11T15:00:00+09:00
 readingMinutes: 12
 description: Palantir’s differentiation is not only Foundry or AIP. It is the combination of platforms, Forward Deployed Engineers, Deployment Strategists, and mission-critical operating experience.
 keyword_primary: Palantir forward deployed enterprise operating system

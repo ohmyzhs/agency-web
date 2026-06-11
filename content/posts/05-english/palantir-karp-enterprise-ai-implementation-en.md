@@ -12,6 +12,7 @@ kind: news-explainer
 category: ai-insight
 locale: en
 publishedAt: 2026-06-11
+sortAt: 2026-06-11T14:00:00+09:00
 readingMinutes: 10
 description: Alex Karp’s criticism of frontier AI labs points to a larger enterprise AI shift: value is moving from model performance alone toward implementation, cost control, and operational integration.
 keyword_primary: enterprise AI implementation competition

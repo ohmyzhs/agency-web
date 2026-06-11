@@ -11,6 +11,7 @@ kind: news-explainer
 category: digital-trends
 locale: ko
 publishedAt: 2026-06-11
+sortAt: 2026-06-11T15:00:00+09:00
 readingMinutes: 12
 description: 팔란티어의 진짜 차별점은 Foundry나 AIP 같은 제품만이 아니라 FDE와 Deployment Strategist가 고객 현장에 들어가 운영 문제를 해결하는 방식이다.
 keyword_primary: 팔란티어 FDE 기업 운영체제

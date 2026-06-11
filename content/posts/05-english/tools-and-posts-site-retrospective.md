@@ -10,6 +10,7 @@ kind: retrospective
 category: digital-trends
 locale: en
 publishedAt: 2026-06-11
+sortAt: 2026-06-11T12:00:00+09:00
 readingMinutes: 7
 keyword_primary: tools and content website strategy
 thumbnail:

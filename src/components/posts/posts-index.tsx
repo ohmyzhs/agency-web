@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useLocale } from "@/components/providers";
 import SegmentedTabs from "@/components/tools/shared/SegmentedTabs";
 import { PostCard } from "@/components/posts/post-card";
-import { filterPostsForLocale, getPostContent, type Post } from "@/lib/post-types";
+import { comparePostsNewestFirst, comparePostsOldestFirst, filterPostsForLocale, getPostContent, type Post } from "@/lib/post-types";
 import {
   getDisplayPostType,
   getPostCategoryLabel,
@@ -104,9 +104,9 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
       })
       .map(({ post }) => post)
       .sort((a, b) => {
-        if (sortMode === "oldest") return a.publishedAt.localeCompare(b.publishedAt);
+        if (sortMode === "oldest") return comparePostsOldestFirst(a, b);
         if (sortMode === "reading") return b.readingMinutes - a.readingMinutes;
-        return b.publishedAt.localeCompare(a.publishedAt);
+        return comparePostsNewestFirst(a, b);
       });
   }, [searchablePosts, typeFilter, categoryFilter, toolFilter, query, sortMode]);
 

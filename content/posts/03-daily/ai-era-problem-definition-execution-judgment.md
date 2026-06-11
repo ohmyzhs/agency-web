@@ -11,6 +11,7 @@ kind: retrospective
 category: digital-trends
 locale: ko
 publishedAt: 2026-06-11
+sortAt: 2026-06-11T13:00:00+09:00
 readingMinutes: 11
 description: AI 시대의 진짜 경쟁력은 AI 도구 사용법이 아니라 문제를 정확히 정의하고 구조화해 빠르게 실행하는 판단력이다.
 keyword_primary: AI 시대 문제 정의 능력

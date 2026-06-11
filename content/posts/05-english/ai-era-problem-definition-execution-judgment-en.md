@@ -12,6 +12,7 @@ kind: retrospective
 category: digital-trends
 locale: en
 publishedAt: 2026-06-11
+sortAt: 2026-06-11T13:00:00+09:00
 readingMinutes: 11
 description: In the AI era, competitive advantage comes less from tool fluency and more from problem definition, structural thinking, judgment, and fast execution with AI.
 keyword_primary: AI era problem definition

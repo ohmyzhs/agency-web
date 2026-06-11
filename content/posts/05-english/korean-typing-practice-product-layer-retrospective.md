@@ -10,6 +10,7 @@ kind: experiment
 category: digital-trends
 locale: en
 publishedAt: 2026-06-11
+sortAt: 2026-06-11T11:00:00+09:00
 readingMinutes: 8
 keyword_primary: Korean typing practice product design
 thumbnail:

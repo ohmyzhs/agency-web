@@ -11,6 +11,7 @@ kind: news-explainer
 category: ai-insight
 locale: ko
 publishedAt: 2026-06-11
+sortAt: 2026-06-11T14:00:00+09:00
 readingMinutes: 10
 description: CNBC 인터뷰에서 팔란티어 CEO 알렉스 카프가 OpenAI와 Anthropic 중심의 모델 경쟁을 비판한 발언을 통해, 기업용 AI의 가치가 모델 성능에서 실행과 비용 효율로 이동하는 흐름을 해석한다.
 keyword_primary: 팔란티어 기업용 AI 실행 경쟁

@@ -73,6 +73,7 @@ export type Post = {
   category: PostCategory;
   locale: "ko" | "en" | "both";
   publishedAt: string;
+  sortAt: string;
   updatedAt?: string;
   readingMinutes: number;
   tags: string[];
@@ -100,6 +101,22 @@ export function postHasLocale(post: Post, locale: Locale): boolean {
 
 export function filterPostsForLocale(posts: Post[], locale: Locale): Post[] {
   return posts.filter((post) => postHasLocale(post, locale));
+}
+
+export function getPostSortValue(post: Post): string {
+  return post.sortAt || post.publishedAt;
+}
+
+export function comparePostsNewestFirst(a: Post, b: Post): number {
+  const bySortTime = getPostSortValue(b).localeCompare(getPostSortValue(a));
+  if (bySortTime !== 0) return bySortTime;
+  return b.slug.localeCompare(a.slug);
+}
+
+export function comparePostsOldestFirst(a: Post, b: Post): number {
+  const bySortTime = getPostSortValue(a).localeCompare(getPostSortValue(b));
+  if (bySortTime !== 0) return bySortTime;
+  return a.slug.localeCompare(b.slug);
 }
 
 export function getPostContent(post: Post, locale: Locale): LocalizedPostContent {
