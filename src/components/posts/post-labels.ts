@@ -44,7 +44,7 @@ export function getDisplayPostType(post: Post): DisplayPostType {
   if (post.kind === "workflow") return "workflow";
   if (post.kind === "trend-note" || post.kind === "it-news") return "trend";
   if (post.kind === "news-explainer") return "news-explainer";
-  if (post.kind === "site-note") return "retrospective";
+  if (post.kind === "retrospective" || post.kind === "site-note") return "retrospective";
   if (post.kind === "experiment") return "experiment";
   return "guide";
 }
