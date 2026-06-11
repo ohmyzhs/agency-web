@@ -184,3 +184,139 @@ html {
 .accent-gradient {
   @apply bg-gradient-to-br from-primary to-primary-dark;
 }
+
+/* Rich HTML article bodies for AI-assisted editorial posts */
+.zhs-rich-post-html {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.zhs-rich-post-html > * + * {
+  margin-top: 1.15rem;
+}
+
+.zhs-rich-post-html h2 {
+  margin-top: 2.75rem;
+  color: var(--foreground);
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-weight: 850;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+
+.zhs-rich-post-html h3 {
+  margin-top: 1.8rem;
+  color: var(--foreground);
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.zhs-rich-post-html strong {
+  color: var(--foreground);
+  font-weight: 800;
+}
+
+.zhs-rich-post-html a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.zhs-rich-post-html ul,
+.zhs-rich-post-html ol {
+  margin-top: 1rem;
+  padding-left: 1.25rem;
+}
+
+.zhs-rich-post-html li {
+  margin-top: 0.45rem;
+}
+
+.zhs-rich-post-html ul li { list-style: disc; }
+.zhs-rich-post-html ol li { list-style: decimal; }
+
+.zhs-rich-post-html blockquote,
+.zhs-rich-post-html .zhs-html-callout {
+  margin-top: 1.75rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: 1rem;
+  background: var(--accent);
+  padding: 1rem 1.15rem;
+  color: var(--foreground);
+  font-weight: 650;
+}
+
+.zhs-rich-post-html .zhs-html-hero {
+  margin-top: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.22), transparent 36%),
+    linear-gradient(135deg, var(--card), var(--background));
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.zhs-rich-post-html .zhs-html-eyebrow {
+  color: var(--primary);
+  font-family: var(--font-mono-zhs);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.zhs-rich-post-html .zhs-html-lead {
+  margin-top: 0.9rem;
+  color: var(--foreground);
+  font-size: clamp(1.05rem, 1.7vw, 1.28rem);
+  font-weight: 650;
+  line-height: 1.65;
+}
+
+.zhs-rich-post-html .zhs-html-grid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+@media (min-width: 720px) {
+  .zhs-rich-post-html .zhs-html-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.zhs-rich-post-html .zhs-html-card {
+  border: 1px solid var(--border);
+  border-radius: 1.15rem;
+  background: var(--card);
+  padding: 1rem;
+}
+
+.zhs-rich-post-html .zhs-html-card h3 {
+  margin-top: 0;
+}
+
+.zhs-rich-post-html .zhs-html-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  margin-right: 0.45rem;
+  border-radius: 999px;
+  background: var(--primary);
+  color: white;
+  font-family: var(--font-mono-zhs);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.zhs-rich-post-html .zhs-html-divider {
+  height: 1px;
+  margin: 2rem 0;
+  background: var(--border);
+}

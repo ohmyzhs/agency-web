@@ -56,7 +56,8 @@ export type PostBlock =
   | { type: "image"; src: string; alt: string; caption?: string }
   | { type: "code"; code: string; language?: string }
   | { type: "hr" }
-  | { type: "button"; text: string; href: string };
+  | { type: "button"; text: string; href: string }
+  | { type: "html"; html: string };
 
 export type SourceLink = { label: string; url: string };
 

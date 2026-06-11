@@ -137,6 +137,14 @@ function renderBlock(block: PostBlock, index: number) {
         </Link>
       );
     }
+    case "html":
+      return (
+        <div
+          key={index}
+          className="zhs-rich-post-html mt-8"
+          dangerouslySetInnerHTML={{ __html: block.html }}
+        />
+      );
   }
 }
 

@@ -346,7 +346,9 @@ function parsePost(filePath: string): Post | null {
   const updatedAt = asString(frontmatter.updatedAt, asString(frontmatter.updated));
   const readingMinutes = Number(asString(frontmatter.readingMinutes, "4"));
   const locale = asString(frontmatter.locale, "ko") as Post["locale"];
-  const localizedContent = { title, description, body: parseMarkdownBody(markdown) };
+  const format = asString(frontmatter.format, "markdown");
+  const body = format === "html" ? [{ type: "html" as const, html: markdown }] : parseMarkdownBody(markdown);
+  const localizedContent = { title, description, body };
 
   return {
     slug,
