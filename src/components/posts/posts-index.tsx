@@ -44,6 +44,174 @@ function uniqueSorted(values: string[]) {
   return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
 }
 
+type CategoryQuickItem = {
+  value: CategoryFilter;
+  label: string;
+  count: number;
+  hasNew: boolean;
+};
+
+const newBadgeWindowMs = 1000 * 60 * 60 * 24 * 7;
+
+function parsePostTime(post: Post) {
+  const value = post.sortAt || post.publishedAt;
+  const time = Date.parse(value);
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function MobileCategoryQuickMenu({
+  items,
+  active,
+  locale,
+  onSelect,
+}: {
+  items: CategoryQuickItem[];
+  active: CategoryFilter;
+  locale: "ko" | "en";
+  onSelect: (category: CategoryFilter) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="fixed bottom-5 right-5 z-50 min-[1480px]:hidden">
+      {open && (
+        <nav
+          className="mb-3 w-[min(21rem,calc(100vw-2rem))] rounded-3xl border border-border bg-background/96 p-3 shadow-[0_20px_70px_rgba(15,23,42,0.22)] backdrop-blur-xl"
+          aria-label={locale === "ko" ? "모바일 카테고리 빠른 이동" : "Mobile category quick navigation"}
+        >
+          <div className="mb-3 flex items-center justify-between gap-3 px-1">
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-primary/70">
+                {locale === "ko" ? "카테고리" : "Categories"}
+              </p>
+              <p className="mt-1 text-[11px] font-semibold text-muted/60">
+                {locale === "ko" ? "빠른 이동" : "Quick menu"}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-sm font-black text-muted"
+              aria-label={locale === "ko" ? "퀵메뉴 닫기" : "Close quick menu"}
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="space-y-1.5">
+            {items.map((item) => {
+              const selected = active === item.value;
+              return (
+                <button
+                  key={item.value}
+                  type="button"
+                  onClick={() => {
+                    onSelect(item.value);
+                    setOpen(false);
+                  }}
+                  className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-left transition-colors ${selected ? "bg-primary text-white" : "text-muted hover:bg-card hover:text-foreground"}`}
+                >
+                  <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border text-[12px] ${selected ? "border-white/30 bg-white/15" : "border-border bg-card text-muted/55"}`}>
+                    ▤
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-sm font-extrabold">{item.label}</span>
+                  {item.hasNew && (
+                    <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider ${selected ? "bg-white text-primary" : "bg-primary/10 text-primary"}`}>
+                      new
+                    </span>
+                  )}
+                  <span className={`font-mono text-[11px] font-bold ${selected ? "text-white/75" : "text-muted/45"}`}>{item.count}</span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        className="flex items-center gap-2 rounded-full border border-border bg-foreground px-4 py-3 text-xs font-black uppercase tracking-widest text-background shadow-[0_14px_38px_rgba(15,23,42,0.28)]"
+        aria-expanded={open}
+        aria-label={locale === "ko" ? "카테고리 퀵메뉴 열기" : "Open category quick menu"}
+      >
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-background/15">▤</span>
+        {locale === "ko" ? "글 메뉴" : "Posts"}
+      </button>
+    </div>
+  );
+}
+
+function DesktopCategoryQuickMenu({
+  items,
+  active,
+  locale,
+  onSelect,
+}: {
+  items: CategoryQuickItem[];
+  active: CategoryFilter;
+  locale: "ko" | "en";
+  onSelect: (category: CategoryFilter) => void;
+}) {
+  return (
+    <aside className="fixed top-32 right-[max(1rem,calc((100vw-72rem)/2-17rem))] z-40 hidden w-60 min-[1480px]:block">
+      <div className="rounded-3xl border border-border bg-background/92 p-3 shadow-[0_18px_55px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+        <div className="mb-3 flex items-center justify-between gap-3 px-1">
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-primary/70">
+              {locale === "ko" ? "카테고리" : "Categories"}
+            </p>
+            <p className="mt-1 text-[11px] font-semibold text-muted/60">
+              {locale === "ko" ? "빠른 이동" : "Quick menu"}
+            </p>
+          </div>
+          <span className="rounded-full border border-border bg-card px-2 py-1 font-mono text-[10px] font-bold text-muted/55">
+            {items[0]?.count ?? 0}
+          </span>
+        </div>
+
+        <div className="space-y-1.5">
+          {items.map((item) => {
+            const selected = active === item.value;
+            return (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => onSelect(item.value)}
+                className={`group flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-left transition-colors ${selected ? "bg-primary text-white" : "text-muted hover:bg-card hover:text-foreground"}`}
+              >
+                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border text-[12px] ${selected ? "border-white/30 bg-white/15" : "border-border bg-card text-muted/55 group-hover:text-primary"}`}>
+                  ▤
+                </span>
+                <span className="min-w-0 flex-1 truncate text-sm font-extrabold">
+                  {item.label}
+                </span>
+                {item.hasNew && (
+                  <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider ${selected ? "bg-white text-primary" : "bg-primary/10 text-primary"}`}>
+                    new
+                  </span>
+                )}
+                <span className={`font-mono text-[11px] font-bold ${selected ? "text-white/75" : "text-muted/45"}`}>
+                  {item.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-3 rounded-2xl border border-dashed border-border bg-card/55 p-3">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-muted/45">
+            {locale === "ko" ? "프로모션 슬롯" : "Promo slot"}
+          </p>
+          <p className="mt-1 text-[11px] leading-relaxed text-muted/55">
+            {locale === "ko" ? "나중에 배너나 추천 링크를 넣기 좋은 자리입니다." : "Reserved for a future banner or recommended link."}
+          </p>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; initialFilters?: PostsIndexInitialFilters }) {
   const { locale } = useLocale();
   const localizedPosts = useMemo(() => filterPostsForLocale(posts, locale), [posts, locale]);
@@ -109,6 +277,38 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
         return comparePostsNewestFirst(a, b);
       });
   }, [searchablePosts, typeFilter, categoryFilter, toolFilter, query, sortMode]);
+
+  const categoryQuickItems = useMemo<CategoryQuickItem[]>(() => {
+    const postsForMenu = localizedPosts.filter((post) => getDisplayPostType(post) !== "update");
+    const newestTime = postsForMenu.reduce((latest, post) => Math.max(latest, parsePostTime(post)), 0);
+    const isNewPost = (post: Post) => newestTime > 0 && newestTime - parsePostTime(post) <= newBadgeWindowMs;
+    const allItem: CategoryQuickItem = {
+      value: "all",
+      label: locale === "ko" ? "전체보기" : "All posts",
+      count: postsForMenu.length,
+      hasNew: postsForMenu.some(isNewPost),
+    };
+
+    const categoryItems = availableCategories.map((category) => {
+      const categoryPosts = postsForMenu.filter((post) => normalizePostCategory(post.category, post.kind) === category);
+      return {
+        value: category,
+        label: getPostCategoryLabel(category, locale),
+        count: categoryPosts.length,
+        hasNew: categoryPosts.some(isNewPost),
+      };
+    });
+
+    return [allItem, ...categoryItems];
+  }, [availableCategories, localizedPosts, locale]);
+
+  const selectQuickCategory = (category: CategoryFilter) => {
+    setCategoryFilter(category);
+    setTypeFilter("all");
+    setToolFilter("all");
+    setSortMode("newest");
+    setQuery("");
+  };
 
   const eyebrow = locale === "ko" ? "// AI 운영 블로그" : "// AI-operated blog";
   const title = locale === "ko" ? "AI와 실무를 연결하는 글" : "Posts for AI and practical work";
@@ -286,6 +486,19 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
           </div>
         )}
       </div>
+
+      <DesktopCategoryQuickMenu
+        items={categoryQuickItems}
+        active={categoryFilter}
+        locale={locale}
+        onSelect={selectQuickCategory}
+      />
+      <MobileCategoryQuickMenu
+        items={categoryQuickItems}
+        active={categoryFilter}
+        locale={locale}
+        onSelect={selectQuickCategory}
+      />
     </div>
   );
 }
