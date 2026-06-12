@@ -36,8 +36,47 @@ import UtmBuilder from "@/components/tools/UtmBuilder";
 import WebhookPayloadFormatter from "@/components/tools/WebhookPayloadFormatter";
 import WebhookRequestSimulatorTool from "@/components/tools/WebhookRequestSimulatorTool";
 import { getPostsByRelatedTool } from "@/lib/posts";
-import { getAllTools, getToolBySlug } from "@/lib/tools";
+import { getAllTools, getToolBySlug, getToolContent, type Tool } from "@/lib/tools";
 import { createPageMetadata } from "@/lib/seo";
+
+function ToolNoScriptFallback({ tool }: { tool: Tool }) {
+  const content = tool.ko ?? getToolContent(tool, "ko");
+
+  return (
+    <noscript>
+      <section className="mx-auto max-w-6xl px-6 py-8">
+        <h1>{content.title}</h1>
+        <p>{content.description}</p>
+        <h2>도구 설명</h2>
+        {content.explanation.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
+        <h2>입력값과 결과</h2>
+        <ul>
+          {content.inputs.map((input) => (
+            <li key={input.label}><strong>{input.label}</strong>: {input.description}</li>
+          ))}
+          {content.outputs.map((output) => (
+            <li key={output.label}><strong>{output.label}</strong>: {output.description}</li>
+          ))}
+        </ul>
+        <h2>사용 예시</h2>
+        <ul>
+          {content.examples.map((example) => (
+            <li key={example.label}><strong>{example.label}</strong>: {example.input} → {example.output}</li>
+          ))}
+        </ul>
+        <h2>자주 묻는 질문</h2>
+        {content.faqs.map((faq) => (
+          <div key={faq.question}>
+            <h3>{faq.question}</h3>
+            <p>{faq.answer}</p>
+          </div>
+        ))}
+      </section>
+    </noscript>
+  );
+}
 
 type ToolPageProps = {
   params: Promise<{ slug: string }>;
@@ -105,8 +144,11 @@ export default async function ToolPage({ params }: ToolPageProps) {
   if (!tool) notFound();
 
   return (
-    <ToolPageShell tool={tool} guidePosts={getPostsByRelatedTool(tool.slug, 4)}>
-      {widgetMap[tool.slug]}
-    </ToolPageShell>
+    <>
+      <ToolNoScriptFallback tool={tool} />
+      <ToolPageShell tool={tool} guidePosts={getPostsByRelatedTool(tool.slug, 4)}>
+        {widgetMap[tool.slug]}
+      </ToolPageShell>
+    </>
   );
 }

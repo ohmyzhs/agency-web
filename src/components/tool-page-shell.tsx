@@ -56,6 +56,54 @@ function getDefaultDataNotice(tool: Tool, locale: "ko" | "en"): ToolDataNotice {
   return defaultDataNotices[locale].local;
 }
 
+type ToolEditorialContext = {
+  useCase: string;
+  workflow: string;
+  limitation: string;
+};
+
+function getToolEditorialContext(tool: Tool, locale: "ko" | "en"): ToolEditorialContext {
+  const content = getToolContent(tool, locale);
+  const firstInput = content.inputs[0]?.label ?? (locale === "ko" ? "입력값" : "input");
+  const secondInput = content.inputs[1]?.label ?? (locale === "ko" ? "옵션" : "options");
+  const firstOutput = content.outputs[0]?.label ?? (locale === "ko" ? "결과" : "result");
+  const example = content.examples[0];
+
+  if (locale === "ko") {
+    const categoryUseCases: Record<string, string> = {
+      "korea-living": "한국 생활에서 자주 마주치는 단위, 면적, 사이즈, 행정·생활 기준을 빠르게 비교해야 할 때 유용합니다.",
+      "time-money": "날짜, 시간, 금액, 이자, 세금처럼 의사결정 전에 먼저 대략적인 수치를 확인해야 할 때 유용합니다.",
+      "file-media": "이미지, PDF, 파일처럼 외부 서비스에 올리기 전 용량, 형식, 개인정보 노출 가능성을 점검해야 할 때 유용합니다.",
+      "network-diagnostics": "IP, HTTP, DNS, webhook처럼 네트워크 동작을 확인하고 요청·응답 흐름을 빠르게 재현해야 할 때 유용합니다.",
+      "developer-automation": "개발, 문서화, 자동화 작업 중 반복되는 변환·검증·디버깅 절차를 한 화면에서 끝내야 할 때 유용합니다.",
+      "business-automation": "운영, 마케팅, 보고, 협업 자동화에서 작은 입력을 구조화된 결과로 바꿔야 할 때 유용합니다.",
+      "micro-utility": "작지만 자주 필요한 계산이나 변환을 검색 없이 즉시 처리하고 싶을 때 유용합니다.",
+    };
+
+    return {
+      useCase: `${content.shortTitle}는 ${categoryUseCases[tool.category] ?? "반복되는 실무 확인을 빠르게 처리해야 할 때 유용합니다."} 특히 ${example ? `${example.input}을 ${example.output}로 확인하는 상황처럼` : "작은 입력을 바로 검토해야 하는 상황에서"} 브라우저 안에서 즉시 결과를 확인하도록 설계했습니다.`,
+      workflow: `기본 흐름은 간단합니다. 먼저 ${firstInput}을 입력하고, 필요한 경우 ${secondInput}을 조정한 뒤 ${firstOutput}을 확인합니다. 결과를 그대로 믿기보다 입력 단위, 기준일, 파일 형식, 반올림 기준처럼 결과에 영향을 주는 조건을 한 번 더 확인하면 실무에서 재작업을 줄일 수 있습니다.`,
+      limitation: `${content.shortTitle}는 빠른 판단을 돕는 보조 도구입니다. 결과가 계약, 신고, 결제, 보안, 고객 데이터 처리처럼 중요한 결정에 연결된다면 공식 문서, 원본 시스템, 내부 정책, 전문가 검토를 함께 확인해야 합니다.`,
+    };
+  }
+
+  const categoryUseCases: Record<string, string> = {
+    "korea-living": "Korea-specific living tasks such as units, area, sizing, and everyday local standards need quick comparison.",
+    "time-money": "dates, time, money, interest, tax, and planning numbers need a quick first-pass estimate.",
+    "file-media": "files, images, and PDFs need format, size, privacy, or sharing checks before they are uploaded elsewhere.",
+    "network-diagnostics": "IP, HTTP, DNS, and webhook behavior needs to be inspected or reproduced quickly.",
+    "developer-automation": "development, documentation, and automation workflows need repeated conversion, validation, and debugging steps in one place.",
+    "business-automation": "operations, marketing, reporting, or collaboration workflows need small inputs turned into structured outputs.",
+    "micro-utility": "small but frequent calculations or transformations need to be handled without opening a heavy application.",
+  };
+
+  return {
+    useCase: `${content.shortTitle} is useful when ${categoryUseCases[tool.category] ?? "a recurring practical check needs a fast result."} It is designed for situations like ${example ? `turning ${example.input} into ${example.output}` : "checking a small input immediately"} without leaving the browser workflow.`,
+    workflow: `The basic workflow is simple: enter ${firstInput}, adjust ${secondInput} when needed, and review ${firstOutput}. Before relying on the result, check the units, date, file type, rounding basis, or other assumptions that may change the outcome.`,
+    limitation: `${content.shortTitle} is a supporting utility for quick judgment. If the result affects contracts, filings, payments, security, customer data, or other important decisions, verify it against official sources, source systems, internal policy, or qualified review.`,
+  };
+}
+
 type ToolPageShellProps = {
   tool: Tool;
   guidePosts?: Post[];
@@ -70,6 +118,7 @@ export function ToolPageShell({ tool, guidePosts = [], children }: ToolPageShell
   const categoryLabel = t.categories[tool.category] ?? tool.category;
   const showPrivacyNote = localOnlyCategories.has(tool.category);
   const dataNotice = content.dataNotice ?? getDefaultDataNotice(tool, locale);
+  const editorialContext = getToolEditorialContext(tool, locale);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-10 md:py-14">
@@ -192,6 +241,32 @@ export function ToolPageShell({ tool, guidePosts = [], children }: ToolPageShell
                     </p>
                   </div>
                 ))}
+              </div>
+            </section>
+
+            <section className="rounded-2xl border border-border bg-card p-5">
+              <h2 className="text-lg font-black tracking-tight text-foreground mb-4">
+                {locale === "ko" ? `${content.shortTitle} 사용 전 알아두면 좋은 점` : `Before using ${content.shortTitle}`}
+              </h2>
+              <div className="grid gap-4 md:grid-cols-3">
+                <article className="rounded-xl border border-border/80 bg-background/80 p-4">
+                  <h3 className="text-sm font-black text-foreground">
+                    {locale === "ko" ? "언제 쓰면 좋은가" : "When it helps"}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{editorialContext.useCase}</p>
+                </article>
+                <article className="rounded-xl border border-border/80 bg-background/80 p-4">
+                  <h3 className="text-sm font-black text-foreground">
+                    {locale === "ko" ? "권장 사용 흐름" : "Suggested workflow"}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{editorialContext.workflow}</p>
+                </article>
+                <article className="rounded-xl border border-border/80 bg-background/80 p-4">
+                  <h3 className="text-sm font-black text-foreground">
+                    {locale === "ko" ? "결과 확인 기준" : "How to verify results"}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{editorialContext.limitation}</p>
+                </article>
               </div>
             </section>
 
