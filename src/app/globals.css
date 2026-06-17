@@ -301,18 +301,19 @@ html {
 }
 
 .zhs-rich-post-html .zhs-html-step {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.65rem;
-  height: 1.65rem;
-  margin-right: 0.45rem;
-  border-radius: 999px;
-  background: var(--primary);
-  color: white;
-  font-family: var(--font-mono-zhs);
-  font-size: 0.72rem;
-  font-weight: 900;
+  margin-top: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 1.15rem;
+  background: var(--card);
+  padding: 1rem 1.1rem;
+}
+
+.zhs-rich-post-html .zhs-html-step h3 {
+  margin-top: 0;
+}
+
+.zhs-rich-post-html .zhs-html-step p {
+  margin-top: 0.6rem;
 }
 
 .zhs-rich-post-html .zhs-html-divider {
