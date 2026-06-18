@@ -1,0 +1,10 @@
+{
+  "hero_infographic": {
+    "prompt": "A hand-drawn editorial infographic illustration in watercolor and ink pen style, on warm cream paper texture background (#F5F0E8). The central visual is a large iceberg metaphor for quality management — 70% is hidden below the surface. Above the waterline (warm peach sky #E8C5A4): a small iceberg tip split into two sections — 'Production 15%' on the left with a tiny hand-drawn factory assembly line icon, and 'Parts 15%' on the right with small hand-drawn gear and screw icons. A handwritten label reads 'What is visible'. Below the waterline (deep teal-blue water #2B5F7F with watercolor wash): a massive underwater iceberg body labeled 'Design 70%' in large hand-drawn text. Inside the underwater section, hand-drawn sketches of: an architectural blueprint with grid lines, a wire harness circuit diagram, an evaluation checklist with checkmarks, and a permission matrix table with rows and columns. A handwritten note reads 'The problem hides in the design circuit, not the production line'. On the right side, a hand-drawn calendar showing '3mo → 6mo' with crossed-out dates and an arrow, illustrating planning fallacy. A brass balance scale tilted heavily to the 70% side. At the bottom, a small hand-drawn warning sign with 'DB Wipe' text next to a cracked database cylinder, representing the Fortune 2025 AI incident. Dotted hand-drawn arrows connect the elements. A small footer at the bottom reads 'Zero Human Studio' in handwritten style. Overall style: rich hand-drawn lecture note aesthetic, like a senior engineer's notebook sketch. Watercolor washes with visible brush strokes, ink pen outlines with varying line weight. Warm, educational, editorial quality. No flat design, no minimalist geometry, no abstract shapes.",
+    "style": "watercolor + ink pen hand-drawn editorial",
+    "palette": ["#F5F0E8 cream", "#E8C5A4 peach", "#2B5F7F deep teal", "#D97A3A accent"],
+    "aspect_ratio": "portrait (4:5)"
+  },
+  "ko_path": "/infographics/quality-70-percent-inflation/quality-70-percent-inflation-ko.jpg",
+  "en_path": "/infographics/quality-70-percent-inflation/quality-70-percent-inflation-en.jpg"
+}
