@@ -61,17 +61,29 @@ telegram_handoff: false
   </div>
 </section>
 
+<figure style="margin: 0 0 2.5rem 0;">
+  <img src="/infographics/glm-5-2-open-weight-frontier-coding/glm-5-2-open-weight-frontier-coding-ko.jpg" alt="GLM-5.2 벤치마크 교차점: 5개 코딩 벤치마크에서 GLM-5.2, GPT-5.5, Claude Opus 4.8 점수 비교 막대 차트" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
+</figure>
+
 <section aria-labelledby="what-is-glm52">
   <h2 id="what-is-glm52">GLM-5.2는 어떤 모델인가</h2>
   <p>Z.ai는 2026년 들어 GLM 시리즈로 중국 오픈 모델의 한 축을 담당해왔다. GLM-5.1이 코딩 벤치마크에서 Claude Opus 수준에 근접한 성과를 보였다면, GLM-5.2는 한 단계 더 나아가 "장시간 지속되는 과제(long-horizon task)"를 설계 목표로 삼았다. 매개변수 규모는 753B(총 744B, 활성 40B의 MoE 구조)로 GLM-5.1과 동일하지만, 컨텍스트 창을 200K에서 1M으로 확대하고, 추론·코딩 능력을 폭넓게 끌어올렸다.</p>
   <p>이 모델의 기술적 핵심은 IndexShare라는 구조적 혁신이다. 대규모 언어 모델에서 긴 문서의 어텐션을 다시 계산하는 비용은 기하급수적으로 늘어난다. IndexShare는 4개의 희소 어텐션 계층마다 동일한 인덱서를 재사용해, 1M 컨텍스트에서 토큰당 연산량을 2.9배 줄인다. 여기에 Multi-Token Prediction(MTP) 계층을 개선해 추론 시 수용 토큰 길이를 최대 20% 늘렸다. 사용자는 "Max"와 "High" 두 추론 모드를 전환하며 성능과 지연 시간 사이에서 균형을 선택할 수 있다.</p>
   <div class="zhs-html-callout"><p>IndexShare의 의미는 단순한 속도 향상이 아니다. 1M 컨텍스트를 "선언"하는 것과 "안정적으로 유지"하는 것은 다른 차원의 문제다. Z.ai는 코딩 에이전트 시나리오에 맞춘 대규모 1M 컨텍스트 훈련을 수행했다고 밝히며, 이것이 장시간 과제에서 품질이 떨어지지 않는 배경이라고 설명한다.</p></div>
+
+<figure style="margin: 0 0 2.5rem 0;">
+  <img src="/infographics/glm-5-2-open-weight-frontier-coding/card-news/04-indexshare-context.jpg" alt="1M 컨텍스트와 IndexShare 2.9배 효율 개선을 보여주는 핸드드로운 카드" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 0 auto; display: block;" />
+</figure>
 </section>
 
 <section aria-labelledby="benchmarks">
   <h2 id="benchmarks">벤치마크가 말하는 것: 어디서 이기고, 어디서 지는가</h2>
   <p>독립 평가 기관 Artificial Analysis의 Intelligence Index v4.1에서 GLM-5.2는 51점으로 오픈웨이트 1위를 기록했다. 같은 지표에서 MiniMax-M3는 44점, DeepSeek V4 Pro(max) 44점, Kimi K2.6 43점이다. 폐쇄형 상위 모델과의 격차도 좁혔다. GDPval-AA v2(실제 에이전트 성능 측정)에서 1524점으로 GPT-5.5(xhigh, 1514)와 사실상 동급이 됐다.</p>
   <p>코딩·에이전트 영역에서 GLM-5.2의 성과는 구체적이다. SWE-bench Pro 62.1은 GPT-5.5(58.6)와 GLM-5.1(58.4)을 모두 넘어선다. FrontierSWE(Dominance) 74.4%는 GPT-5.5(72.6%)를 상회하며 Claude Opus 4.8(75.1%)에 0.7% 차이로 뒤진다. MCP-Atlas(도구 사용 평가) 77.0은 GPT-5.5(75.3)를 앞지르고 Claude Opus 4.8(77.8)에 0.8점 뒤진다. Humanity's Last Exam(도구 사용) 54.7 역시 GPT-5.5(52.2)를 넘는다. 장시간 엔지니어링 과제인 PostTrainBench에서는 GPT-5.5(25.0%) 대비 34.3%로 큰 격차를 보인다.</p>
+
+<figure style="margin: 0 0 2.5rem 0;">
+  <img src="/infographics/glm-5-2-open-weight-frontier-coding/card-news/01-swe-bench-crossover.jpg" alt="SWE-bench Pro에서 GLM-5.2 62.1이 GPT-5.5 58.6을 넘어선 교차점을 보여주는 핸드드로운 바 차트" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 0 auto; display: block;" />
+</figure>
   <p>그러나 GLM-5.2가 모든 영역에서 앞서는 것은 아니다. Terminal-Bench 2.1에서 81.0점으로 Claude Opus 4.8(85.0)과 GPT-5.5(84.0)에 뒤지며, Gemini 3.1 Pro(74.0)를 앞서는 데 그친다. SWE-Marathon(초장시간 소프트웨어 엔지니어링)에서도 Opus 4.8에 13% 뒤진다. 추론 영역 전반에서는 폐쇄형 상위 모델이 여전히 3~8포인트 앞서는 구조가 유지된다. GLM-5.2의 성과는 "모든 과제에서 1등"이 아니라 "코딩·에이전트에서 처음으로 교차한 오픈웨이트"라는 점에서 의미가 있다.</p>
   <div class="zhs-html-step">
     <h3>GLM-5.1 → GLM-5.2 주요 개선</h3>
@@ -90,6 +102,10 @@ telegram_handoff: false
   <p>GLM-5.2의 API 단가는 입력 백만 토큰당 $1.40, 출력 $4.40, 캐시 적중 $0.26이다. Claude Opus 4.8이나 GPT-5.5와 비교하면 대략 6분의 1 수준이다. Z.ai는 별도로 GLM Coding Plan이라는 구독 제품을 운영하며, Lite 약 $3, Pro 약 $15, Max 약 $80의 월정액으로 코딩 환경에서 사용할 수 있도록 했다. 20개 이상의 서드파티 코딩 환경과 통합됐고, DeepInfra·Novita·Nebius·Fireworks 등 9개 이상의 추론 제공자에서 선택 가능하다.</p>
   <p>비용의 의미는 단순한 "저렴함"이 아니다. Artificial Analysis의 Intelligence vs Cost per Task 차트에서 GLM-5.2는 Pareto 최전선에 위치한다. 동일한 지능 수준에서 과제당 비용이 가장 낮다는 뜻이다. 과제당 $0.46은 MiniMax-M3($0.18)나 DeepSeek V4 Pro($0.05)보다 높지만, 이 두 모델은 Intelligence Index에서 각각 44점으로 GLM-5.2(51)보다 7점 낮다. 같은 성능급에서 비교하면 GLM-5.2가 가장 효율적이다.</p>
   <p>다만 주의할 점이 있다. GLM-5.2는 과제당 평균 43K 출력 토큰을 소비한다. 이는 GLM-5.1(26K) 대비 65% 증가이고, MiniMax-M3(24K)의 거의 두 배다. 추론 과정에서 더 많은 토큰을 생성하는 경향이 있어, 실제 청구 비용은 벤치마크 수치 이상으로 늘어날 수 있다. "저렴한 단가"와 "낮은 총비용"은 같은 말이 아니다.</p>
+
+<figure style="margin: 0 0 2.5rem 0;">
+  <img src="/infographics/glm-5-2-open-weight-frontier-coding/card-news/03-cost-comparison.jpg" alt="GLM-5.2 $1.40와 GPT-5.5 $8.40의 1/6 비용 비교를 보여주는 저울 메타포 핸드드로운 카드" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 0 auto; display: block;" />
+</figure>
 </section>
 
 <section aria-labelledby="open-weight-rise">
@@ -98,6 +114,10 @@ telegram_handoff: false
   <p>이 약진의 배경은 세 가지로 정리된다. 첫째, 미국의 칩·장비 통제로 인해 중국 모델은 "가능한 한 효율적으로" 학습·추론해야 하는 압력을 받았다. IndexShare, Lightning Attention, DeepSeek의 추론 효율화 같은 구조적 혁신이 이 압력의 산물이다. 둘째, 중국 AI 회사들은 글로벌 개발자 도달을 성장 동력으로 본다. 가중치를 공개하면 전 세계 개발자가 자사 생태계로 들어온다. 셋째, MiniMax·Qwen·DeepSeek·Z.ai·Moonshot이 각기 다른 강점으로 생태계를 다변화하며, 한 달 사이에 5개의 프론티어급 오픈웨이트가 출시되는 밀도를 만들었다. Yann LeCun이 메타를 떠나 독자적 세계 모델 연구에 나서며 지속적으로 옹호해온 "개방형 AI 접근"이 이론에서 현실로 전환되는 지점이기도 하다.</p>
   <p>흥미로운 것은 영역별 격차의 구조다. 코딩 격차는 사실상 닫혔다. 추론(GPQA Diamond, HLE, 수학)에서는 폐쇄형이 여전히 3~8포인트 앞선다. 멀티모달(비디오·오디오·이미지 통합)은 GPT-5.4와 Gemini 3.1 Pro가 주도하며, 오픈웨이트의 추격이 한 단계 뒤에 있다. 즉 "오픈웨이트 = 따라잡기"라는 프레임은 영역에 따라 이미 성립하지 않는다. 코딩에서는 교차했고, 추론에서는 근접했으며, 멀티모달에서는 여전히 뒤에 있다.</p>
   <div class="zhs-html-callout"><p>GLM-5.2와 이전 포스트에서 다룬 MiniMax M3의 관계는 상호 보완적이다. CodingFleet의 비교에 따르면, GLM-5.2는 SWE-bench Pro(+3.1), Terminal-Bench 2.1(+15.0), MCP-Atlas(+2.8)에서 M3를 앞선다. 반면 M3는 3.7배 저렴하고, 비디오·이미지·데스크톱 인식을 포함한 멀티모달 능력과 BrowseComp(83.5%) 1위를 갖는다. "텍스트 전문 파워하우스 vs 만능 칼"이라는 구도다. 운영자 입장에서 둘 중 하나를 고르는 것이 아니라, 과제 유형에 따라 라우팅하는 것이 현실적인 전략이다.</p></div>
+
+<figure style="margin: 0 0 2.5rem 0;">
+  <img src="/infographics/glm-5-2-open-weight-frontier-coding/card-news/02-mit-license.jpg" alt="MIT 라이선스로 상업적 사용, 수정, 다운로드가 제한 없이 가능함을 보여주는 열린 보물상자 메타포 핸드드로운 카드" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 0 auto; display: block;" />
+</figure>
 </section>
 
 <section aria-labelledby="caveat">

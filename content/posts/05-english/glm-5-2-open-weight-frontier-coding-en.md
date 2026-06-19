@@ -61,17 +61,29 @@ telegram_handoff: false
   </div>
 </section>
 
+<figure style="margin: 0 0 2.5rem 0;">
+  <img src="/infographics/glm-5-2-open-weight-frontier-coding/glm-5-2-open-weight-frontier-coding-en.jpg" alt="GLM-5.2 Benchmark Crossover: bar chart comparing 5 coding benchmarks across GLM-5.2, GPT-5.5, and Claude Opus 4.8" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
+</figure>
+
 <section aria-labelledby="what-is-glm52">
   <h2 id="what-is-glm52">What Is GLM-5.2?</h2>
   <p>Z.ai has been building the GLM series as one of the pillars of China's open-model ecosystem throughout 2026. GLM-5.1 approached Claude Opus-level performance on coding benchmarks; GLM-5.2 takes a step further by making "long-horizon tasks" — work that spans hours, not minutes — its core design target. The parameter count is 753B (744B total, 40B active in a mixture-of-experts design), identical to GLM-5.1, but the context window has expanded from 200K to 1M tokens, and reasoning and coding capabilities have improved broadly.</p>
   <p>The technical centerpiece is an architectural innovation called IndexShare. In large language models, recomputing attention across long documents is computationally exorbitant. IndexShare reuses the same indexer across every four sparse attention layers, cutting per-token compute FLOPs by 2.9× at 1M context. An upgraded Multi-Token Prediction (MTP) layer boosts accepted token length by up to 20% during inference. Users toggle between two reasoning modes — "Max" for maximum problem-solving, "High" for a performance-latency balance.</p>
   <div class="zhs-html-callout"><p>IndexShare is not just a speed optimization. Claiming a 1M context window and maintaining quality under real engineering pressure are different problems. Z.ai reports conducting large-scale 1M-context training specifically for coding-agent scenarios — large-scale implementation, automated research, performance optimization, and complex debugging — which is what makes the long-context system stable rather than merely wide.</p></div>
+
+<figure style="margin: 0 0 2.5rem 0;">
+  <img src="/infographics/glm-5-2-open-weight-frontier-coding/card-news/04-indexshare-context.jpg" alt="1M context window and IndexShare 2.9× efficiency improvement hand-drawn card" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 0 auto; display: block;" />
+</figure>
 </section>
 
 <section aria-labelledby="benchmarks">
   <h2 id="benchmarks">What the Benchmarks Say: Where It Wins, Where It Loses</h2>
   <p>On Artificial Analysis's Intelligence Index v4.1, GLM-5.2 scores 51 — the highest among open-weight models. On the same metric, MiniMax-M3 scores 44, DeepSeek V4 Pro (max) 44, and Kimi K2.6 43. The gap to closed-source leaders has narrowed considerably. On GDPval-AA v2, a measure of real-world agentic performance, GLM-5.2 scores 1524 — effectively level with GPT-5.5 (xhigh reasoning, 1514) and ahead of MiniMax-M3 (1418) and DeepSeek V4 Pro (1328).</p>
   <p>The coding and agentic results are concrete. SWE-bench Pro: 62.1, surpassing both GPT-5.5 (58.6) and GLM-5.1 (58.4). FrontierSWE (Dominance): 74.4%, beating GPT-5.5 (72.6%) and trailing Claude Opus 4.8 (75.1%) by 0.7 points. MCP-Atlas (tool usage): 77.0, ahead of GPT-5.5 (75.3) and just 0.8 points behind Claude Opus 4.8 (77.8). Humanity's Last Exam (with tools): 54.7, again beating GPT-5.5 (52.2). On PostTrainBench — an extended engineering workload — GLM-5.2 scores 34.3% versus GPT-5.5's 25.0%.</p>
+
+<figure style="margin: 0 0 2.5rem 0;">
+  <img src="/infographics/glm-5-2-open-weight-frontier-coding/card-news/01-swe-bench-crossover.jpg" alt="SWE-bench Pro where GLM-5.2 62.1 overtakes GPT-5.5 58.6 — hand-drawn bar chart crossover card" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 0 auto; display: block;" />
+</figure>
   <p>However, GLM-5.2 does not lead across the board. On Terminal-Bench 2.1, it scores 81.0, trailing Claude Opus 4.8 (85.0) and GPT-5.5 (84.0), though ahead of Gemini 3.1 Pro (74.0). On SWE-Marathon, an ultra-long-horizon software engineering benchmark, it trails Opus 4.8 by 13%. In reasoning broadly, closed-source models retain a 3-to-8-point lead. GLM-5.2's significance is not "first place everywhere" but "the first open-weight to cross over in coding and agentic tasks."</p>
   <div class="zhs-html-step">
     <h3>GLM-5.1 → GLM-5.2 Key Improvements</h3>
@@ -90,6 +102,10 @@ telegram_handoff: false
   <p>GLM-5.2's API is priced at $1.40/M input, $4.40/M output, $0.26/M cache-hit — roughly one-sixth of Claude Opus 4.8 or GPT-5.5. Z.ai also offers a GLM Coding Plan subscription (Lite ~$3, Pro ~$15, Max ~$80/month) integrated with 20+ coding environments. Nine or more inference providers — DeepInfra, Novita, Nebius, Fireworks — host the model.</p>
   <p>The cost story is not simply "cheaper." On Artificial Analysis's Intelligence vs Cost per Task chart, GLM-5.2 sits on the Pareto frontier — the lowest cost per task among models at its intelligence level. At $0.46 per task, it is more expensive than MiniMax-M3 ($0.18) or DeepSeek V4 Pro ($0.05), but those two models score 44 on the Intelligence Index — seven points lower than GLM-5.2's 51. Compared within the same performance tier, GLM-5.2 is the most efficient.</p>
   <p>One caveat deserves attention. GLM-5.2 consumes an average of 43K output tokens per task — a 65% increase from GLM-5.1 (26K) and nearly double MiniMax-M3 (24K). The model tends to generate more tokens during reasoning, which means actual billing can exceed what benchmark numbers suggest. "Low per-token price" and "low total cost" are not the same statement.</p>
+
+<figure style="margin: 0 0 2.5rem 0;">
+  <img src="/infographics/glm-5-2-open-weight-frontier-coding/card-news/03-cost-comparison.jpg" alt="1/6 cost comparison: GLM-5.2 $1.40 vs GPT-5.5 $8.40 on a hand-drawn balance scale" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 0 auto; display: block;" />
+</figure>
 </section>
 
 <section aria-labelledby="open-weight-rise">
@@ -98,6 +114,10 @@ telegram_handoff: false
   <p>Three factors explain the surge. First, US chip and equipment export controls forced Chinese developers to train and infer as efficiently as possible — IndexShare, Lightning Attention, and DeepSeek's inference optimizations are products of that pressure. Second, Chinese AI companies view global developer reach as their growth engine; releasing weights pulls developers worldwide into their ecosystem. Third, MiniMax, Qwen, DeepSeek, Z.ai, and Moonshot each brought different strengths to a diversifying ecosystem — five frontier-class open-weights shipped in a single 30-day window. It is also the moment when Yann LeCun's long-standing advocacy for open AI research — he left Meta to pursue independent world-model work — transitions from theory to measurable reality.</p>
   <p>The gap structure varies by domain. In coding, the gap has effectively closed. In reasoning (GPQA Diamond, HLE, frontier math), closed-source models still lead by 3–8 points. In multimodal workloads (video, audio, image integration), GPT-5.4 and Gemini 3.1 Pro dominate, with open-weight trailing a step behind. "Open-weight equals catching up" is no longer a universal frame. In coding, the lines have crossed; in reasoning, they are close; in multimodal, the gap persists.</p>
   <div class="zhs-html-callout"><p>The relationship between GLM-5.2 and MiniMax M3 — covered in our earlier analysis — is complementary rather than competitive. Per CodingFleet's comparison, GLM-5.2 leads on SWE-bench Pro (+3.1), Terminal-Bench 2.1 (+15.0), and MCP-Atlas (+2.8). M3, meanwhile, is 3.7× cheaper, offers multimodal capabilities (video, image, desktop recognition), and leads BrowseComp (83.5%). It is a text powerhouse versus a Swiss Army knife. For operators, the realistic strategy is not picking one but routing by task type.</p></div>
+
+<figure style="margin: 0 0 2.5rem 0;">
+  <img src="/infographics/glm-5-2-open-weight-frontier-coding/card-news/02-mit-license.jpg" alt="MIT license open treasure chest: commercial use, modification, download unrestricted — hand-drawn card" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 0 auto; display: block;" />
+</figure>
 </section>
 
 <section aria-labelledby="caveat">
