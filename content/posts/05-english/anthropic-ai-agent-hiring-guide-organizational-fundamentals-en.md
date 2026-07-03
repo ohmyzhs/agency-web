@@ -1,6 +1,6 @@
 ---
 type: blog-draft
-status: draft
+status: published
 authoring_harness: zhs-editorial-blog-builder
 format: html
 created: 2026-07-03
@@ -37,7 +37,7 @@ sourceLinks:
     url: https://www.anthropic.com/research/measuring-agent-autonomy
   - label: Deming Institute — 14 Points for Management
     url: https://deming.org/explore/fourteen-points/
-quality_gate: pending
+quality_gate: reviewed
 share_url:
 telegram_handoff: false
 ---
@@ -97,8 +97,8 @@ telegram_handoff: false
 
 <section aria-labelledby="lesson-roles">
   <h2 id="lesson-roles">Lesson ② Divide Roles Clearly — Humans Judge, AI Executes</h2>
-  <p>The success or failure of collaboration hinges not on technology but on <em>who owns what</em>. At Anthropic, human-agent teams share a complete roster, deliverables, and workspace. Each agent has distinct credentials, skills, and tool access. One agent handles data analysis end-to-end; another audits design standards; a third synthesizes research materials.</p>
-  <p>The key is giving each agent the tools it needs to do its job. A data-analysis agent needs BigQuery access. A QA agent needs Playwright MCP. Fuzzy role assignments cause team members to run personal AI instances in parallel — redundant work, fragmented context. One engineering team built a pre-defined "roster" as skill files and recently "hired" a release manager agent.</p>
+  <p>The success or failure of collaboration hinges not on technology but on <em>who owns what</em>. In Anthropic's human-agent teams, each agent has distinct credentials, skills, and tool access. One agent handles data analysis end-to-end; another audits design standards; a third synthesizes research materials.</p>
+  <p>The key is giving each agent the tools it needs. A data-analysis agent needs BigQuery access. A QA agent needs Playwright MCP. Fuzzy role assignments cause team members to run personal AI instances in parallel — redundant work, fragmented context. One engineering team built a pre-defined "roster" as skill files and recently "hired" a release manager agent.</p>
   <p>Andrew Ng's four agent design patterns from his 2024 Snowflake BUILD keynote — Reflection, Tool Use, Planning, Multi-Agent Collaboration — converge with Anthropic's practice on the last pattern. Where Ng provided design-stage patterns, Anthropic's months of internal operations revealed the organizational conditions required for those patterns to actually work.</p>
 </section>
 
@@ -147,7 +147,7 @@ telegram_handoff: false
 
 <section aria-labelledby="operator-angle">
   <h2 id="operator-angle">Operator's View — 70% of Agent Adoption Is Design</h2>
-  <p>The "design 70% rule" — that product design determines 70% of quality and cost — applies directly to agent adoption. What must be designed before an agent joins the team — security boundaries, role rosters, tool permissions, evaluation rubrics, North Star — sets the ceiling on agent performance. We have confirmed this directly while operating Hermes agents. Without designing permission boundaries, verification loops, and human-approval checkpoints first, an agent degrades into a large autocomplete. In organizations with weak fundamentals, the agent amplifies problems. In organizations with strong fundamentals, the same agent becomes the fastest executor on the team.</p>
+  <p>The "design 70% rule" — that product design determines 70% of quality and cost — applies directly to agent adoption. What must be designed before an agent joins the team — security boundaries, role rosters, tool permissions, evaluation rubrics, North Star — sets the ceiling on agent performance. Without designing permission boundaries, verification loops, and human-approval checkpoints first, an agent degrades into a large autocomplete. In organizations with weak fundamentals, the agent amplifies problems. In organizations with strong fundamentals, the same agent becomes the fastest executor on the team.</p>
 </section>
 
 <section class="zhs-html-faq" aria-labelledby="faq">

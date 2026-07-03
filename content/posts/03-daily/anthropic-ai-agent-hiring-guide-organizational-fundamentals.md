@@ -1,6 +1,6 @@
 ---
 type: blog-draft
-status: draft
+status: published
 authoring_harness: zhs-editorial-blog-builder
 format: html
 created: 2026-07-03
@@ -37,7 +37,7 @@ sourceLinks:
     url: https://www.anthropic.com/research/measuring-agent-autonomy
   - label: Deming Institute — 14 Points for Management
     url: https://deming.org/explore/fourteen-points/
-quality_gate: pending
+quality_gate: reviewed
 share_url:
 telegram_handoff: false
 ---
