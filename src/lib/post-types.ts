@@ -19,7 +19,8 @@ export type PublicPostCategory =
   | "practical-guide"
   | "comparison-recommendation"
   | "work-productivity"
-  | "digital-trends";
+  | "digital-trends"
+  | "daily-issue";
 
 export type LegacyPostCategory =
   | "korea-living"
@@ -89,6 +90,7 @@ export const publicPostCategories = [
   "comparison-recommendation",
   "work-productivity",
   "digital-trends",
+  "daily-issue",
 ] as const satisfies readonly PublicPostCategory[];
 
 export function isPublicPostCategory(category: string): category is PublicPostCategory {

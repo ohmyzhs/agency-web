@@ -8,7 +8,7 @@ updated: 2026-07-03
 title: "ZHS 데일리 리포트 — 2026-07-03 (금)"
 slug: daily-issue-2026-07-03
 kind: daily
-category: digital-trends
+category: daily-issue
 locale: ko
 publishedAt: 2026-07-03
 sortAt: 2026-07-03T09:00:00+09:00

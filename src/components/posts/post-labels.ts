@@ -10,6 +10,7 @@ export const publicCategoryOrder = [
   "comparison-recommendation",
   "work-productivity",
   "digital-trends",
+  "daily-issue",
 ] as const satisfies readonly PublicPostCategory[];
 
 export function normalizePostCategory(category: PostCategory, kind?: PostKind): PublicPostCategory {
@@ -17,7 +18,8 @@ export function normalizePostCategory(category: PostCategory, kind?: PostKind): 
   if (kind === "comparison") return "comparison-recommendation";
   if (kind === "workflow") return "work-productivity";
   if (kind === "trend-note" || kind === "it-news" || kind === "news-explainer") return "digital-trends";
-  if (kind === "site-note" || kind === "release-note" || kind === "experiment" || kind === "daily") return "digital-trends";
+  if (kind === "daily") return "daily-issue";
+  if (kind === "site-note" || kind === "release-note" || kind === "experiment") return "digital-trends";
 
   switch (category) {
     case "ai":
@@ -82,6 +84,7 @@ const categoryLabels: Record<PostsLocale, Record<string, string>> = {
     "comparison-recommendation": "비교·추천",
     "work-productivity": "업무 생산성",
     "digital-trends": "디지털 트렌드",
+    "daily-issue": "데일리 이슈",
     "korea-living": "한국 생활",
     automation: "자동화",
     developer: "개발자",
@@ -99,6 +102,7 @@ const categoryLabels: Record<PostsLocale, Record<string, string>> = {
     "comparison-recommendation": "Comparisons",
     "work-productivity": "Work productivity",
     "digital-trends": "Digital trends",
+    "daily-issue": "Daily issue",
     "korea-living": "Korea living",
     automation: "Automation",
     developer: "Developer",

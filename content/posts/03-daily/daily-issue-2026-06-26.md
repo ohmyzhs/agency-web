@@ -8,7 +8,7 @@ updated: 2026-06-26
 title: "ZHS 데일리 리포트 — 2026-06-26 (금)"
 slug: daily-issue-2026-06-26
 kind: daily
-category: digital-trends
+category: daily-issue
 locale: ko
 publishedAt: 2026-06-26
 sortAt: 2026-06-26T09:00:00+09:00
