@@ -16,7 +16,7 @@ import {
   type DisplayPostType,
 } from "@/components/posts/post-labels";
 
-const allTypes = ["guide", "news-explainer", "comparison", "workflow", "trend", "retrospective", "experiment"] as const;
+const allTypes = ["guide", "news-explainer", "comparison", "workflow", "trend", "retrospective", "experiment", "daily"] as const;
 type TypeFilter = "all" | DisplayPostType;
 type SortMode = "newest" | "oldest" | "reading";
 type CategoryFilter = "all" | string;
@@ -31,7 +31,7 @@ export type PostsIndexInitialFilters = {
 };
 
 function coerceTypeFilter(value?: string): TypeFilter {
-  if (value && allTypes.includes(value as Exclude<DisplayPostType, "update">)) return value as DisplayPostType;
+  if (value && (allTypes as readonly string[]).includes(value)) return value as Exclude<DisplayPostType, "update">;
   return "all";
 }
 
@@ -325,8 +325,8 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
       .map((type) => ({
         value: type,
         label: locale === "ko"
-          ? ({ guide: "가이드", "news-explainer": "뉴스 해설", comparison: "비교", workflow: "워크플로우", trend: "트렌드", retrospective: "제작 기록", experiment: "실험" }[type])
-          : ({ guide: "Guides", "news-explainer": "Explainers", comparison: "Comparisons", workflow: "Workflows", trend: "Trends", retrospective: "Build notes", experiment: "Experiments" }[type]),
+          ? ({ guide: "가이드", "news-explainer": "뉴스 해설", comparison: "비교", workflow: "워크플로우", trend: "트렌드", retrospective: "제작 기록", experiment: "실험", daily: "데일리 리포트" }[type])
+          : ({ guide: "Guides", "news-explainer": "Explainers", comparison: "Comparisons", workflow: "Workflows", trend: "Trends", retrospective: "Build notes", experiment: "Experiments", daily: "Daily reports" }[type]),
       })),
   ];
 

@@ -2,7 +2,7 @@ import type { Post, PostCategory, PostKind, PublicPostCategory } from "@/lib/pos
 import { getToolBySlug, getToolContent } from "@/lib/tools";
 
 export type PostsLocale = "ko" | "en";
-export type DisplayPostType = "guide" | "news-explainer" | "comparison" | "workflow" | "trend" | "retrospective" | "experiment" | "update";
+export type DisplayPostType = "guide" | "news-explainer" | "comparison" | "workflow" | "trend" | "retrospective" | "experiment" | "daily" | "update";
 
 export const publicCategoryOrder = [
   "ai-insight",
@@ -46,6 +46,7 @@ export function getDisplayPostType(post: Post): DisplayPostType {
   if (post.kind === "news-explainer") return "news-explainer";
   if (post.kind === "retrospective" || post.kind === "site-note") return "retrospective";
   if (post.kind === "experiment") return "experiment";
+  if (post.kind === "daily") return "daily";
   return "guide";
 }
 
@@ -58,6 +59,7 @@ const typeLabels: Record<PostsLocale, Record<DisplayPostType, string>> = {
     trend: "트렌드 노트",
     retrospective: "제작 기록",
     experiment: "실험",
+    daily: "데일리 리포트",
     update: "업데이트",
   },
   en: {
@@ -68,6 +70,7 @@ const typeLabels: Record<PostsLocale, Record<DisplayPostType, string>> = {
     trend: "Trend note",
     retrospective: "Build note",
     experiment: "Experiment",
+    daily: "Daily report",
     update: "Update",
   },
 };
