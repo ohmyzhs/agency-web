@@ -3,15 +3,15 @@ type: blog-draft
 status: published
 authoring_harness: zhs-daily-issue-publisher
 format: html
-created: latest
-updated: latest
-title: "오늘의 AI·테크 핫이슈 — latest (화)"
+created: 2026-07-06
+updated: 2026-07-06
+title: "ZHS 데일리 리포트 — Legacy (이전 형식)"
 slug: daily-latest
 kind: daily
 category: daily-issue
 locale: ko
-publishedAt: latest
-sortAt: latestT13:00:00+09:00
+publishedAt: 2026-07-06
+sortAt: 2026-07-06T13:00:00+09:00
 readingMinutes: 3
 description: "ZHS 데일리 이슈: 오늘의 AI/테크 주요 이슈. "
 keyword_primary: "오늘의 AI/테크 주요 이슈"
