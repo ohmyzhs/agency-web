@@ -20,7 +20,10 @@ export type PublicPostCategory =
   | "comparison-recommendation"
   | "work-productivity"
   | "digital-trends"
-  | "daily-issue";
+  | "daily-issue"
+  | "news-ai-insight"
+  | "news-general"
+  | "news-economy";
 
 export type LegacyPostCategory =
   | "korea-living"
@@ -35,6 +38,14 @@ export type LegacyPostCategory =
   | "file-media";
 
 export type PostCategory = PublicPostCategory | LegacyPostCategory;
+
+/** Categories that belong to the dedicated News (/news) section. */
+export const newsPostCategories = [
+  "news-ai-insight",
+  "news-general",
+  "news-economy",
+  "daily-issue",
+] as const satisfies readonly PublicPostCategory[];
 
 export type PostInline =
   | { type: "text"; text: string }
@@ -91,10 +102,21 @@ export const publicPostCategories = [
   "work-productivity",
   "digital-trends",
   "daily-issue",
+  "news-ai-insight",
+  "news-general",
+  "news-economy",
 ] as const satisfies readonly PublicPostCategory[];
 
 export function isPublicPostCategory(category: string): category is PublicPostCategory {
   return (publicPostCategories as readonly string[]).includes(category);
+}
+
+export function isNewsPostCategory(category: string): boolean {
+  return (newsPostCategories as readonly string[]).includes(category);
+}
+
+export function isNewsPost(post: Pick<Post, "kind" | "category">): boolean {
+  return post.kind === "daily" || isNewsPostCategory(String(post.category));
 }
 
 export function postHasLocale(post: Post, locale: Locale): boolean {

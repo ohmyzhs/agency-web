@@ -38,6 +38,7 @@ export function Footer() {
               <ul className="mt-6 space-y-4 font-mono text-[13px] font-bold uppercase tracking-wider text-muted/60">
                 <li><Link href="/typing" className="hover:text-primary transition-colors">{t.footer.typing}</Link></li>
                 <li><Link href="/posts" className="hover:text-primary transition-colors">{t.footer.posts}</Link></li>
+                <li><Link href="/news" className="hover:text-primary transition-colors">{t.footer.news}</Link></li>
                 <li><Link href="/tools" className="hover:text-primary transition-colors">{t.footer.tools}</Link></li>
                 <li><Link href="/updates" className="hover:text-primary transition-colors">Updates</Link></li>
                 <li><Link href="/about" className="hover:text-primary transition-colors">{t.footer.about}</Link></li>

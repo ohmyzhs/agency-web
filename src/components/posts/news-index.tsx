@@ -12,18 +12,18 @@ import {
   getPublicPostCategoryLabel,
   getRelatedToolLabels,
   isNewsArchivePost,
+  newsCategoryOrder,
   normalizePostCategory,
-  publicCategoryOrder,
   type DisplayPostType,
 } from "@/components/posts/post-labels";
 
-const allTypes = ["guide", "news-explainer", "comparison", "workflow", "trend", "retrospective", "experiment"] as const;
+const allTypes = ["daily", "news-explainer", "trend"] as const;
 type TypeFilter = "all" | DisplayPostType;
 type SortMode = "newest" | "oldest" | "reading";
 type CategoryFilter = "all" | string;
 type ToolFilter = "all" | string;
 
-export type PostsIndexInitialFilters = {
+export type NewsIndexInitialFilters = {
   type?: string;
   category?: string;
   tool?: string;
@@ -213,15 +213,15 @@ function DesktopCategoryQuickMenu({
   );
 }
 
-export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; initialFilters?: PostsIndexInitialFilters }) {
+export function NewsIndex({ posts, initialFilters = {} }: { posts: Post[]; initialFilters?: NewsIndexInitialFilters }) {
   const { locale } = useLocale();
   const localizedPosts = useMemo(
-    () => filterPostsForLocale(posts, locale).filter((post) => !isNewsArchivePost(post)),
+    () => filterPostsForLocale(posts, locale).filter((post) => isNewsArchivePost(post)),
     [posts, locale],
   );
   const availableCategories = useMemo(() => {
     const present = new Set(localizedPosts.map((post) => normalizePostCategory(post.category, post.kind)));
-    return publicCategoryOrder.filter((category) => present.has(category));
+    return newsCategoryOrder.filter((category) => present.has(category));
   }, [localizedPosts]);
 
   const availableTools = useMemo(
@@ -314,12 +314,12 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
     setQuery("");
   };
 
-  const eyebrow = locale === "ko" ? "// AI 운영 블로그" : "// AI-operated blog";
-  const title = locale === "ko" ? "AI와 실무를 연결하는 글" : "Posts for AI and practical work";
+  const eyebrow = locale === "ko" ? "// DAILY NEWS" : "// DAILY NEWS";
+  const title = locale === "ko" ? "뉴스" : "News";
   const lead =
     locale === "ko"
-      ? "실용 가이드, 비교·추천, 업무 자동화와 디지털 트렌드를 한 곳에서 정리합니다. 데일리 뉴스와 시사 브리핑은 뉴스 메뉴에서 따로 발행됩니다."
-      : "Practical guides, comparisons, productivity workflows, and digital trend notes. Daily news briefings live under the News menu.";
+      ? "매일 발행되는 AI·테크 데일리 브리핑과 뉴스 큐레이션입니다. AI 인사이트, 일반, 경제 카테고리로 분류합니다."
+      : "Daily AI/tech briefings and curated news. Browse by AI insight, general, and economy.";
 
   const allLabel = locale === "ko" ? "전체" : "All";
   const typeOptions: { value: TypeFilter; label: string }[] = [
@@ -329,14 +329,13 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
       .map((type) => ({
         value: type,
         label: locale === "ko"
-          ? ({ guide: "가이드", "news-explainer": "뉴스 해설", comparison: "비교", workflow: "워크플로우", trend: "트렌드", retrospective: "제작 기록", experiment: "실험" }[type])
-          : ({ guide: "Guides", "news-explainer": "Explainers", comparison: "Comparisons", workflow: "Workflows", trend: "Trends", retrospective: "Build notes", experiment: "Experiments" }[type]),
+          ? ({ daily: "데일리 뉴스", "news-explainer": "뉴스 해설", trend: "트렌드" }[type])
+          : ({ daily: "Daily news", "news-explainer": "Explainers", trend: "Trends" }[type]),
       })),
   ];
 
   const featuredPosts = localizedPosts
     .filter((post) => getDisplayPostType(post) !== "update")
-    .filter((post) => getDisplayPostType(post) === "guide" || getDisplayPostType(post) === "retrospective")
     .slice(0, 3);
 
   const resetFilters = () => {
@@ -359,7 +358,7 @@ export function PostsIndex({ posts, initialFilters = {} }: { posts: Post[]; init
         <section className="mb-12 rounded-3xl border border-border bg-card/50 p-5 md:p-6">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted/70">
-              {locale === "ko" ? "먼저 읽기 좋은 글" : "Featured posts"}
+              {locale === "ko" ? "오늘의 뉴스" : "Featured news"}
             </h2>
             <span className="font-mono text-[11px] text-muted/40">{localizedPosts.length} posts</span>
           </div>

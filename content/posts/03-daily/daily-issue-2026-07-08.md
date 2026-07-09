@@ -8,7 +8,7 @@ updated: 2026-07-08
 title: "AWS, AI 에이전트에 데스크톱을 줬다 — 레거시 ERP·메인프레임 자동화의 새 시대"
 slug: daily-issue-2026-07-08
 kind: daily
-category: daily-issue
+category: news-ai-insight
 locale: ko
 publishedAt: 2026-07-08
 sortAt: 2026-07-08T13:00:00+09:00

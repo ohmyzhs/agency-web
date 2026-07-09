@@ -8,6 +8,10 @@ const PUBLIC_CATEGORIES = [
   "comparison-recommendation",
   "work-productivity",
   "digital-trends",
+  "daily-issue",
+  "news-ai-insight",
+  "news-general",
+  "news-economy",
 ] as const;
 
 const POST_KINDS = [
@@ -20,6 +24,9 @@ const POST_KINDS = [
   "experiment",
   "site-note",
   "release-note",
+  "it-news",
+  "daily",
+  "tool-note",
 ] as const;
 
 const PUBLISH_MODES = ["draft-pr", "direct-main", "local-draft"] as const;

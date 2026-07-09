@@ -15,6 +15,7 @@ export function Header() {
     { href: "/", label: t.nav.home },
     { href: "/typing", label: t.nav.typing },
     { href: "/posts", label: t.nav.posts },
+    { href: "/news", label: t.nav.news },
     { href: "/tools", label: t.nav.tools },
     { href: "/updates", label: "Updates" },
     { href: "/about", label: t.nav.about },

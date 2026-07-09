@@ -1,24 +1,43 @@
 import type { Post, PostCategory, PostKind, PublicPostCategory } from "@/lib/post-types";
+import { isNewsPost } from "@/lib/post-types";
 import { getToolBySlug, getToolContent } from "@/lib/tools";
 
 export type PostsLocale = "ko" | "en";
 export type DisplayPostType = "guide" | "news-explainer" | "comparison" | "workflow" | "trend" | "retrospective" | "experiment" | "daily" | "update";
 
+/** Categories shown on /posts (blog archive). Daily/news live under /news. */
 export const publicCategoryOrder = [
   "ai-insight",
   "practical-guide",
   "comparison-recommendation",
   "work-productivity",
   "digital-trends",
-  "daily-issue",
+] as const satisfies readonly PublicPostCategory[];
+
+/** Categories shown on /news. */
+export const newsCategoryOrder = [
+  "news-ai-insight",
+  "news-general",
+  "news-economy",
 ] as const satisfies readonly PublicPostCategory[];
 
 export function normalizePostCategory(category: PostCategory, kind?: PostKind): PublicPostCategory {
-  if (publicCategoryOrder.includes(category as PublicPostCategory)) return category as PublicPostCategory;
+  if (category === "news-ai-insight" || category === "news-general" || category === "news-economy") {
+    return category;
+  }
+  if (category === "daily-issue" || kind === "daily") return "news-ai-insight";
+  if (
+    category === "ai-insight"
+    || category === "practical-guide"
+    || category === "comparison-recommendation"
+    || category === "work-productivity"
+    || category === "digital-trends"
+  ) {
+    return category;
+  }
   if (kind === "comparison") return "comparison-recommendation";
   if (kind === "workflow") return "work-productivity";
   if (kind === "trend-note" || kind === "it-news" || kind === "news-explainer") return "digital-trends";
-  if (kind === "daily") return "daily-issue";
   if (kind === "site-note" || kind === "release-note" || kind === "experiment") return "digital-trends";
 
   switch (category) {
@@ -61,7 +80,7 @@ const typeLabels: Record<PostsLocale, Record<DisplayPostType, string>> = {
     trend: "트렌드 노트",
     retrospective: "제작 기록",
     experiment: "실험",
-    daily: "데일리 리포트",
+    daily: "데일리 뉴스",
     update: "업데이트",
   },
   en: {
@@ -72,7 +91,7 @@ const typeLabels: Record<PostsLocale, Record<DisplayPostType, string>> = {
     trend: "Trend note",
     retrospective: "Build note",
     experiment: "Experiment",
-    daily: "Daily report",
+    daily: "Daily news",
     update: "Update",
   },
 };
@@ -84,7 +103,10 @@ const categoryLabels: Record<PostsLocale, Record<string, string>> = {
     "comparison-recommendation": "비교·추천",
     "work-productivity": "업무 생산성",
     "digital-trends": "디지털 트렌드",
-    "daily-issue": "데일리 이슈",
+    "daily-issue": "AI 인사이트",
+    "news-ai-insight": "AI 인사이트",
+    "news-general": "일반",
+    "news-economy": "경제",
     "korea-living": "한국 생활",
     automation: "자동화",
     developer: "개발자",
@@ -102,7 +124,10 @@ const categoryLabels: Record<PostsLocale, Record<string, string>> = {
     "comparison-recommendation": "Comparisons",
     "work-productivity": "Work productivity",
     "digital-trends": "Digital trends",
-    "daily-issue": "Daily issue",
+    "daily-issue": "AI insight",
+    "news-ai-insight": "AI insight",
+    "news-general": "General",
+    "news-economy": "Economy",
     "korea-living": "Korea living",
     automation: "Automation",
     developer: "Developer",
@@ -134,4 +159,8 @@ export function getRelatedToolLabels(post: Post, locale: PostsLocale, limit = 3)
     .filter((tool): tool is NonNullable<ReturnType<typeof getToolBySlug>> => Boolean(tool))
     .slice(0, limit)
     .map((tool) => ({ slug: tool.slug, label: getToolContent(tool, locale).shortTitle }));
+}
+
+export function isNewsArchivePost(post: Post): boolean {
+  return isNewsPost(post);
 }
