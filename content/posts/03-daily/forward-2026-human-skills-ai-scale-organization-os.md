@@ -50,8 +50,8 @@ telegram_handoff: false
 <div class="zhs-html-divider" role="presentation"></div>
 
 <figure style="margin: 0 0 2.5rem 0;">
-  <img src="/infographics/forward-2026-human-skills-ai-scale-organization-os/forward-2026-human-skills-ai-scale-organization-os-ko.jpg" alt="AI 조직 운영체제를 학습 민첩성, 기술 민첩성, 인재 민첩성, 현장 실행 루프로 연결한 손그림 인포그래픽" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
-  <figcaption style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 0.75rem;">Forward 2026의 핵심: AI 경쟁력은 모델 구매량이 아니라 학습-검증-현장 실행이 순환하는 조직 운영체제에서 나온다.</figcaption>
+  <img src="/infographics/forward-2026-human-skills-ai-scale-organization-os/forward-2026-human-skills-ai-scale-organization-os-ko.jpg" alt="AI 조직 운영체제를 학습 민첩성, 현장 과제, 운영 자산, 리더 설계 네 축으로 정리한 칠판 인포그래픽" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
+  <figcaption style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 0.75rem;">Forward 2026의 핵심: AI 경쟁력은 모델 구매량이 아니라 학습-검증-현장 실행 루프에서 나온다.</figcaption>
 </figure>
 
 

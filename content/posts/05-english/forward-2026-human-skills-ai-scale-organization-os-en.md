@@ -50,8 +50,8 @@ telegram_handoff: false
 <div class="zhs-html-divider" role="presentation"></div>
 
 <figure style="margin: 0 0 2.5rem 0;">
-  <img src="/infographics/forward-2026-human-skills-ai-scale-organization-os/forward-2026-human-skills-ai-scale-organization-os-en.jpg" alt="Hand-drawn infographic of an AI organizational operating system linking learning agility, talent agility, and field execution loops" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
-  <figcaption style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 0.75rem;">Forward 2026 in one frame: competitive advantage comes from the operating system that turns learning into validated field execution, not from model purchase volume.</figcaption>
+  <img src="/infographics/forward-2026-human-skills-ai-scale-organization-os/forward-2026-human-skills-ai-scale-organization-os-en.jpg" alt="Chalkboard infographic of an AI organization OS across learning agility, frontline tasks, operating assets, and leader-as-designer" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
+  <figcaption style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 0.75rem;">Forward 2026 in one frame: advantage comes from the learn → validate → field loop, not model purchase volume.</figcaption>
 </figure>
 
 <section>
