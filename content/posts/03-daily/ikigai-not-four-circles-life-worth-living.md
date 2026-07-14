@@ -25,16 +25,16 @@ tags:
   - zero-human-studio
 related_tools: []
 sourceLinks:
-  - label: "교보문고 — 가미야 미에코, 이키가이: 벼랑 끝 삶에서 마침내 발견한 것"
-    url: "https://product.kyobobook.co.kr/detail/S000215852262"
-  - label: "Enoch's note — 이키가이(Ikigai): 일본 오키나와의 철학"
-    url: "https://m.blog.naver.com/choiinwook/223846893528"
+  - label: "국립국회도서관 — 가미야 미에코 『生きがいについて』(1966)"
+    url: "https://ndlsearch.ndl.go.jp/books/R100000002-I000001079612"
+  - label: "Information is Beautiful — Ikigai: Japanese concept to enhance work, life & sense of worth"
+    url: "https://informationisbeautiful.net/visualizations/ikigai-japanese-concept-to-enhance-work-life-sense-of-worth"
+  - label: "Blue Zones — Moai: This Tradition is Why Okinawan People Live Better, Longer"
+    url: "https://www.bluezones.com/2018/08/moai-this-tradition-is-why-okinawan-people-live-longer-better/"
   - label: "The Lancet Regional Health – Western Pacific — Ikigai and subsequent health and wellbeing among Japanese older adults"
     url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8814687/"
   - label: "Europe's Journal of Psychology — An Integrated Cognitive-Motivational Model of Ikigai in the Workplace"
     url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10936145/"
-  - label: "World Economic Forum — Want to live a long, healthy life? 6 secrets from Japan’s oldest people"
-    url: "https://www.weforum.org/stories/2021/09/japan-okinawa-secret-to-longevity-good-health/"
   - label: "Japan Collaborative Cohort Study — Ikigai and mortality among Japanese people"
     url: "https://pubmed.ncbi.nlm.nih.gov/19539820/"
 quality_gate: reviewed
@@ -80,7 +80,7 @@ telegram_handoff: false
 <section>
   <h2>왜 네 개 원이 이키가이의 전부가 아닌가</h2>
   <p>‘내가 사랑하는 것’, ‘잘하는 것’, ‘세상이 필요로 하는 것’, ‘보수를 받는 것’을 겹치는 도식은 한눈에 이해된다. 사용자가 제공한 네이버 글도 이 틀로 강릉 시니어 호스트 지원 프로젝트를 읽는다. 개인의 열정과 사회 기여, 지속 가능한 수입을 한 장에서 점검할 수 있으니 실용적이다.</p>
-  <p>문제는 이 도식을 이키가이의 원형으로 간주하는 순간이다. 유급 노동이 없는 돌봄, 은퇴 뒤의 취미, 매일 가꾸는 텃밭, 친구에게 밥을 건네는 일은 어디에 놓을 것인가. 네 원의 중앙에 못 들어간다고 해서 삶의 보람이 사라지는 것은 아니다. 이키가이는 커리어 설계 도구가 될 수 있지만, 커리어 설계 도구에 환원되면 안 된다.</p>
+  <p>문제는 이 도식을 이키가이의 원형으로 간주하는 순간이다. 시각화 원형을 공개한 Information is Beautiful은 이 도표를 Marc Winn이 2014년에 만든 현대적 도식으로 표기한다. 가미야 미에코의 1966년 책에서 나온 일본 고전 도식으로 확인되지 않는다. 유급 노동이 없는 돌봄, 은퇴 뒤의 취미, 매일 가꾸는 텃밭, 친구에게 밥을 건네는 일은 어디에 놓을 것인가. 네 원의 중앙에 못 들어간다고 해서 삶의 보람이 사라지는 것은 아니다. 이키가이는 커리어 설계 도구가 될 수 있지만, 커리어 설계 도구에 환원되면 안 된다.</p>
   <div class="zhs-html-callout"><p><strong>실무적 구분:</strong> 네 원 도식은 “내 일을 어떤 방향으로 조정할까”를 묻는 프레임이다. 이키가이는 “무엇이 나를 오늘 다시 움직이게 하는가”를 묻는 감각이다. 두 질문은 겹치지만 같은 질문은 아니다.</p></div>
   <a class="zhs-source-card" href="https://m.blog.naver.com/choiinwook/223846893528" target="_blank" rel="noopener noreferrer">
     <img src="https://mblogthumb-phinf.pstatic.net/MjAyNTA0MjBfMTYw/MDAxNzQ1MTUyNzQ1ODU3.PIDg7NVUuKFsX2S24heoK4UsnFbr8C3_vEiagt-fBd0g.9ytUgs1cMb5npwywvbvcec38U7KoxLelQCiAVix-lAkg.JPEG/900%EF%BC%BF1745152533172.jpg?type=w800" alt="네이버 블로그 이키가이 네 원 도식 참고 이미지" loading="lazy" />

@@ -25,16 +25,16 @@ tags:
   - zero-human-studio
 related_tools: []
 sourceLinks:
-  - label: "Kyobo Book Centre — Mieko Kamiya, Ikigai"
-    url: "https://product.kyobobook.co.kr/detail/S000215852262"
-  - label: "Enoch's note — Ikigai: Okinawan philosophy"
-    url: "https://m.blog.naver.com/choiinwook/223846893528"
+  - label: "National Diet Library — Mieko Kamiya, Ikigai ni Tsuite (1966)"
+    url: "https://ndlsearch.ndl.go.jp/books/R100000002-I000001079612"
+  - label: "Information is Beautiful — Ikigai: Japanese concept to enhance work, life & sense of worth"
+    url: "https://informationisbeautiful.net/visualizations/ikigai-japanese-concept-to-enhance-work-life-sense-of-worth"
+  - label: "Blue Zones — Moai: This Tradition is Why Okinawan People Live Better, Longer"
+    url: "https://www.bluezones.com/2018/08/moai-this-tradition-is-why-okinawan-people-live-longer-better/"
   - label: "The Lancet Regional Health – Western Pacific — Ikigai and subsequent health and wellbeing"
     url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8814687/"
   - label: "Europe's Journal of Psychology — An Integrated Cognitive-Motivational Model of Ikigai in the Workplace"
     url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10936145/"
-  - label: "World Economic Forum — 6 secrets from Japan’s oldest people"
-    url: "https://www.weforum.org/stories/2021/09/japan-okinawa-secret-to-longevity-good-health/"
   - label: "Japan Collaborative Cohort Study — Ikigai and mortality"
     url: "https://pubmed.ncbi.nlm.nih.gov/19539820/"
 quality_gate: reviewed
@@ -77,7 +77,7 @@ telegram_handoff: false
 <section>
   <h2>Why the four circles are not the whole story</h2>
   <p>The diagram of love, skill, social need, and paid work is memorable because it lets people scan a career in one view. The supplied Korean blog applies it to an Airbnb co-hosting project for older hosts in Gangneung: personal energy, accumulated capability, a concrete community need, and a sustainable income model. Used this way, the diagram is practical.</p>
-  <p>The mistake begins when the diagram is treated as ikigai’s original blueprint. Where do care work without pay, retirement hobby, tending a garden, or bringing soup to a friend belong? A life can be worth living even when its source does not sit in the center of a professional Venn diagram. The diagram can be a career design tool. Ikigai is the larger question of what moves a person to re-enter tomorrow.</p>
+  <p>The mistake begins when the diagram is treated as ikigai’s original blueprint. Information is Beautiful credits its modern visualization to Marc Winn in 2014; it is not verified as a classical Japanese diagram from Kamiya’s 1966 book. Where do care work without pay, retirement hobby, tending a garden, or bringing soup to a friend belong? A life can be worth living even when its source does not sit in the center of a professional Venn diagram. The diagram can be a career design tool. Ikigai is the larger question of what moves a person to re-enter tomorrow.</p>
   <div class="zhs-html-callout"><p><strong>A useful distinction:</strong> The four circles ask, “How should I adjust my work?” Ikigai asks, “What makes me move again today?” The questions overlap; they are not identical.</p></div>
   <a class="zhs-source-card" href="https://m.blog.naver.com/choiinwook/223846893528" target="_blank" rel="noopener noreferrer"><img src="https://mblogthumb-phinf.pstatic.net/MjAyNTA0MjBfMTYw/MDAxNzQ1MTUyNzQ1ODU3.PIDg7NVUuKFsX2S24heoK4UsnFbr8C3_vEiagt-fBd0g.9ytUgs1cMb5npwywvbvcec38U7KoxLelQCiAVix-lAkg.JPEG/900%EF%BC%BF1745152533172.jpg?type=w800" alt="Four-circle ikigai diagram reference" loading="lazy" /><span class="zhs-source-card__body"><span class="zhs-source-card__kicker">Reference · Enoch's note</span><span class="zhs-source-card__title">Ikigai: Okinawan philosophy</span><span class="zhs-source-card__note">A Korean secondary explanation of the popular four-circle frame and one personal project application.</span></span></a>
 </section>
