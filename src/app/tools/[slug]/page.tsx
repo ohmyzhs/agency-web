@@ -26,6 +26,7 @@ import KoreanShoeSizeConverter from "@/components/tools/KoreanShoeSizeConverter"
 import KrwCurrencyCalculator from "@/components/tools/KrwCurrencyCalculator";
 import KstTimezoneConverter from "@/components/tools/KstTimezoneConverter";
 import MarkdownTableGenerator from "@/components/tools/MarkdownTableGenerator";
+import MarkdownToPdfTool from "@/components/tools/MarkdownToPdfTool";
 import PyeongConverter from "@/components/tools/PyeongConverter";
 import SlugGenerator from "@/components/tools/SlugGenerator";
 import TextCaseConverter from "@/components/tools/TextCaseConverter";
@@ -133,6 +134,7 @@ const widgetMap: Record<string, React.ReactNode> = {
   "slug-generator": <SlugGenerator />,
   "utm-builder": <UtmBuilder />,
   "markdown-table-generator": <MarkdownTableGenerator />,
+  "markdown-to-pdf": <MarkdownToPdfTool />,
   "timestamp-converter": <TimestampConverter />,
   "color-contrast-checker": <ColorContrastChecker />,
 };

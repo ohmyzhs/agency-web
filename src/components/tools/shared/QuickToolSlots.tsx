@@ -16,6 +16,7 @@ type QuickToolSlotsProps = {
 
 const CROSS_PICKS: string[] = [
   "pdf-toolkit",
+  "markdown-to-pdf",
   "og-image-generator",
   "qr-barcode-generator",
   "webhook-request-simulator",
